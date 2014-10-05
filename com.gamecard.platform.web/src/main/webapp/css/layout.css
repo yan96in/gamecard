@@ -1,0 +1,108 @@
+/* CSS Document */
+
+/*** ������ʽ***/
+body {margin:0;padding:0;font-size:12px;background-color: #fff; text-align:left;font:"����"; }
+
+div,form,img,ul,ol,li,dl,dt,dd { padding: 0; border: 0; margin:0;}
+
+h1,h2,h3,h4,h5,h6 {margin:0; padding:0;}
+
+/*����*/
+
+.wrap950{ 
+	width:950px;
+	margin:0px auto;
+	background:#fff;
+	 }
+
+.clear{
+	clear:both;
+	}
+
+/**/
+.header{
+	width:950px;
+	height:174px;
+	background:url(../img/index_r1_c1.gif) no-repeat;
+
+	}
+	.header1{
+	width:950px;
+	height:174px;
+	background:url(../img/aaa.gif) no-repeat;
+
+	}	
+.maintop{
+	width:930px;
+	height:auto;
+	background:url(../img/index_r2_c1.gif) no-repeat;
+	padding:5px 10px 5px 10px;
+
+	}
+.maintop table{
+	line-height:30px
+	}
+.mainall{
+	width:920px;
+			height:autopx;
+			background:url(../img/index_r3_c1.gif) repeat-y  ;
+			padding:15px;
+	}
+
+
+	
+.mainbottom{
+	background:url(../img/index_r7_c1.gif) no-repeat;
+	height:30px;
+	}	
+	
+.tap{
+	border:1px solid #DADADA;
+	border-collapse:collapse;
+	padding:5px;
+	margin-bottom:10px;}
+.tap table{
+	line-height:30px;
+	}
+	
+	
+/*����ҳ����*/
+.content{	  
+	line-height:30px;
+	border:1px solid #D9D9D9;
+	border-collapse:collapse;
+	text-align:center;
+	width:900px;
+	margin-left:10px;
+	padding:2px;
+}
+
+.content th{
+	color:#CC6600;
+	background:#FFF9BD;
+	font-size:13px;
+	border:1px solid #D9D9D9;
+	}
+	
+.content td{
+	border:1px solid  #D9D9D9;
+	font-size:12px;
+	}
+			
+	
+	
+/*������ʽ*/
+
+.orange16{
+	color:#FF7900;
+	font-size:16px;
+	font-weight:bold;
+	}
+.red14{ color:#f00;font-size:14px;}
+.red14 a:link,
+.red14 a:visited{ color:#f00; text-decoration:none;font-size:14px; }
+.red14 a:hover{color:#000;text-decoration:none;font-size:14px; }
+.red{ color:#f00}
+.red a:link,
+.red a:visited{ color:#f00; text-decoration:none; }
+.red a:hover{color:#000;text-decoration:none; }

@@ -1,0 +1,99 @@
+.fv_tip{ display:inline-block;}
+/*.onShow
+{
+    background:url(../img/onShow.gif) no-repeat left center; 
+
+}*/
+
+.onFocus
+{
+    background:#E9F0FF url(../img/onFocus.gif) no-repeat left center;
+	border:#CDE0FA solid 1px;
+	/* outline radius for mozilla/firefox only */
+	-moz-box-shadow:0 0 4px #CDE0FA;
+	-webkit-box-shadow:0 0 4px #CDE0FA;
+}
+.onError
+{
+    background:#FFF2E9 url(../img/onError.gif) no-repeat left center;
+	border:#FF0000 solid 1px;
+	/* outline radius for mozilla/firefox only */
+	-moz-box-shadow:0 0 4px #FF6A6A;
+	-webkit-box-shadow:0 0 4px #FF6A6A;
+}
+.onCorrect
+{
+    background:#E9FFEB url(../img/onCorrect.gif) no-repeat left center;
+	border:#00FF00 solid 1px;
+	/* outline radius for mozilla/firefox only */
+	-moz-box-shadow:0 0 4px #8CFF8C;
+	-webkit-box-shadow:0 0 4px #8CFF8C;
+}
+.onLoad
+{
+    background:#E9FFEB url(../img/onLoad.gif) no-repeat left center;
+    border:#CDE0FA solid 1px;
+	/* outline radius for mozilla/firefox only */
+	-moz-box-shadow:0 0 4px #CDE0FA;
+	-webkit-box-shadow:0 0 4px #CDE0FA;
+} 
+.onShow, .onFocus, .onError, .onCorrect, .onLoad
+{
+    padding: 4px 10px 4px 25px;
+    font-size: 12px;
+    vertical-align: middle;
+    display: inline;
+    /*margin-left: 8px;*/
+}
+
+
+.input_show
+{
+    width:200px;
+    height: 27px;
+    line-height: 27px;
+    padding: 3px 6px;
+    border: 1px solid #999;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.12);
+    color: #a09e99;
+    color: #000;
+    font-size: 18px;
+}
+.input_focus
+{
+    width:200px;
+    height: 27px;
+    line-height: 27px;
+    padding: 3px 6px;
+    border: 1px solid #ed9321;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.12);
+    color: #000;
+    font-size: 18px;
+}
+.input_error
+{
+    width:200px;
+    height: 27px;
+    line-height: 27px;
+    padding: 3px 6px;
+    border: 1px solid #C1C1C1;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.12);
+    background-color:#FBE2E2;
+    color: #000;
+    font-size: 18px;
+}
+.input_correct
+{
+    width:200px;
+    height: 27px;
+    line-height: 27px;
+    padding: 3px 6px;
+    border: 1px solid #999;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.12);
+    color: #000;
+    font-size: 18px;
+}
