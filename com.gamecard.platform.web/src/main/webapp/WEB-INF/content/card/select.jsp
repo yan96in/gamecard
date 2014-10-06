@@ -82,7 +82,7 @@
 <div class="header">
     <div class="header-con">
         <h1 class="logo">
-            <a href="http://www.71pay.cn/" title="哆啦网-短信声讯(话费)小额支付" target="_blank">
+            <a href="http://www.duolawang.com/card/main.action" title="哆啦网-短信声讯(话费)小额支付" target="_blank">
                 哆啦网-短信声讯(话费)小额支付
             </a>
             <img src="${stx}/card-resources/resources/images/sub-logo.png">
@@ -191,8 +191,8 @@
                         <div class="point-list1">
                             <h3 style="color:#0066CC">平台公告</h3>
                             <ol>
-                                <li><a class="" target="blank" href="http://gateway.71pay.cn/Site/Content_57.shtml"
-                                       title="通品网官网正式上线！！">[ 06/18]通品网官网正式上线！！</a></li>
+                                <li><a class="" target="blank" href="http://www.duolawang.com/card/main.action"
+                                       title="哆啦网正式上线！！">哆啦网官网正式上线！！</a></li>
                             </ol>
                         </div>
 
@@ -212,7 +212,7 @@
         href="javascript:void();" target="_blank">联系我们</a>|<a
         href="javascript:void();" target="_blank">帮助中心</a>
 
-    <p>Copyright © 2012 – 2015 71pay. All Rights Reserved 北京世坤远大信息科技有限公司版权所有</p>
+    <p>Copyright © 2012 – 2015 duolawang. All Rights Reserved 北京世坤远大信息科技有限公司版权所有</p>
 
 </div>
 

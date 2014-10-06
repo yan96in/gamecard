@@ -92,7 +92,7 @@
 <div class="header">
     <div class="header-con">
         <h1 class="logo">
-            <a href="javascript:void();" title="哆啦网-短信声讯(话费)小额支付" target="_blank">
+            <a href="http://www.duolawang.com/card/main.action" title="哆啦网-短信声讯(话费)小额支付" target="_blank">
                 哆啦网-短信声讯(话费)小额支付
             </a>
             <img src="${stx}/card-resources/resources/images/sub-logo.png">
@@ -127,7 +127,7 @@
     </ol>
     <div class="tab-bd">
         <div class="pannel">
-            <form id="form1" name="form1" method="post" action="http://gateway.71pay.cn/Pay/StepOfResult.shtml">
+            <form id="form1" name="form1" method="post" action="javascript:void();">
                 <input id="hdBatchNo" name="hdBatchNo" type="hidden" value="2014082501299910111113793081116">
                 <input id="hdChannelID" name="hdChannelID" type="hidden" value="10102">
                 <fieldset>
@@ -212,7 +212,7 @@
         href="javascript:void();" target="_blank">联系我们</a>|<a
         href="javascript:void();" target="_blank">帮助中心</a>
 
-    <p>Copyright © 2012 – 2015 71pay. All Rights Reserved 北京世坤远大科技有限公司版权所有</p>
+    <p>Copyright © 2012 – 2015 duolawang. All Rights Reserved 北京世坤远大科技有限公司版权所有</p>
     <script type="text/javascript">
         function channeldetail(id){
             $(".pannel-type a").removeClass("current");
