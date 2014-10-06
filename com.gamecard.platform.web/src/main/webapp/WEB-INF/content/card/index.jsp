@@ -110,7 +110,6 @@
                         </div>
                     </div>
                     <!--
-                    -->
                     <div class="field">
                         <label class="lab">验证码：</label>
                         <input id="txtCheckCode" name="txtCheckCode" type="text" maxlength="4" style="width:80px; padding: 17px 6px;" class="input_show">
@@ -125,6 +124,7 @@
                                 <div id="txtCheckCodeTip2" class="onShow"></div>
                         </div>
                     </div>
+                    -->
                     <div class="btn-con">
                         <input id="btnOK" class="btn" type="submit" value="提交订单">
                     </div>
@@ -169,7 +169,7 @@
 <script type="text/javascript">
     var flag = false;
     $(document).ready(function () {
-    LoadCheckCode(); //取验证码
+    //LoadCheckCode(); 取验证码
 
     //初始化面值通道
 
@@ -214,7 +214,6 @@
         $.each(eval("arrChannel_" +priceID),function(idx,id){
         $("#chc_"+id).show();
 
-        //$("#txtCheckCodeTip2").removeClass("onError").removeClass("onFocus").addClass("onShow").html("");
     });
     //选中第一个通道分类
     curChannelArray=eval("arrChannel_" +priceID);
@@ -249,39 +248,9 @@
             if($("input[name='paytypeId']:checked").val() == undefined){
                 return false;
             }
-
-            if(flag){
-                return true;
-            }else{
-                $("#txtCheckCodeTip2").removeClass("onShow").removeClass("onError").addClass("onFocus").html("请输入验证码，如看不清点击图片再换一张！");
-                $("#txtCheckCode").focus();
-                return false;
-            }
         });
 
-        $("#txtCheckCode").focus(function(){
-            $(this).removeClass("input_error").addClass("input_show");
-
-            $("#txtCheckCodeTip2").removeClass("onShow").removeClass("onError").addClass("onFocus").html("请输入验证码，如看不清点击图片再换一张！");
-        }).keyup(function(){
-            flag = false;
-            var code = $(this).val();
-            if(code.length == 4){
-                codeCheck(code);
-            }
-        }).blur(function(){
-            var code = $(this).val();
-            if(code.length == 4){
-                codeCheck(code);
-            } else {
-                codeError();
-            }
-        });
     });
-    function codeError(){
-        $(this).removeClass("input_show").addClass("input_error")
-        $("#txtCheckCodeTip2").removeClass("onFocus").removeClass("onCorrect").addClass("onError").html("验证码有误，请重新输入！");
-    }
 
     function codeCheck(code){
         $.ajax({

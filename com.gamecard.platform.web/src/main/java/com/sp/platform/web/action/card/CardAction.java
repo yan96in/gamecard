@@ -6,10 +6,8 @@ import com.sp.platform.entity.Card;
 import com.sp.platform.entity.Paychannel;
 import com.sp.platform.entity.Paytype;
 import com.sp.platform.entity.Price;
-import com.sp.platform.service.CardService;
-import com.sp.platform.service.PaychannelService;
-import com.sp.platform.service.PaytypeService;
-import com.sp.platform.service.PriceService;
+import com.sp.platform.service.*;
+import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.vo.ChannelVo;
 import com.sp.platform.vo.JsonVo;
 import com.sp.platform.vo.PhoneVo;
@@ -33,6 +31,7 @@ import java.util.List;
 @Scope("prototype")
 @Results({@Result(name = "index", location = "index.jsp"),
         @Result(name = "select", location = "select.jsp"),
+        @Result(name = "ivr", location = "ivr.jsp"),
         @Result(name = "channel", location = "channel.jsp")})
 public class CardAction extends ActionSupport {
     @Autowired
@@ -43,6 +42,10 @@ public class CardAction extends ActionSupport {
     private PaytypeService paytypeService;
     @Autowired
     private PaychannelService paychannelService;
+    @Autowired
+    private IvrChannelService ivrChannelService;
+    @Autowired
+    private PropertyUtils propertyUtils;
 
     private Integer id;
     private Card card;
@@ -87,6 +90,11 @@ public class CardAction extends ActionSupport {
             return "403";
         }
         paytype = paytypeService.get(paytypeId);
+
+        if(StringUtils.indexOf(propertyUtils.getProperty("ivr.paytype"), paytypeId.toString()) >= 0){
+            list = ivrChannelService.find(id, priceId, paytypeId);
+            return "ivr";
+        }
 
         return "select";
     }

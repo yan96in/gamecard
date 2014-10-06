@@ -310,7 +310,7 @@
                         }
                         $("#divFeeTypeList").html(html).show();
                     }else{
-                        $("#divNoChannelTip").html("该号码无可用通道，请选择其它方式");
+                        $("#divNoChannelTip").html("<font color='red'><b>该号码所属省份无可用通道，请选择其它方式</b></font>");
                     }
                 }else {
                     codeError();
