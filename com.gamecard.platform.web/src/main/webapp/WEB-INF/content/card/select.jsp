@@ -89,7 +89,7 @@
         </h1>
 
         <p style="height:30px">
-            如需帮助，请咨询客服热线<strong class="c-num">400-757-1234（9:00-22:00）</strong>
+            如需帮助，请咨询客服热线<strong class="c-num">400-0974-884（9:00-22:00）</strong>
         </p>
     </div>
 </div>
@@ -97,8 +97,7 @@
     <ol class="steps clearfix">
         <li>1、提交订单</li>
         <li class="on">2、选择支付通道</li>
-        <li>3、确认支付</li>
-        <li>4、获取商品</li>
+        <li>3、通道详情</li>
     </ol>
     <ul class="order-info">
         <li>

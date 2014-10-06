@@ -20,7 +20,6 @@
 
         #all {
             width: 950px;
-            height: 929px;
         }
 
         #top {
@@ -41,7 +40,7 @@
         #foot {
             background-image: url(${stx}/card-resources/resources/images/index_r7_c1.gif);
             background-repeat: no-repeat;
-            height: 120px;
+            height: 60px;
             width: 950px;
             float: left;
         }
@@ -135,7 +134,7 @@
                 <h3>温馨提示</h3>
                 <ol>
                     <li>
-                        移动短信购买扣费：900点-30元，650点-25元，600点-20元，300点-10元，其它购买方式扣费以通道提示为准。<br>
+                        移动短信购买方式扣费以通道提示为准。<br>
                     </li>
                     <li>
                         骏卡一卡通可兑换上千种游戏产品，成功购买后，请登录<a href="http://www.jcard.cn/" target="_blank">www.jcard.cn</a>骏网官方网站进行兑换。
@@ -144,12 +143,11 @@
                         为了保护您的利益，请在得到骏卡卡密后2小时内进行充值，否则此卡将自动失效。
                     </li>
                     <li>
-                        您也可以购买骏卡直充（包括200J点、300J点、400点、600J点、650J点、900J点等），<a
-                            href="http://gateway.71pay.cn/Charge/order_1041.shtml" target="_blank">直充购买<br>
+                        您也可以购买骏卡直充（包括200J点、300J点、400点、600J点、650J点、900J点等）<br>
                     </a>
                     </li>
                     <li>
-                        如有其他疑问，请咨询哆啦网客服热线：400-757-1234
+                        如有其他疑问，请咨询哆啦网客服热线：400-0974-884
                     </li>
                 </ol>
             </div>
