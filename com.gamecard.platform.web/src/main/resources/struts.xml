@@ -4,7 +4,7 @@
         "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
     <!-- 上传相关信息 -->
-    <constant name="struts.multipart.saveDir" value="/home/sp/platform/upload"/>
+    <constant name="struts.multipart.saveDir" value="e:/sp_platform/data"/>
     <constant name="struts.multipart.maxSize" value="4096000"/>
     <!-- 指定Web应用的默认编码集，相当于hgttpServletRequest的setCharacterEncoding方法 -->
     <constant name="struts.i18n.encoding" value="UTF-8"/>
@@ -48,6 +48,7 @@
                 <interceptor-ref name="session-interceptor"/>
                 <interceptor-ref name="auth-interceptor"/>
                 <interceptor-ref name="paramsPrepareParamsStack"/>
+                <interceptor-ref name="fileUploadStack"/>
             </interceptor-stack>
 
             <interceptor name="session-interceptor" class="com.sp.platform.web.interceptors.LoginInterceptor"/>

@@ -2,6 +2,8 @@ package com.sp.platform.service;
 
 import com.sp.platform.entity.CardPassword;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: mopdzz
@@ -11,4 +13,5 @@ import com.sp.platform.entity.CardPassword;
  */
 public interface CardPasswordService extends AbstractService<CardPassword> {
     public CardPassword getUserCard(int cardid, int priceid);
+    public void save(List<CardPassword> cards);
 }

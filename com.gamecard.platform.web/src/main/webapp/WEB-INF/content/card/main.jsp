@@ -1,14 +1,15 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
 <%@ include file="/common/taglibs.jsp" %>
 
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="Description" content="哆啦网小额支付平台是北京世坤远大信息科技有限公司专门为互联网数字产品充值而开发的小额支付平台，平台聚合三大电信运营商的通信帐户支付通道（涵盖手机、固话、宽带等支付工具，使用短信、声讯、宽带等支付方式）及市场流行卡类支付通道，为用户购买数字产品提供方便、快捷、统一的小额支付服务">
     <meta name="Keywords" content="哆啦网,哆啦网官网,手机买点卡,固话买点卡,宽带买点卡，短信买点卡，声讯买点卡，话费买点卡，手机买盛大卡，手机买骏卡，手机买Q币">
     <title>哆啦网官网-小额支付平台首页</title>
     <link rel="stylesheet" type="text/css" href="${stx}/card-resources/main/global.css">
     <link rel="stylesheet" type="text/css" href="${stx}/card-resources/main/index.css">
-    <style type="text/css"></style></head>
+    <style type="text/css"></style>
+</head>
 <body>
 
 <div class="header clearfix">
@@ -48,40 +49,40 @@
                     <ul>
 
                         <li class="">
-                            <h4><span><a target="_blank" href="${stx}/card/index.action?id=1">
+                            <h4><span><a href="${stx}/card/index.action?id=1">
                                 骏卡</a></span> </h4>
                             <div class="icon">
-                                <a target="_blank" href="${stx}/card/index.action?id=1" title="点击进入官网">
+                                <a href="${stx}/card/index.action?id=1" title="点击进入官网">
                                     <img alt="进入官网" src="${stx}/card-resources/main/20130912121634_4823.png">
                                 </a>
                             </div>
                         </li>
 
                         <li class="">
-                            <h4><span><a target="_blank" href="${stx}/card/index.action?id=2">
+                            <h4><span><a href="${stx}/card/index.action?id=2">
                                 盛大点卡</a></span> </h4>
                             <div class="icon">
-                                <a target="_blank" href="${stx}/card/index.action?id=2" title="点击进入官网">
+                                <a href="${stx}/card/index.action?id=2" title="点击进入官网">
                                     <img alt="进入官网" src="${stx}/card-resources/main/20130912121616_5890.png">
                                 </a>
                             </div>
                         </li>
 
                         <li class="">
-                            <h4><span><a target="_blank" href="${stx}/card/index.action?id=3">
+                            <h4><span><a href="${stx}/card/index.action?id=3">
                                 空中卡</a></span> </h4>
                             <div class="icon">
-                                <a target="_blank" href="${stx}/card/index.action?id=3" title="点击进入官网">
+                                <a href="${stx}/card/index.action?id=3" title="点击进入官网">
                                     <img alt="进入官网" src="${stx}/card-resources/main/kongzhong.png">
                                 </a>
                             </div>
                         </li>
 
                         <li class="last">
-                            <h4><span><a target="_blank" href="${stx}/card/index.action?id=4">
+                            <h4><span><a href="${stx}/card/index.action?id=4">
                                 完美世界</a></span> </h4>
                             <div class="icon">
-                                <a target="_blank" href="${stx}/card/index.action?id=4" title="点击进入官网">
+                                <a href="${stx}/card/index.action?id=4" title="点击进入官网">
                                     <img alt="进入官网" src="${stx}/card-resources/main/wanmeishijie.png">
                                 </a>
                             </div>
@@ -90,10 +91,10 @@
                     </ul>
                     <ul>
                         <li class="">
-                            <h4><span><a target="_blank" href="${stx}/card/index.action?id=5">
+                            <h4><span><a href="${stx}/card/index.action?id=5">
                                 久游游戏</a></span> </h4>
                             <div class="icon">
-                                <a target="_blank" href="${stx}/card/index.action?id=5" title="点击进入官网">
+                                <a href="${stx}/card/index.action?id=5" title="点击进入官网">
                                     <img alt="进入官网" src="${stx}/card-resources/main/jiuyou.png">
                                 </a>
                             </div>

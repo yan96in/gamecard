@@ -41,6 +41,13 @@ public class CardPasswordServiceImpl implements CardPasswordService {
     }
 
     @Override
+    public void save(List<CardPassword> cards) {
+        for(CardPassword card : cards){
+            cardPasswordDao.save(card);
+        }
+    }
+
+    @Override
     public CardPassword get(int id) {
         return cardPasswordDao.get(id);
     }
