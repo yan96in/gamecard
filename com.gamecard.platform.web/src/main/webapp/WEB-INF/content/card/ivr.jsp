@@ -177,6 +177,11 @@
                                     <td>${channel.note}</td>
                                 </tr>
                             </c:forEach>
+                            <tr>
+                                <td colspan="6" align="left">
+                                    &nbsp;&nbsp;<a href="index.action?id=${card.id}" style="font-size: 14px">重新选择面值</a>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </fieldset>
@@ -197,129 +202,6 @@
     <p>Copyright © 2012 – 2015 duola. All Rights Reserved 北京世坤远大信息科技有限公司版权所有</p>
 
 </div>
-
-<script type="text/javascript">
-    var channel1 = "";
-    var channel2 = "";
-    var feetypeStr= '';
-    var submitflag = false;
-    $(document).ready(function () {
-    $("#form1").submit(function(){
-    if(submitflag){
-    return true;
-    }else{
-    $("#txtPayPhoneTip").removeClass("onShow").removeClass("onError").addClass("onFocus").html("请输入手机号码");
-    $("#phoneNumber").focus();
-    return false;
-    }
-    });
-
-    $("#phoneNumber").focus(function(){
-    submitflag = false;
-    $(this).removeClass("input_error").addClass("input_show");
-    $("#pPayPhoneArea").html("").hide();
-    $("#divNoChannelTip").html("请先输入支付号码，然后再获取可用支付通道！").show();
-    $("#divFeeTypeList").html("").hide();
-    $("#txtPayPhoneTip").removeClass("onShow").removeClass("onError").addClass("onFocus").html("请输入手机号码");
-    }).keyup(function(){
-    flag = false;
-    var phonenumber = $(this).val();
-    if(phonenumber.length == 11){
-    codeCheck(phonenumber);
-    }
-    }).blur(function(){
-    var phonenumber = $(this).val();
-    if(phonenumber.length == 11){
-    codeCheck(phonenumber);
-    } else {
-    codeError();
-    }
-    });
-    });
-
-    function codeError(){
-    $(this).removeClass("input_show").addClass("input_error")
-    $("#txtPayPhoneTip").removeClass("onFocus").removeClass("onCorrect").addClass("onError").html("请输入正确的手机号码！");
-    }
-    function codeCheck(phoneNumber){
-    $.ajax({
-    type: "GET",
-    url: "checkPhone.action",
-    data: {phoneNumber:phoneNumber, id: ${card.id}, priceId: ${price.id}, paytypeId: ${paytype.id}},
-    dataType: "json",
-    success: function (data) {
-    if (data.flag) {
-    flag = true;
-    $("#txtPayPhoneTip").removeClass("onFocus").addClass("onCorrect").html("OK!");
-    $("#pPayPhoneArea").html("号码所属：<strong>" + data.result.phoneVo.province + "省 " +
-    data.result.phoneVo.city + "市</strong></p>").show();
-    var flag = 0;
-    feetypeStr= '';
-    channel1= '';
-    channel2= '';
-    if(data.result.channels1 != null && data.result.channels1.length>0){
-    feetypeStr = feetypeStr + '<label id="ft_1" ref="101111" class="selected" onclick="javascript:funChannel(this);"><a href="javascript:void(0);" class="radio-box">大额通道(单次扣费)<i class="icon-triangle"></i></a></label>';
-    }
-    if(data.result.channels2 != null && data.result.channels2.length>0){
-    feetypeStr = feetypeStr + '<label id="ft_2" ref="102112" class="" onclick="javascript:funChannel(this);"><a href="javascript:void(0);" class="radio-box">点播通道(多条扣费)<i class="icon-triangle"></i></a></label>';
-    }
-    if(data.result.channels1 != null && data.result.channels1.length>0){
-    flag = flag + 1;
-    channel1 = channel1 + '<div class="channel-list" id="divPayChannelList"><ul>';
-    jQuery.each(data.result.channels1, function(index,channel){
-    channel1 = channel1 + '<li id="ch_'+channel.id+'" ref="'+channel.id+'" class="selected"><input type="radio" id="payChannel_'+channel.id+'" name="channelId" checked="checked" value="'+channel.id+'"><label for="payChannel_'+channel.id+'">短信支付'+(index+1)+'：需支付<strong class="c-num">'+channel.fee+'</strong>元话费（'+channel.fee+'元/次，共扣1次)</label>';
-        });
-        channel1 = channel1 + '</ul></div>';
-    }
-    if(data.result.channels2 != null && data.result.channels2.length>0){
-    channel2 = channel2 + '<div class="channel-list" id="divPayChannelList"><ul>';
-    jQuery.each(data.result.channels2, function(index,channel){
-    channel2 = channel2 + '<li id="ch_'+channel.id+'" ref="'+channel.id+'" class="selected"><input type="radio" id="payChannel_'+channel.id+'" name="channelId" checked="checked" value="'+channel.id+'"><label for="payChannel_'+channel.id+'">短信支付'+(index+1)+'：需支付<strong class="c-num">'+channel.fee+'</strong>元话费（'+channel.fee+'元/次，共扣'+channel.feecount+'次)</label>';
-        });
-        channel2 = channel2 + '</ul></div>';
-    flag = flag + 2;
-    }
-
-    if(flag > 0){
-    submitflag = true;
-    $("#divNoChannelTip").hide();
-    var html = "";
-    if(flag == 1 || flag == 3){
-    html = feetypeStr + channel1;
-    }else if(flag == 2){
-    html = feetypeStr + channel2;
-    }
-    $("#divFeeTypeList").html(html).show();
-    }else{
-    $("#divNoChannelTip").html("<font color='red'><b>该号码所属省份无可用通道，请选择其它方式</b></font>");
-    }
-    }else {
-    codeError();
-    }
-    },
-    onWait: "正在校验手机号码，请稍候..."
-    });
-    }
-
-    function funChannel(obj){
-    var id = obj.id;
-    var str = "";
-    if(id == 'ft_1'){
-    str = feetypeStr + channel1;
-    }else{
-    str = feetypeStr + channel2;
-    }
-
-    $("#divFeeTypeList").html(str);
-    if(id == 'ft_1'){
-    $("#ft_1").attr("class","selected");
-    $("#ft_2").attr("class","");
-    }else{
-    $("#ft_1").attr("class","");
-    $("#ft_2").attr("class","selected");
-    }
-    }
-</script>
 
 </body>
 </html>

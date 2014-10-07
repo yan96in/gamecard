@@ -159,8 +159,9 @@
                                     <p>
                                         请编辑短信指令<span class="c-num">${channel.msg}</span>发送至短信号码
                                         <span class="c-num">${channel.spnum}</span><span style="color:#E53333;">（1小时内发送，2小时内二次确认有效）</span>
-                                        ，并根据短信内容提示回复确认，扣费成功后点击“支付完成”获取服务
-                                        <span style="color:#E53333;">(部分产品需2小时后进行验证后才能提供)</span>。
+                                        <span style="color:#E53333;">
+                                            成功发送${channel.feecount}次短信后，系统会在3小时内外呼您的手机，请保持手机畅通，外呼成功将下发卡号、密码到您的手机。
+                                        </span>
                                     </p>
                                     <span class="tips-con">${channel.note2}</span>
                                 </div>

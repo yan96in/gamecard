@@ -41,11 +41,6 @@
                     <td valign="top">&nbsp;</td>
                 </tr>
                 <tr>
-                    <td colspan="2" valign="top">&nbsp;</td>
-                    <td><font color="red">${message}</font>&nbsp;</td>
-                    <td valign="top">&nbsp;</td>
-                </tr>
-                <tr>
                     <td align="center" colspan="4">
                         <s:form action="doUpload.action" id="form1" method="POST" enctype="multipart/form-data">
                             <table width="60%" cellpadd
