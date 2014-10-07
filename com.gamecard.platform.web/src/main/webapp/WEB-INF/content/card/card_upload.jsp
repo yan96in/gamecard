@@ -68,6 +68,10 @@
                                         <input type="submit" value="导入"> &nbsp; <input type="reset">
                                     </td>
                                 </tr>
+                                <tr height="20">
+                                    <td colspan="2" class="left_bt2">备注(文件格式为:卡号,密码 中间以半角逗号分隔  例如：<font color="red">cardno,password</font>)
+                                    </td>
+                                </tr>
                             </table>
                         </s:form>
                     </td>
