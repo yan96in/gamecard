@@ -82,7 +82,7 @@
 <div class="header">
     <div class="header-con">
         <h1 class="logo">
-            <a href="http://www.duolawang.com/card/main.action" title="哆啦网-短信声讯(话费)小额支付" target="_blank">
+            <a href="${stx}/card/main.action" title="哆啦网-短信声讯(话费)小额支付" target="_blank">
                 哆啦网-短信声讯(话费)小额支付
             </a>
             <img src="${stx}/card-resources/resources/images/sub-logo.png">
@@ -164,7 +164,7 @@
                         </div>
                         <div class="btn-con">
                             <input id="btnOK" class="btn" type="submit" value="提交支付">
-                            <a href="index.action">重新选择商品</a>
+                            <a href="index.action?id=${card.id}">重新选择面值</a>
                         </div>
                         <div class="point-list" id="divChannelLimitInfo" style="width: 580px; margin-top: 20px;"><h3>
                             当前支付通道信息</h3>

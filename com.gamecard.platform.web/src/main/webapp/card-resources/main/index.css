@@ -1,0 +1,203 @@
+@charset "utf-8";
+/* CSS Document */
+.mod_gameindex { margin-top: 10px; }
+.mod_gameindex h4 { color: #333; }
+.mod_gameindex .main { float: left; width: 731px; }
+.mod_gameindex .side { float: right; width: 237px; overflow: hidden; }
+.mod_gameindex .side .event .content { background: url(../images/bg_block.png) no-repeat center; border: 1px solid #c5c5c5; padding: 8px 8px 0 8px; height: 170px; overflow: hidden; margin-bottom: 10px; }
+.mod_gameindex .side .event img { border: 1px solid #c5c5c5; margin-bottom: 5px; width: 215px; height: 120px; }
+.mod_gameindex .side .event .txt { height: 67px; overflow: hidden; }
+.mod_gameindex .side .event .name { font-weight: bold; color: #333; line-height: 1.2; }
+.mod_gameindex .side .event p { color: #999; margin-bottom: 5px; line-height: 1.4; }
+.mod_gameindex .side .event ul { margin-top: 16px; }
+.mod_gameindex .side .event li { border-bottom: 1px dashed #C5C5C5; height: 30px; line-height: 30px; background: url(../images/arrow2.gif) no-repeat 5px center; padding-left: 10px; }
+
+.mod_gameindex .section { zoom: 1; }
+.mod_gameindex .section:after { display: block; clear: both; content: ""; height: 0; visibility: hidden; }
+.mod_gameindex .section .title { height: 35px; position: relative; }
+.mod_gameindex .section .more { font-family: simsun; }
+.mod_gameindex .section .main .more { position: absolute; right: 10px; top: 10px; font-family: simsun; margin-top: 5px; }
+.mod_gameindex .section h2 { font-size: 16px;  font-weight: bold; color: #1d5db4; line-height: 35px; }
+
+/*banner*/
+.mod_gameindex .banner { position: relative; z-index: 10; margin-bottom: 10px; }
+.mod_gameindex .banner .main { width: 724px; }
+.mod_gameindex .banner .side { border: 1px solid #D8D8D8; width: 235px; height: 250px; overflow: hidden; text-align: left; }
+.mod_gameindex .banner .side h3 { font-size: 14px; color: #1d5db4; font-weight: bold; padding-top: 5px; padding-bottom: 5px; padding-left: 10px; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #D8D8D8; }
+.mod_gameindex .side .pc6 { padding-left: 5px; padding-right: 5px; padding-top: 5px; }
+.mod_gameindex .side .pc6 li { padding-left: 10px;  padding-right:10px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -o-text-overflow: ellipsis; list-style: square inside none; }
+.mod_gameindex .side .pc6 a { color: #333333; }
+.mod_gameindex .side .pc6 a:hover{color:#36c;}
+#box { position: relative; width: 724px; height: 250px; }
+#slider { width: 724px; height: 250px; }
+#slider li { font-size: 0px; position: absolute; left: 0px; top: 0px; display: none; }
+#num { position: absolute; right: 5px; bottom: 5px; }
+#num span { color: #FFF; display: inline-block; background-color: #666666; padding: 0 6px; margin: 0 2px; font-weight: bold; cursor: pointer; }
+#num .on { background-color: #FF6537; padding: 2px 8px; }
+
+/*newonline*/
+.mod_gameindex .newonline { margin-bottom:10px;}
+.mod_gameindex .newonline .main { width: 980px; }
+.mod_gameindex .newonline .list ul { zoom: 1; }
+.mod_gameindex .newonline .list ul:after { display: block; clear: both; content: ""; height: 0; visibility: hidden; }
+.mod_gameindex .newonline .list li {  width: 237px; height: 185px; overflow: hidden; float: left; display: inline; margin-right: 10px; text-align: center;  background: url(../images/bg_newcard.png) no-repeat; }
+.mod_gameindex .newonline .list li.last { margin-right: 0px; margin-left: 2px; }
+.mod_gameindex .newonline .list h4 { font-size: 14px; font-weight: bold; margin: 15px 45px 10px 35px; position: relative; }
+.mod_gameindex .newonline .list h4 span { width: 170px; line-height: 1.2; display: inline-block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; -o-text-overflow: ellipsis; }
+.mod_gameindex .newonline .icon { width: 150px; height: 100px; overflow: hidden; margin-left: 42.5px; position: relative; }
+.mod_gameindex .newonline .icon img { width: 150px; height: 100px; }
+.mod_gameindex .newonline .list .oper { padding-top: 3px; width:150px; margin-left:42.5px; }
+.mod_gameindex .newonline .list .oper a { background: url(../images/btn.png) no-repeat left -60px; padding-left: 15px; text-align: center; margin-top: 3px; margin-right: 0; color: #FFFFFF; font-weight: bold;display: inline-block;}
+.mod_gameindex .newonline .list .oper a span { background: url(../images/btn.png) no-repeat right -90px; display: inline-block; height: 24px; line-height: 24px; padding-right: 15px; cursor: pointer; }
+.mod_gameindex .newonline .list .oper a:hover { background: url(../images/btn.png) no-repeat left -120px; }
+.mod_gameindex .newonline .list .oper a:hover span { background: url(../images/btn.png) no-repeat right -150px; }
+.mod_gameindex .newonline .list .oper a.left { float: left; }
+.mod_gameindex .newonline .list .oper a.right { float: right; }
+.mod_gameindex .newonline .list .oper a.center { float: left; margin-left: 42.5px}
+
+/*applist*/
+.mod_gameindex .section .applist ul { zoom: 1; }
+.mod_gameindex .section .applist ul:after { display: block; clear: both; content: ""; height: 0; visibility: hidden; }
+.mod_gameindex .section .applist li { float: left; display: inline; margin-right: 10px; border: 1px solid #D8D8D8; width: 173px; height: 184px; overflow: hidden; position: relative; margin-bottom: 10px; }
+.mod_gameindex .section .applist li.last { margin-right: 0px; margin-left: 1px;}
+.mod_gameindex .section .applist li .cell_link { display: none;  height: 100%; cursor: pointer; }
+.mod_gameindex .section .applist li .cell_link h4 { float: none; margin-top: 15px; font-size: 14px; color: #000000; margin-bottom: 0px; margin-left:12px; }
+.mod_gameindex .section .applist li .cell_link .txt { margin: 5px 10px 10px 12px; height: 100px; overflow: hidden; }
+.mod_gameindex .section .applist li .cell_link .txt div { color: #333333; line-height: 18px; }
+.mod_gameindex .section .applist li .cell_link a { background: url(../images/btn.png) no-repeat left -60px; padding-left: 15px; text-align: center; margin-top: 3px; margin-right: 0; }
+.mod_gameindex .section .applist li .cell_link a span { background: url(../images/btn.png) no-repeat right -90px; display: inline-block; height: 24px; line-height: 24px; padding-right: 15px; cursor: pointer; }
+.mod_gameindex .section .applist li .cell_link a:hover { background: url(../images/btn.png) no-repeat left -120px; }
+.mod_gameindex .section .applist li .cell_link a:hover span { background: url(../images/btn.png) no-repeat right -150px; }
+.mod_gameindex .section .applist li .cell_link .inner { position: absolute; left: 15px; bottom: 8px; width: 143px; padding-left: 0;  }
+.mod_gameindex .section .applist li .cell_link .p1 a span { width: 113px; }
+.mod_gameindex .section .applist li .cell_link .inner a.left { float: left; }
+.mod_gameindex .section .applist li .cell_link .inner a.right { float: right; }
+.mod_gameindex .section .applist li .cell_link .inner a.center { float: left;}
+.mod_gameindex .section .applist li .cell_link .inner a.center span { width: 113px;}
+.mod_gameindex .section .applist li.cur .cell_link { display: block; }
+.mod_gameindex .section .applist .icon { text-align: center; padding: 10px 0; }
+.mod_gameindex .section .applist .icon img { width: 150px; height: 110px; }
+.mod_gameindex .section .applist h4 { font-weight: bold; font-size: 14px; line-height: 1.2; }
+.mod_gameindex .section .applist h4 span { width:103px; float: left; display: inline-block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; -o-text-overflow: ellipsis; }
+
+.mod_gameindex .section .applist .cell_star_s { float: right; }
+.mod_gameindex .section .applist .star { float: right; }
+.mod_gameindex .section .applist .info { margin-left: 10px; margin-right: 10px; }
+.mod_gameindex .section .applist .intro { clear: both; padding-top: 5px;  width:150px;  display: inline-block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; -o-text-overflow: ellipsis; }
+
+/*cardlist*/
+.mod_gameindex .cardlist .main { float: left; width: 980px; }
+.mod_gameindex .cardlist .applist ul:after { display: block; clear: both; content: ""; height: 0; visibility: hidden; }
+.mod_gameindex .cardlist .applist li { border-style: none;float: left; display: inline; margin-right: 26px; margin-bottom:0px;background: url(../images/bg_game.png) no-repeat; width: 175px; height: 189px; overflow: hidden; position: relative; }
+.mod_gameindex .cardlist .applist li.last { margin-right: 0px;margin-left: 1px; }
+.mod_gameindex .cardlist .applist li .cell_link { display: none; bottom: 7px; height: 100%; cursor: pointer; }
+
+/*adv*/
+.mod_gameindex .adv .main { float: left; width: 980px; }
+
+/*partner*/
+.partner { width: 980px; margin: 10px auto 0; }
+.partner .section-wrap { padding: 0 0px; border: 1px solid #D8D8D8; }
+.partner  h2 { font-size: 16px;  font-weight: bold; color: #1d5db4; line-height: 35px; text-align: left; }
+.partner .bd { position: relative; width: 100%; height: 120px; padding: 10px 0 10px;}
+.partner #prev, .partner #next {  background: url(../images/scard.gif) no-repeat;position: absolute; display: block; width: 12px; height: 26px; top: 55px; text-indent: -9999px; cursor: pointer; }
+.partner #prev { left: 10px; background-position: 0 -320px; }
+.partner #next { right: 10px; background-position: -13px -320px; }
+.partner #prev:hover { background-position: 0 -294px; }
+.partner #next:hover { background-position: -13px -294px; }
+.partner .partner-wrap { padding: 2px 22px 0; }
+.partner-wrap .list { position: relative; width: 100%; overflow: hidden; }
+.partner-wrap .list ul { position: relative; width: 1272px; overflow: hidden; }
+.partner-wrap .list li { float: left; width: 104px; height: 120px; text-align: center; }
+.partner-wrap .list li a { display: block; width: 90px; height: 40px; border: 1px solid #dcdcdc; margin: 10px auto; }
+
+/*helpbox*/
+.helpbox { width: 980px; height: 120px; margin: 10px auto 0; padding-top: 20px; padding-bottom: 20px; border: 1px solid #D8D8D8; }
+.helpbox .column01, .helpbox .column02, .helpbox .column03 { width: 157px; border-right: 1px solid #E5E5E5; margin-left: 50px; height: 115px; float: left; display: inline; text-align: left; }
+.helpbox .column01 h3 { font-size: 16px; font-weight: bold; color: #1d5db4; padding-left: 35px; padding-top: 5px; background: url(../images/ico03.gif) no-repeat 0 0; height: 29px; }
+.helpbox .column02 h3 { font-size: 16px; font-weight: bold; color: #1d5db4; padding-left: 35px; padding-top: 5px; background: url(../images/ico04.gif) no-repeat 0 0; height: 29px; }
+.helpbox .column03 h3 { font-size: 16px; font-weight: bold; color: #1d5db4; padding-left: 35px; padding-top: 5px; background: url(../images/ico05.gif) no-repeat 0 0; height: 29px; }
+.helpbox .column01 ul li, .helpbox .column02 ul li, .helpbox .column03 ul li { font-size: 12px; line-height: 25px; }
+.helpbox .column04 { width: 280px; margin-left: 50px; height: 144px; float: left; display: inline; text-align: left; }
+.helpbox .column04 h3 { font-size: 16px; font-weight: bold; color: #1d5db4; padding-left: 35px; padding-top: 5px; background: url(../images/ico06.gif) no-repeat 0 0; height: 29px; }
+.helpbox .column04 .phone01 { color: #f60; font-size: 24px; font-family: Arial, Helvetica, sans-serif; }
+.helpbox .column04 .phone02 { }
+.blue02 { font-size: 12px; font-weight: normal; color: #0063DC; }
+
+/*help and about*/
+.mt20{margin-top:20px;}
+.w210{width:210px;}
+.w740{width:740px;}
+.menu{min-height:150px;_height:150px;background:url(../images/menu_bd.gif) 0 0 repeat-y;}
+.menu h4{height:40px;padding-left:24px;line-height:40px;padding-bottom:4px;background:url(../images/menu_hd.gif) 0 0 no-repeat;color:#fff;font-size:16px;font-weight:700; text-align:left;}
+.menu ul{width:190px;zoom:1;}
+.menu li{width:190px;height:39px;border-bottom:1px solid #3e556f;}
+.menu a{display:block;height:39px;line-height:39px;color:#fff;font-weight:700;text-align:center;}
+.menu a:hover{color:#fff;text-decoration:none;}
+.menu .curr{position:relative;margin-left:10px;margin-right:-20px;background:url(../images/menu_hv.gif) right 0 no-repeat;color:#333;text-indent:-30px;}
+.menu .curr:hover{color:#666;}
+.menu_ft{height:36px;background:url(../images/menu_ft.gif) 0 0 no-repeat;overflow:hidden;}
+.about_t{height:31px;line-height:31px;background:url(../images/atcl_t.gif) 0 bottom no-repeat;color:#666;font-size:16px;font-weight:700; text-align:left;}
+.about_b{padding:15px 10px;}
+.about_b .date{float:right;}
+
+/*about page*/
+.img_box {  margin-bottom: 10px; }
+.cont_box { padding: 10px; border: 1px solid #cdcdcd; text-align: left; line-height: 25px; }
+
+/*notice page*/
+.activity li{height:24px;padding:6px 0 2px 10px;border-bottom:1px dashed #CDCBCC;overflow:hidden;zoom:1;background:url(../images/gray_li.jpg) 0 14px no-repeat;}
+.activity a{float:left;color:#333;}
+.activity a:hover{color:#36c;}
+
+/*help page*/
+.help_box{border-left:1px solid #cdcdcd;border-bottom:1px solid #cdcdcd;border-right:1px solid #cdcdcd; text-align:left;}
+.help_list{padding:2px 8px;border-bottom:1px solid #e5e5e5;line-height:22px;}
+.help_list .title{height:31px;padding-left:24px;background:url(../images/q_ico.gif) 0 6px no-repeat;line-height:31px;color:#666;font-size:14px;font-weight:normal;cursor:pointer;}
+.answer{display:none;margin-bottom:3px;padding:10px;border-left:3px solid #dddddd;border-top:1px dashed #DFDFDF;background-color:#F5F5F5;color:#505050;}
+.answer li{list-style:decimal inside;}
+
+
+/******************************
+ * article page
+ ******************************/
+.w700{width:700px;}
+.w250{width:250px;}
+.bodyer_art .pos { text-align: left; margin-bottom: 10px; }
+.bodyer_art .m-content{border:1px solid #cdcdcd;}
+.bodyer_art .article{_height:267px;min-height:267px;margin-top:-1px;padding:20px;border-top:2px solid #0C2D58;}
+.bodyer_art .article .title{margin-bottom:8px;padding-bottom:6px;border-bottom:1px dashed #cdcdcd;}
+.bodyer_art .article h2{margin-bottom:8px;padding-bottom:6px;font-size:14px;text-align:center; font-weight:700;}
+.bodyer_art .article .content { padding: 5px 0; text-align: left; line-height: 25px; }
+
+.bodyer_art .side { border: 1px solid #D8D8D8; width:250px; height: 204px; overflow: hidden; text-align: left; }
+.bodyer_art .side h3 { font-size: 14px; color: #1d5db4; font-weight: bold; padding-top: 5px; padding-bottom: 5px; padding-left: 10px; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #D8D8D8; }
+.bodyer_art .side .pc6 { padding-left: 5px; padding-right: 5px; padding-top: 5px; }
+.bodyer_art .side .pc6 li { padding-left: 10px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -o-text-overflow: ellipsis; list-style: square inside none; }
+.bodyer_art .side .pc6 a { color: #003399; }
+.bodyer_art .side .pc6 a:hover{color:#36c;}
+
+
+/*·­Ò³*/
+.page_bg{clear:both; height:30px; margin:8px 2px 1px 2px; padding-top:6px; padding-left:10px; padding-right:10px;}
+.page_bg ul{clear:both; padding:0px; margin:0px; background:none;}
+.page_bg ul li{height:26px; float:left;}
+.page_bg ul li dd{float:left; margin:0px; padding:0px; margin-right:4px;}
+
+.page_bg ul li.page_number{width:auto; margin-right:8px; line-height:26px;}
+.number_en{font-family:"verdana"; font-size:12px; font-weight:bold;}
+.page_bg ul li.p_number_box{width:auto;line-height:26px; float:right;}
+.page_bg ul li dd.p_current{background-color:#ffeee5; color:#ff7400; border:1px solid #ff7400; font-weight:bold; padding-left:6px; padding-right:6px; height:23px; overflow:hidden;}
+.page_bg ul li dd.p_normal{background-color:#FFFFFF;}
+
+.page_bg ul li dd.page1{margin-right:2px; height:25px !important; height:24px; text-align:center; border:#cccccc 1px solid; padding-left:6px; padding-right:6px; overflow:hidden;}
+
+.page_bg ul li dd.page{margin-right:2px; text-align:center; padding-bottom:1px;}
+.page_bg ul li dd.page a{padding:5px 6px; height:22px; text-align:center; border:#cccccc 1px solid; }
+.page_bg ul li dd.page a:hover{border:#ff7400 1px solid; text-align:center; padding:5px 6px;}
+
+.page_bg ul li.page_search {float:right;}
+.input_css{width:35px; height:23px; border:#cccccc 1px solid; background-color:#FFFFFF; margin-right:5px; line-height:23px; text-align:center;}
+
+/*·ÖÒ³Ìø×ª°´Å¥*/
+.memberbut {width:30px; height:24px; line-height:24px; border:1px #9B999A solid; text-align:center; color:#000000; background:url(../images/nalbutbg.gif) repeat-x; cursor:pointer; display:block;}

@@ -7,7 +7,9 @@ import com.sp.platform.entity.Paytype;
 import com.sp.platform.entity.Price;
 import com.sp.platform.service.PriceService;
 import com.yangl.common.hibernate.PaginationSupport;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,12 @@ public class PriceServiceImpl implements PriceService {
     @Transactional(readOnly = true)
     public Price get(int id) {
         return priceDao.get(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Price> getByCardId(int cardid){
+        return priceDao.getPriceByCardId(cardid);
     }
 
     @Transactional(readOnly = true)

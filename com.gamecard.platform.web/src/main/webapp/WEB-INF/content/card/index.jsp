@@ -126,6 +126,7 @@
                     -->
                     <div class="btn-con">
                         <input id="btnOK" class="btn" type="submit" value="提交订单">
+                        <a href="main.action">重新选择商品</a>
                     </div>
                 </fieldset>
             </form>

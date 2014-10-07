@@ -92,7 +92,7 @@
 <div class="header">
     <div class="header-con">
         <h1 class="logo">
-            <a href="http://www.duolawang.com/card/main.action" title="哆啦网-短信声讯(话费)小额支付" target="_blank">
+            <a href="${stx}/card/main.action" title="哆啦网-短信声讯(话费)小额支付" target="_blank">
                 哆啦网-短信声讯(话费)小额支付
             </a>
             <img src="${stx}/card-resources/resources/images/sub-logo.png">

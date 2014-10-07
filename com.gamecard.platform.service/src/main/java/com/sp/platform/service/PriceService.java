@@ -2,6 +2,8 @@ package com.sp.platform.service;
 
 import com.sp.platform.entity.Price;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: mopdzz
@@ -11,4 +13,5 @@ import com.sp.platform.entity.Price;
  */
 public interface PriceService extends AbstractService<Price>{
     public Price getDetail(int id, int cardid);
+    public List<Price> getByCardId(int cardid);
 }

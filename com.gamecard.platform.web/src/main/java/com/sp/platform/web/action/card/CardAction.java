@@ -29,7 +29,8 @@ import java.util.List;
  */
 @Namespace("/card")
 @Scope("prototype")
-@Results({@Result(name = "index", location = "index.jsp"),
+@Results({@Result(name = "main", location = "main.jsp"),
+        @Result(name = "index", location = "index.jsp"),
         @Result(name = "select", location = "select.jsp"),
         @Result(name = "ivr", location = "ivr.jsp"),
         @Result(name = "channel", location = "channel.jsp")})
@@ -61,6 +62,12 @@ public class CardAction extends ActionSupport {
     private Integer paytypeId;
     private Integer channelId;
     private String phoneNumber;
+
+    @Action("main")
+    public String main() {
+        list = cardService.getAll();
+        return "main";
+    }
 
     @Action("index")
     public String index() {
