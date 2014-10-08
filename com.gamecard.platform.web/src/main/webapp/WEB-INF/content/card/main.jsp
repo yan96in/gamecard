@@ -17,8 +17,8 @@
         <h1 class="logo fl"><a title="哆啦网" href="javascript:void();">哆啦网</a></h1>
         <ul class="quickMenu fr">
             <li>欢迎您来到哆啦网！</li>
-            <li><a target="_blank" title="网站公告" href="javascript:void();">网站公告</a></li>
-            <li><a target="_blank" title="支付验证通道" href="javascript:void();">支付验证通道</a></li>
+            <li><a title="网站公告" href="javascript:void();">网站公告</a></li>
+            <li><a title="支付验证通道" href="javascript:void();">支付验证通道</a></li>
             <li><span>客服热线：400-0974-884</span></li>
         </ul>
     </div>
@@ -37,13 +37,13 @@
     <div class="mod_gameindex">
         <div class="section adv">
             <div class="main">
-                <img src="${stx}/card-resources/main/flow1_01.png"><a href="javascript:void();" target="_blank" title="进入支付验证通道"><img src="${stx}/card-resources/main/flow1_02.png"></a>
+                <img src="${stx}/card-resources/main/flow1_01.png"><img src="${stx}/card-resources/main/flow1_02.png">
             </div>
         </div>
         <div class="section newonline">
             <div class="main">
                 <div class="title">
-                    <h2>最新上线</h2>
+                    <h2>哆啦网暂提供以下热门点卡（请点击获取详细信息）</h2>
                 </div>
                 <div class="list">
                     <ul>
@@ -109,7 +109,7 @@
 
     <div class="footer">
         <div class="footer-nav">
-            <a target="_blank" href="javascript:void();">公司简介</a>| <a target="_blank" href="javascript:void();">关于哆啦网</a>| <a target="_blank" href="javascript:void();">联系我们</a>| <a target="_blank" href="javascript:void();">诚聘英才</a>| <a target="_blank" href="javascript:void();">公司资质</a>
+            <a href="javascript:void();">公司简介</a>| <a href="javascript:void();">关于哆啦网</a>| <a target="_blank" href="javascript:void();">联系我们</a>| <a target="_blank" href="javascript:void();">诚聘英才</a>| <a target="_blank" href="javascript:void();">公司资质</a>
         </div>
         <div class="copyright">
             <p>Copyright © 2012-2015 哆啦网&nbsp; 版权所有&nbsp; <a target="_blank" href="http://www.miibeian.gov.cn/">京B2-20131089-1</a>&nbsp; </p>
