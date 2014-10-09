@@ -62,6 +62,7 @@ public class CalloutTask implements Callable<String> {
         }
         LogEnum.DEFAULT.error("外呼同步失败，计数加1,{}", userCardLog);
         userCardLog.setSendnum(userCardLog.getSendnum() + 1);
+        userCardLogSerivce.save(userCardLog);
 
         return returnFunc(start);
     }
