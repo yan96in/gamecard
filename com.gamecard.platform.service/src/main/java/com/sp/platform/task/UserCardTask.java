@@ -50,6 +50,7 @@ public class UserCardTask implements Callable<String> {
     public String call() {
         long start = System.currentTimeMillis();
         try {
+            int size = data.size();
             Iterator<SmsBillTemp> iterator = data.iterator();
             while (iterator.hasNext()) {
                 int currentCount = 1;
@@ -68,7 +69,7 @@ public class UserCardTask implements Callable<String> {
                             billTemp = iterator.next();
                             list.add(billTemp);
                         } else {
-                            return returnFunc(start, "计算结束,有剩余短信， mobile:" + mobile + ", channelid:" + channelid + ", 共计获得 " + cardCount + "张点卡");
+                            return returnFunc(start, "计算结束,有剩余" + (size - cardCount * count) + "条短信， mobile:" + mobile + ", channelid:" + channelid + ", 共计获得 " + cardCount + "张点卡");
                         }
                     }
                 }
@@ -86,7 +87,7 @@ public class UserCardTask implements Callable<String> {
                 userCardLogSerivce.save(userCardLog);
             }
         } catch (Exception e) {
-            for(SmsBillTemp temp : data){
+            for (SmsBillTemp temp : data) {
                 temp.setSendnum(temp.getSendnum() + 1);
                 billTempService.save(temp);
             }

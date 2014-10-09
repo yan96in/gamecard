@@ -44,24 +44,18 @@ public class DisposeUserCardService {
                     UserCardTask userCardTask = (UserCardTask) AppContextHolder.getContext().getBean("userCardTask");
                     userCardTask.setData(smsBillTemps);
                     temp.add(userCardTask);
-
-                    mobile = "";
-                    channelid = 0;
                     smsBillTemps = new ArrayList<SmsBillTemp>();
                 }else{
-                    mobile = billTemp.getMobile();
                     if(billTemp.getChannelid() != channelid && channelid > 0){
                         i++;
                         UserCardTask userCardTask = (UserCardTask) AppContextHolder.getContext().getBean("userCardTask");
                         userCardTask.setData(smsBillTemps);
                         temp.add(userCardTask);
-
-                        channelid = 0;
                         smsBillTemps = new ArrayList<SmsBillTemp>();
-                    }else{
-                        channelid = billTemp.getChannelid();
                     }
                 }
+                mobile = billTemp.getMobile();
+                channelid = billTemp.getChannelid();
                 smsBillTemps.add(billTemp);
 
                 if (i >= 10) {
