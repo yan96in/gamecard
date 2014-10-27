@@ -20,6 +20,7 @@ public class PayServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        resp.sendRedirect("");
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pay.jsp");
         dispatcher.forward(req, resp);
     }

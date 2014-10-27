@@ -138,7 +138,7 @@
                         移动短信购买方式扣费以通道提示为准。<br>
                     </li>
                     <li>
-                        骏卡一卡通可兑换上千种游戏产品，成功购买后，请登录<a href="http://www.jcard.cn/" target="_blank">www.jcard.cn</a>骏网官方网站进行兑换。
+                        骏卡一卡通可兑换上千种游戏产品，成功购买后，请登录<a href="http://www.jcard.cn/" target="_blank">www.jcard.cn</a>骏卡官方网站进行兑换。
                     </li>
                     <li>
                         为了保护您的利益，请在得到骏卡卡密后2小时内进行充值，否则此卡将自动失效。
