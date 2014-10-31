@@ -98,6 +98,7 @@
                                 <th width="8%" class="left_bt2">指令</th>
                                 <th width="8%" class="left_bt2">上行时间</th>
                                 <th width="8%" class="left_bt2">状态报告时间</th>
+                                <th width="8%" class="left_bt2">资费</th>
                                 <th width="8%" class="left_bt2">通道</th>
                                 <th width="8%" class="left_bt2">状态</th>
                             </tr>
@@ -109,6 +110,7 @@
                                     <td>${bean.msg}</td>
                                     <td>${bean.btime}</td>
                                     <td>${bean.etime}</td>
+                                    <td>${bean.fee/100}</td>
                                     <td>${bean.sfid}</td>
                                     <td>${bean.flag}</td>
                                 </tr>
