@@ -10,11 +10,11 @@ public class MysqlgetConnect {
         try {
             if (mysqlcon == null) {
                 mysqlcon = new MysqlConnect();
-                mysqlcon.createPool();
-                mysqlcon.start();
+//                mysqlcon.createPool();
+//                mysqlcon.start();
             }
             if (mysqlcon != null) {
-                conn = mysqlcon.getConnection();
+//                conn = mysqlcon.getConnection();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -25,7 +25,7 @@ public class MysqlgetConnect {
     public static Connection backConncet(Connection conn) {
         try {
             if (mysqlcon != null) {
-                mysqlcon.returnConnection(conn);
+//                mysqlcon.returnConnection(conn);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -64,7 +64,12 @@ public class BillTempServiceImpl implements BillTempService {
 
     @Override
     public PaginationSupport getPage(PaginationSupport page, Order[] orders, PageView pageView) {
-        return null;
+        DetachedCriteria dc = DetachedCriteria.forClass(SmsBillTemp.class);
+        DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        dc.add(Restrictions.ge("btime", DateTime.parse(pageView.getBtime(), format).toDate()));
+        dc.add(Restrictions.le("etime", DateTime.parse(pageView.getEtime(), format).toDate()));
+        dc.addOrder(Order.desc("btime"));
+        return billTempDao.findPageByCriteria(dc, page, orders);
     }
 
     @Override

@@ -59,7 +59,12 @@ public class UserCardLogServiceImpl implements UserCardLogSerivce {
 
     @Override
     public PaginationSupport getPage(PaginationSupport page, Order[] orders, PageView pageView) {
-        return null;
+        DetachedCriteria dc = DetachedCriteria.forClass(UserCardLog.class);
+        DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        dc.add(Restrictions.ge("btime", DateTime.parse(pageView.getBtime(), format).toDate()));
+        dc.add(Restrictions.le("etime", DateTime.parse(pageView.getEtime(), format).toDate()));
+        dc.addOrder(Order.desc("btime"));
+        return userCardLogDao.findPageByCriteria(dc, page, orders);
     }
 
     @Override
