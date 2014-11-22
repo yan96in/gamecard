@@ -1,6 +1,5 @@
 package com.sp.platform.dao;
 
-import com.sp.platform.entity.BillLog;
 import com.sp.platform.entity.SmsBillLog;
 import com.sp.platform.entity.SmsBillTemp;
 import com.yangl.common.hibernate.HibernateDaoUtil;
@@ -69,7 +68,7 @@ public class SmsBillTempDao extends HibernateDaoUtil<SmsBillTemp, Integer> {
                 .setParameter(7, billLog.getFee())
                 .setParameter(8, billLog.getSfid())
                 .setParameter(9, billLog.getCpid())
-                .setParameter(10, 4)
+                .setParameter(10, 3)
                 .setParameter(11, 0)
                 .setParameter(12, billLog.getSyncurl())
                 .setParameter(13, billLog.getParentid())

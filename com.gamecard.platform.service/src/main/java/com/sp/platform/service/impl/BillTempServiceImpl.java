@@ -9,8 +9,8 @@ import com.sp.platform.entity.SmsBillLog;
 import com.sp.platform.entity.SmsBillTemp;
 import com.sp.platform.service.BillTempService;
 import com.sp.platform.util.LogEnum;
+import com.sp.platform.util.PropertyUtils;
 import com.yangl.common.hibernate.PaginationSupport;
-import org.apache.http.impl.cookie.DateUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +36,8 @@ import java.util.List;
 @Transactional
 public class BillTempServiceImpl implements BillTempService {
 
+    @Autowired
+    private PropertyUtils propertyUtils;
     @Autowired
     private BillTempDao billTempDao;
     @Autowired
@@ -88,7 +89,7 @@ public class BillTempServiceImpl implements BillTempService {
         dc.add(Restrictions.eq("type", 0));
 
         DateTime dateTime = new DateTime();
-        dateTime = dateTime.plusDays(-1);
+        dateTime = dateTime.plusDays(propertyUtils.getInteger("valid.day"));
         dc.add(Restrictions.gt("btime", dateTime.toDate()));
         return billTempDao.findByCriteria(dc, new Order[]{Order.asc("mobile"), Order.asc("channelid"), Order.asc("btime")});
     }
