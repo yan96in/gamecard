@@ -15,6 +15,7 @@ public class ChannelVo {
     private PhoneVo phoneVo;
     private List<Paychannel> channels1;
     private List<Paychannel> channels2;
+    private boolean pcflag;
 
     public PhoneVo getPhoneVo() {
         return phoneVo;
@@ -38,5 +39,13 @@ public class ChannelVo {
 
     public void setChannels2(List<Paychannel> channels2) {
         this.channels2 = channels2;
+    }
+
+    public boolean isPcflag() {
+        return pcflag;
+    }
+
+    public void setPcflag(boolean pcflag) {
+        this.pcflag = pcflag;
     }
 }

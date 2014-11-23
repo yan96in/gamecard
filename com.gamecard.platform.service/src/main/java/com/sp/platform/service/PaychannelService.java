@@ -14,5 +14,6 @@ import java.util.List;
  */
 public interface PaychannelService extends AbstractService<Paychannel> {
     public ChannelVo findChannels(int cardId, int priceId, int paytypeId, String province);
+    public ChannelVo findPcChannels(int cardId, int priceId, int paytypeId, String province, String phone);
     public List<Paychannel> find(int cardId, int priceId, int paytypeId, int feetype, String province);
 }

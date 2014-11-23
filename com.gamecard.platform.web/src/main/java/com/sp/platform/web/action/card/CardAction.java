@@ -33,6 +33,7 @@ import java.util.List;
         @Result(name = "index", location = "index.jsp"),
         @Result(name = "select", location = "select.jsp"),
         @Result(name = "ivr", location = "ivr.jsp"),
+        @Result(name = "pc", location = "pc.jsp"),
         @Result(name = "channel", location = "channel.jsp")})
 public class CardAction extends ActionSupport {
     @Autowired
@@ -101,6 +102,8 @@ public class CardAction extends ActionSupport {
         if(StringUtils.indexOf(propertyUtils.getProperty("ivr.paytype"), paytypeId.toString()) >= 0){
             list = ivrChannelService.find(id, priceId, paytypeId);
             return "ivr";
+        } else if(StringUtils.indexOf(propertyUtils.getProperty("pc.paytype"), paytypeId.toString()) >= 0){
+            return "pc";
         }
 
         return "select";
@@ -150,6 +153,27 @@ public class CardAction extends ActionSupport {
                     HaoduanCache.getProvince(phoneNumber), HaoduanCache.getCity(phoneNumber));
 
             channelVo = paychannelService.findChannels(id, priceId, paytypeId, phone.getProvince());
+            channelVo.setPhoneVo(phone);
+            result = new JsonVo(true, channelVo, "");
+        }
+        Struts2Utils.renderJson(result);
+    }
+
+    @Action("checkPcPhone")
+    public void checkPcPhone() {
+        JsonVo result = null;
+        if (StringUtils.isBlank(phoneNumber)) {
+            result = new JsonVo(false, "请输入正确的手机号码");
+        } else {
+            if (paytypeId.equals(19) && !checkChinamobile()) {
+                result = new JsonVo(false, "请输入正确的手机号码");
+                Struts2Utils.renderJson(result);
+                return;
+            }
+            PhoneVo phone = new PhoneVo(phoneNumber,
+                    HaoduanCache.getProvince(phoneNumber), HaoduanCache.getCity(phoneNumber));
+
+            channelVo = paychannelService.findPcChannels(id, priceId, paytypeId, phone.getProvince(), phoneNumber);
             channelVo.setPhoneVo(phone);
             result = new JsonVo(true, channelVo, "");
         }
