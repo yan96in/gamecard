@@ -106,7 +106,7 @@
             </span>
         </li>
     </ul>
-    <form id="form1" name="form1" action="pcgetcard.action" method="post">
+    <form id="form1" name="form1" action="getPcCard.action" method="post">
         <ol class="tab-hd clearfix" id="divChannelClassList">
             <c:forEach var="paytype" items="${price.paytypes}">
                 <li id="chc_${paytype.id}" ref="${paytype.id}">
@@ -130,7 +130,11 @@
                             <label class="lab">输入手机号码：</label>
                             <input type="text" id="phoneNumber" name="phoneNumber" value="" maxlength="11"
                                    style="width: 172px; height: 34px; color: rgb(0, 0, 0);" class="input_correct">
-
+                            <input type="hidden" id="id" value="${card.id}" name="id"/>
+                            <input type="hidden" id="priceId" value="${price.id}" name="priceId"/>
+                            <input type="hidden" id="paytypeId" value="${paytype.id}" name="paytypeId"/>
+                            <input type="hidden" id="channelId" value="0" name="channelId"/>
+                            <input type="hidden" id="sid" value="0" name="sid"/>
                             <div id="txtPayPhoneTip" class="onShow">
                             </div>
                             <p class="loc" id="pPayPhoneArea" style=""></p>
@@ -151,7 +155,7 @@
                             <label class="lab">请输入验证码：</label>
                             <input type="text" id="identifyingCode" name="identifyingCode" value="" maxlength="11"
                                    style="display: none; width: 172px; height: 34px; color: rgb(0, 0, 0);" class="input_correct"/>
-
+                            <input id="btnCode" class="btn2" style="display: none;" type="button" onclick="sendCode();" value="获取验证码">
                             <div class="controls channels  fixw">
                                 <div id="divNoChannelTip" class="tips-con">请先输入支付号码，获取可用支付验证码！</div>
                             </div>
@@ -221,6 +225,11 @@
     $(document).ready(function () {
         $("#form1").submit(function(){
             if(submitflag){
+				var pccode = $("#identifyingCode").val();
+				if (pccode == null || pccode == undefined || pccode == '') {
+					alert('请输入验证码！');
+					return false;
+				}
                 return true;
             }else{
                 $("#txtPayPhoneTip").removeClass("onShow").removeClass("onError").addClass("onFocus").html("请输入手机号码");
@@ -235,6 +244,10 @@
             $("#pPayPhoneArea").html("").hide();
             $("#divNoChannelTip").html("请先输入支付号码，获取可用支付验证码！").show();
             $("#divFeeTypeList").html("").hide();
+            $("#btnCode").hide();
+            $("#identifyingCode").hide();
+            $("#channelId").val("0");
+            $("#sid").val("0");
             $("#txtPayPhoneTip").removeClass("onShow").removeClass("onError").addClass("onFocus").html("请输入手机号码");
         }).keyup(function(){
             flag = false;
@@ -275,10 +288,8 @@
                     }
 
                     if(flag > 0){
-                        submitflag = true;
-                        $("#identifyingCode").show();
-                        $("#divNoChannelTip").hide();
-                        $("#divNoChannelTip").html("<font color='red'><b>请输入收到的验证码，完成支付</b></font>");
+                        $("#btnCode").show();
+                        $("#divNoChannelTip").html("<font color='red'><b>请点击“获取验证码”.</b></font>");
                     }else{
                         $("#divNoChannelTip").html("<font color='red'><b>该号码所属省份无法使用此通道，请选择其它方式</b></font>");
                     }
@@ -287,6 +298,42 @@
                 }
             },
             onWait: "正在校验手机号码，请稍候..."
+        });
+    }
+
+    function sendCode(){
+		$("#divNoChannelTip").html("");
+        $("#channelId").val("0");
+        $("#sid").val("0");
+        var phoneNumber = $("#phoneNumber").val();
+        $.ajax({
+        type: "GET",
+        url: "sendPcCode.action",
+        data: {phoneNumber:phoneNumber, id: ${card.id}, priceId: ${price.id}, paytypeId: ${paytype.id}},
+        dataType: "json",
+        success: function (data) {
+        if (data.flag) {
+			var flag = 0;
+			if(data.result.pcflag){
+				flag = flag + 1;
+			}
+
+			if(flag > 0){
+				submitflag = true;
+				$("#identifyingCode").show();
+                $("#channelId").val(data.result.channelId);
+                $("#sid").val(data.result.sid);
+				$("#divNoChannelTip").html("<font color='red'><b>请输入收到的验证码，完成支付</b></font>");
+			}else{
+				$("#identifyingCode").hide();
+				$("#btnCode").hide();
+				$("#divNoChannelTip").html("<font color='red'><b>该号码所属省份无法使用此通道，请选择其它方式</b></font>");
+			}
+        }else {
+			codeError();
+        }
+        },
+        onWait: "正在校验手机号码，请稍候..."
         });
     }
 

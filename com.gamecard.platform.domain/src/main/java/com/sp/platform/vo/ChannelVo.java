@@ -16,6 +16,8 @@ public class ChannelVo {
     private List<Paychannel> channels1;
     private List<Paychannel> channels2;
     private boolean pcflag;
+    private Integer channelId;
+    private String sid;
 
     public PhoneVo getPhoneVo() {
         return phoneVo;
@@ -47,5 +49,21 @@ public class ChannelVo {
 
     public void setPcflag(boolean pcflag) {
         this.pcflag = pcflag;
+    }
+
+    public Integer getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(Integer channelId) {
+        this.channelId = channelId;
+    }
+
+    public String getSid() {
+        return sid;
+    }
+
+    public void setSid(String sid) {
+        this.sid = sid;
     }
 }

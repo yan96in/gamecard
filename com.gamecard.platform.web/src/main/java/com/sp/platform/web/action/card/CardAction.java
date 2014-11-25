@@ -2,10 +2,7 @@ package com.sp.platform.web.action.card;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sp.platform.cache.HaoduanCache;
-import com.sp.platform.entity.Card;
-import com.sp.platform.entity.Paychannel;
-import com.sp.platform.entity.Paytype;
-import com.sp.platform.entity.Price;
+import com.sp.platform.entity.*;
 import com.sp.platform.service.*;
 import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.vo.ChannelVo;
@@ -45,6 +42,8 @@ public class CardAction extends ActionSupport {
     @Autowired
     private PaychannelService paychannelService;
     @Autowired
+    private PcCardLogService pcCardLogService;
+    @Autowired
     private IvrChannelService ivrChannelService;
     @Autowired
     private PropertyUtils propertyUtils;
@@ -63,6 +62,9 @@ public class CardAction extends ActionSupport {
     private Integer paytypeId;
     private Integer channelId;
     private String phoneNumber;
+    private String identifyingCode;
+    private String sid;
+    private PcCardLog pcCardLog;
 
     @Action("main")
     public String main() {
@@ -178,6 +180,33 @@ public class CardAction extends ActionSupport {
             result = new JsonVo(true, channelVo, "");
         }
         Struts2Utils.renderJson(result);
+    }
+
+    @Action("sendPcCode")
+    public void sendPcCode() {
+        JsonVo result = null;
+        if (StringUtils.isBlank(phoneNumber)) {
+            result = new JsonVo(false, "请输入正确的手机号码");
+        } else {
+            if (paytypeId.equals(19) && !checkChinamobile()) {
+                result = new JsonVo(false, "请输入正确的手机号码");
+                Struts2Utils.renderJson(result);
+                return;
+            }
+            PhoneVo phone = new PhoneVo(phoneNumber,
+                    HaoduanCache.getProvince(phoneNumber), HaoduanCache.getCity(phoneNumber));
+
+            channelVo = paychannelService.sendPcCode(id, priceId, paytypeId, phone.getProvince(), phoneNumber);
+            channelVo.setPhoneVo(phone);
+            result = new JsonVo(true, channelVo, "");
+        }
+        Struts2Utils.renderJson(result);
+    }
+
+    @Action("getPcCard")
+    public String getPcCard() {
+        pcCardLog = pcCardLogService.getPcCard(id, priceId, phoneNumber, identifyingCode, sid);
+        return "pccard";
     }
 
     private boolean checkChinaunicom() {
@@ -330,5 +359,29 @@ public class CardAction extends ActionSupport {
 
     public void setPhoneVo(PhoneVo phoneVo) {
         this.phoneVo = phoneVo;
+    }
+
+    public String getIdentifyingCode() {
+        return identifyingCode;
+    }
+
+    public void setIdentifyingCode(String identifyingCode) {
+        this.identifyingCode = identifyingCode;
+    }
+
+    public String getSid() {
+        return sid;
+    }
+
+    public void setSid(String sid) {
+        this.sid = sid;
+    }
+
+    public PcCardLog getPcCardLog() {
+        return pcCardLog;
+    }
+
+    public void setPcCardLog(PcCardLog pcCardLog) {
+        this.pcCardLog = pcCardLog;
     }
 }

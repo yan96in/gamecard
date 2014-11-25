@@ -1,10 +1,13 @@
 package com.sp.platform.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.sp.platform.cache.HaoduanCache;
 import com.sp.platform.common.PageView;
 import com.sp.platform.dao.PaychannelDao;
 import com.sp.platform.entity.Paychannel;
+import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.service.PaychannelService;
+import com.sp.platform.service.PcCardLogService;
 import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.vo.ChannelVo;
@@ -40,7 +43,8 @@ public class PaychannelServiceImpl implements PaychannelService {
     private PaychannelDao paychannelDao;
     @Autowired
     private PropertyUtils propertyUtils;
-
+    @Autowired
+    private PcCardLogService pcCardLogService;
     @Override
     public Paychannel get(int id) {
         return paychannelDao.get(id);
@@ -70,12 +74,23 @@ public class PaychannelServiceImpl implements PaychannelService {
 
     public ChannelVo findPcChannels(int cardId, int priceId, int paytypeId, String province, String phone) {
         ChannelVo chanels = new ChannelVo();
+        List<Paychannel> paychannels = find(cardId, priceId, paytypeId, 1, province);
+        chanels.setPcflag(!CollectionUtils.isEmpty(paychannels));
+        return chanels;
+    }
 
+    public ChannelVo sendPcCode(int cardId, int priceId, int paytypeId, String province, String phone) {
+        ChannelVo chanels = new ChannelVo();
+        int fee = 0;
+        String resultCode = null;
+        String resultMessage = null;
+        String sid = null;
         List<Paychannel> paychannels = find(cardId, priceId, paytypeId, 1, province);
         if (!CollectionUtils.isEmpty(paychannels)) {
             try {
                 Paychannel paychannel = paychannels.get(0);
-                int fee = paychannel.getFee();
+                chanels.setChannelId(paychannel.getId());
+                fee = paychannel.getFee();
                 HttpClient httpClient = new DefaultHttpClient();
                 String resource = propertyUtils.getProperty("pc.pay.url") +
                         "?uid=" + phone + "&bid=" + fee + "&ext=test";
@@ -84,12 +99,28 @@ public class PaychannelServiceImpl implements PaychannelService {
                 String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
                 LogEnum.DEFAULT.info(body);
                 PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
-                if ("0".equals(resultVo.getResultCode())) {
+                resultCode = resultVo.getResultCode();
+                resultMessage = resultVo.getResultMsg();
+                sid = resultVo.getSid();
+                if ("0".equals(resultCode)) {
                     chanels.setPcflag(true);
+                    chanels.setSid(sid);
                     return chanels;
                 }
             } catch (Exception e) {
                 LogEnum.TEMP.error("调用空中网PC网游接口Step1 Error：", e);
+            } finally {
+                PcCardLog pcCardLog = new PcCardLog();
+                pcCardLog.setMobile(phone);
+                pcCardLog.setProvince(province);
+                pcCardLog.setCity(HaoduanCache.getCity(phone));
+                pcCardLog.setCardId(cardId);
+                pcCardLog.setPriceId(priceId);
+                pcCardLog.setFee(fee);
+                pcCardLog.setResultcode(resultCode);
+                pcCardLog.setResultmsg(resultMessage);
+                pcCardLog.setSid(sid);
+                pcCardLogService.save(pcCardLog);
             }
         }
         chanels.setPcflag(false);

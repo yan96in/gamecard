@@ -145,6 +145,7 @@ body{min-width: 980px;font: 12px/1.6 Tahoma, '\5b8b\4f53', Arial, Helvetica, san
 .btn-con{padding-top: 15px;}
 .btn-con a{font-size: 14px;}
 .btn{min-width:120px;height:41px;margin:0 30px 0 126px;padding:0 15px; line-height:38px;/*text-indent: -999em;*/color:#fff;font-size:16px;font-weight:700;border:1px solid #005096;border-radius:2px;cursor:pointer; background-color:#085ca6; background-repeat:repeat-x;}
+.btn2{min-width:80px;height:35px;margin:0 30px 0 12px;line-height:33px;color:#fff;font-size:12px;font-weight:700;border:1px solid #005096;border-radius:2px;cursor:pointer; background-color:#085ca6; background-repeat:repeat-x;}
 .btn:hover{box-shadow:0 0 2px rgba(0,80,150,1); background-position:0 -40px;}
 .sub-con .btn{ margin-left:0;}
 /*------- tips box -------*/

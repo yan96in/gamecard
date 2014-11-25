@@ -899,3 +899,25 @@ INSERT INTO `tbl_user_card_log` VALUES (10,'18389004712','其他','其他','22',
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+CREATE TABLE `tbl_user_pc_card_log` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `mobile` varchar(20) DEFAULT NULL,
+  `province` varchar(20) DEFAULT NULL,
+  `city` varchar(50) DEFAULT NULL,
+  `channelid` varchar(20) DEFAULT NULL,
+  `cardId` int(11) DEFAULT NULL,
+  `priceId` int(11) DEFAULT NULL,
+  `fee` int(11) DEFAULT NULL,
+  `ext` varchar(255) DEFAULT NULL,
+  `resultcode` varchar(5) DEFAULT NULL COMMENT '0:成功 其它失败',
+  `resultmsg` varchar(100) DEFAULT NULL,
+  `sid` varchar(100) DEFAULT NULL,
+  `cardno` varchar(100) DEFAULT NULL,
+  `cardpwd` varchar(100) DEFAULT NULL,
+  `btime` datetime DEFAULT NULL,
+  `etime` datetime DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `ind_bill_btime` (`btime`),
+  KEY `ind_bill_mobile` (`mobile`),
+  KEY `ind_bill_province` (`province`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
