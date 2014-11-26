@@ -107,7 +107,7 @@
     <ol class="steps clearfix">
         <li>1、提交订单</li>
         <li>2、选择支付通道</li>
-        <li class="on">3、通道详情</li>
+        <li class="on">3、获取点卡</li>
     </ol>
     <ul class="order-info">
         <li>
