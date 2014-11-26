@@ -4,6 +4,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sp.platform.cache.HaoduanCache;
 import com.sp.platform.entity.*;
 import com.sp.platform.service.*;
+import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.vo.ChannelVo;
 import com.sp.platform.vo.JsonVo;
@@ -31,6 +32,7 @@ import java.util.List;
         @Result(name = "select", location = "select.jsp"),
         @Result(name = "ivr", location = "ivr.jsp"),
         @Result(name = "pc", location = "pc.jsp"),
+        @Result(name = "pccard", location = "pccard.jsp"),
         @Result(name = "channel", location = "channel.jsp")})
 public class CardAction extends ActionSupport {
     @Autowired
@@ -65,6 +67,7 @@ public class CardAction extends ActionSupport {
     private String identifyingCode;
     private String sid;
     private PcCardLog pcCardLog;
+    private String message;
 
     @Action("main")
     public String main() {
@@ -101,10 +104,10 @@ public class CardAction extends ActionSupport {
         }
         paytype = paytypeService.get(paytypeId);
 
-        if(StringUtils.indexOf(propertyUtils.getProperty("ivr.paytype"), paytypeId.toString()) >= 0){
+        if (StringUtils.indexOf(propertyUtils.getProperty("ivr.paytype"), paytypeId.toString()) >= 0) {
             list = ivrChannelService.find(id, priceId, paytypeId);
             return "ivr";
-        } else if(StringUtils.indexOf(propertyUtils.getProperty("pc.paytype"), paytypeId.toString()) >= 0){
+        } else if (StringUtils.indexOf(propertyUtils.getProperty("pc.paytype"), paytypeId.toString()) >= 0) {
             return "pc";
         }
 
@@ -205,7 +208,18 @@ public class CardAction extends ActionSupport {
 
     @Action("getPcCard")
     public String getPcCard() {
-        pcCardLog = pcCardLogService.getPcCard(id, priceId, phoneNumber, identifyingCode, sid);
+        try {
+            pcCardLog = pcCardLogService.getPcCard(id, priceId, phoneNumber, identifyingCode, sid);
+            if(pcCardLog == null){
+                message = "取卡失败， 请联系客服";
+            }
+        } catch (Exception e) {
+            LogEnum.DEFAULT.error(e.toString());
+            message = e.getMessage();
+        }
+        card = cardService.get(id);
+        price = priceService.get(priceId);
+        paytype = paytypeService.get(paytypeId);
         return "pccard";
     }
 
@@ -383,5 +397,13 @@ public class CardAction extends ActionSupport {
 
     public void setPcCardLog(PcCardLog pcCardLog) {
         this.pcCardLog = pcCardLog;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

@@ -11,6 +11,8 @@ public class PcVo1 {
     private String sid;
     private String resultCode;
     private String resultMsg;
+    private String price;
+    private String ext;
 
     public String getSid() {
         return sid;
@@ -34,5 +36,21 @@ public class PcVo1 {
 
     public void setResultMsg(String resultMsg) {
         this.resultMsg = resultMsg;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getExt() {
+        return ext;
+    }
+
+    public void setExt(String ext) {
+        this.ext = ext;
     }
 }

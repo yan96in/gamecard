@@ -120,6 +120,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                 pcCardLog.setResultcode(resultCode);
                 pcCardLog.setResultmsg(resultMessage);
                 pcCardLog.setSid(sid);
+                pcCardLog.setStatus(1);
                 pcCardLogService.save(pcCardLog);
             }
         }

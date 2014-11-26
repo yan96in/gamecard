@@ -10,5 +10,5 @@ import com.sp.platform.entity.PcCardLog;
  * To change this template use File | Settings | File Templates.
  */
 public interface PcCardLogService extends AbstractService<PcCardLog> {
-    public PcCardLog getPcCard(int cardId, int priceId, String phone, String code, String sid);
+    public PcCardLog getPcCard(int cardId, int priceId, String phone, String code, String sid) throws Exception;
 }

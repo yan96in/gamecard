@@ -24,6 +24,7 @@ public class PcCardLog {
     private String sid;
     private String cardno;
     private String cardpwd;
+    private int status;
     private Date btime;
     private Date etime;
 
@@ -157,6 +158,14 @@ public class PcCardLog {
         this.etime = etime;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "PcCardLog{" +
@@ -174,6 +183,7 @@ public class PcCardLog {
                 ", sid='" + sid + '\'' +
                 ", cardno='" + cardno + '\'' +
                 ", cardpwd='" + cardpwd + '\'' +
+                ", status='" + status + '\'' +
                 ", btime=" + btime +
                 ", etime=" + etime +
                 '}';
