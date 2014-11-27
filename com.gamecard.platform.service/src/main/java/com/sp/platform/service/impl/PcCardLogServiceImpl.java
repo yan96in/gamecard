@@ -1,12 +1,14 @@
 package com.sp.platform.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.sp.platform.common.Constants;
 import com.sp.platform.common.PageView;
 import com.sp.platform.dao.PcCardLogDao;
 import com.sp.platform.entity.CardPassword;
 import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.service.CardPasswordService;
 import com.sp.platform.service.PcCardLogService;
+import com.sp.platform.util.CacheCheckUser;
 import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.vo.PcVo1;
@@ -44,6 +46,8 @@ public class PcCardLogServiceImpl implements PcCardLogService {
     private PropertyUtils propertyUtils;
     @Autowired
     private CardPasswordService cardPasswordService;
+    @Autowired
+    private CacheCheckUser cacheCheckUser;
     @Override
     public PcCardLog get(int id) {
         return pcCardLogDao.get(id);
@@ -97,6 +101,8 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 CardPassword card = cardPasswordService.getUserCard(cardId, priceId);
                 pcCardLog.setCardno(card.getCardno());
                 pcCardLog.setCardpwd(card.getPassword());
+                cacheCheckUser.addCallerFee(pcCardLog.getMobile() + Constants.split_str + "pc", pcCardLog.getFee());
+                cacheCheckUser.addCalledProvinceFee(pcCardLog.getProvince() + Constants.split_str + "pc", pcCardLog.getFee(), false);
                 pcCardLogDao.save(pcCardLog);
                 return pcCardLog;
             } else {

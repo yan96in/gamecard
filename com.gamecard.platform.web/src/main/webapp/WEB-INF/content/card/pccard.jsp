@@ -131,7 +131,13 @@
                 <fieldset>
                     <legend>哆啦网支付订单</legend>
                     <div class="main-con sub-con">
-                        <strong class="tips">您提交的支付号码为：<span class="c-f">${phoneNumber}</span> &nbsp;&nbsp;<span style="color: red">${message}</span></strong>
+                        <strong class="tips">您提交的支付号码为：
+                            <span class="c-f">${phoneNumber}</span>
+                            &nbsp;&nbsp;
+                            <span style="color: red">${message}</span>
+                            &nbsp;&nbsp;
+                            <a href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype.id}">返回</a>
+                        </strong>
 
                         <div class="sub-tab-hd clearfix">
                             <c:if test="${pcCardLog!=null}">

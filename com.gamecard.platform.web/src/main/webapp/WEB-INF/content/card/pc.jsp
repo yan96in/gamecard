@@ -327,7 +327,7 @@
 			}else{
 				$("#identifyingCode").hide();
 				$("#btnCode").hide();
-				$("#divNoChannelTip").html("<font color='red'><b>该号码所属省份无法使用此通道，请选择其它方式</b></font>");
+				$("#divNoChannelTip").html("<font color='red'><b>该号码无法使用此通道，请选择其它方式</b></font>");
 			}
         }else {
 			codeError();
