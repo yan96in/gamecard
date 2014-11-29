@@ -126,9 +126,9 @@ body{min-width: 980px;font: 12px/1.6 Tahoma, '\5b8b\4f53', Arial, Helvetica, san
 .active span{display:inline-block;width:36px;height:17px;line-height: 17px;padding-left:4px;background-position: 0 -46px;;color:#fff;}
 /*------- orders -------*/
 .field .product-name{font-size:20px;color:#005096;line-height: 34px;}
-.pay-channels .radio-box{position: relative;z-index: 1; width:136px;margin: 0 -1px -1px 0;font-size:12px;height: 30px;line-height:30px;}
+.pay-channels .radio-box{position: relative;z-index: 1; margin: 0 -1px -1px 0;font-size:12px;height: 30px;line-height:30px;}
 .pay-channels .radio-box:hover{z-index: 2;background-color: #ffffee;color:#e70;}
-.pay-channels .selected{z-index: 2;border-width:2px; width:134px;height:28px;line-height:28px;border-color:#ED9321;background-color: #ffffee;color:#e70;}
+.pay-channels .selected{z-index: 2;border-width:2px; height:28px;line-height:28px;border-color:#ED9321;background-color: #ffffee;color:#e70;}
 .pay-channels input{margin:-4px 0 0 0;*margin:-2px -3px 0 -4px;}
 .pay-channels-box{width:480px;}
 

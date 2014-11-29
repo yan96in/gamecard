@@ -16,6 +16,15 @@ public class Paytype extends BaseEntity{
     private String name;
     private String img;
     private String description;
+    private int sort;
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
 
     public String getName() {
         return name;
