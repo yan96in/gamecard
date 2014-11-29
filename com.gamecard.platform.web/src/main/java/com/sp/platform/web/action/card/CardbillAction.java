@@ -13,6 +13,7 @@ import com.yangl.common.hibernate.PaginationSupport;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.convention.annotation.*;
 import org.hibernate.criterion.Order;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
@@ -92,9 +93,12 @@ public class CardbillAction extends ActionSupport {
     public String userBill() {
         if (StringUtils.isEmpty(pageView.getBtime()) || StringUtils.isEmpty(pageView.getEtime())) {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            String shj = format.format(new Date());
-            pageView.setBtime(shj);
+            DateTime dateTime = new DateTime();
+            String shj = format.format(dateTime.toDate());
             pageView.setEtime(shj);
+            dateTime = dateTime.plusDays(-360);
+            shj = format.format(dateTime.toDate());
+            pageView.setBtime(shj);
         }
         String[] sj = TimeUtils.chuli(pageView.getBtime(), pageView.getEtime());
         pageView.setBtime(sj[0]);

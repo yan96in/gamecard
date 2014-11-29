@@ -100,6 +100,7 @@
                             <tr height="20">
                                 <th width="3%" class="left_bt2">ID</th>
                                 <th width="8%" class="left_bt2">用户号码</th>
+                                <th width="8%" class="left_bt2">省市</th>
                                 <th width="8%" class="left_bt2">长号码</th>
                                 <th width="8%" class="left_bt2">指令</th>
                                 <th width="8%" class="left_bt2">上行时间</th>
@@ -111,6 +112,7 @@
                                 <tr class='t2'>
                                     <td>${bean.id}</td>
                                     <td>${bean.mobile}</td>
+                                    <td>${bean.province}-${bean.city}</td>
                                     <td>${bean.spnum}</td>
                                     <td>${bean.msg}</td>
                                     <td>${bean.btime}</td>
@@ -157,8 +159,7 @@
                                 <th width="8%" class="left_bt2">点卡类型</th>
                                 <th width="8%" class="left_bt2">卡号-密码</th>
                                 <th width="8%" class="left_bt2">smsId</th>
-                                <th width="8%" class="left_bt2">外呼</th>
-                                <th width="8%" class="left_bt2">企信通</th>
+                                <th width="8%" class="left_bt2">外部地址</th>
                                 <th width="8%" class="left_bt2">状态</th>
                             </tr>
                             <s:iterator value="list2" id="bean">
@@ -166,11 +167,13 @@
                                     <td>${bean.id}</td>
                                     <td>${bean.mobile}</td>
                                     <td>${bean.province}-${bean.city}</td>
-                                    <td>${bean.cardId}-${bean.priceId}</td>
+                                    <td><s:property value="@com.sp.platform.cache.CardCache@getCard(#bean.cardId).name"/>-<s:property value="@com.sp.platform.cache.CardCache@getPrice(#bean.priceId).description"/>  </td>
                                     <td>${bean.cardno}-${bean.cardpwd}</td>
                                     <td>${bean.smsids}</td>
-                                    <td>${bean.callouturl}</td>
-                                    <td>${bean.sendcardurl}</td>
+                                    <td>
+                                        ${bean.callouturl}<br>
+                                        ${bean.sendcardurl}
+                                    </td>
                                     <td>${bean.flag}</td>
                                 </tr>
                             </s:iterator>
