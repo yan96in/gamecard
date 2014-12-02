@@ -96,7 +96,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
             String resultCode = resultVo.getResultCode();
             sid = resultVo.getSid();
             pcCardLog.setEtime(new Date());
-            if ("0".equals(resultCode)) {
+            if (propertyUtils.getProperty("pc.success.result", "200000").equals(resultCode)) {
                 pcCardLog.setStatus(2);
                 CardPassword card = cardPasswordService.getUserCard(cardId, priceId);
                 pcCardLog.setCardno(card.getCardno());

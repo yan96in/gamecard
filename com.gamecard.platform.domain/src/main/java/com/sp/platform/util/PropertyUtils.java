@@ -18,6 +18,10 @@ public class PropertyUtils {
 		return messageSource.getMessage(key, null, default_val, Locale.CHINA).trim();
 	}
 
+    public String getProperty(String key, String defaultValue) {
+        return messageSource.getMessage(key, null, defaultValue, Locale.CHINA).trim();
+    }
+
 	public int getInteger(String key) {
 		return getInteger(key, 0);
 	}
