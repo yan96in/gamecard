@@ -148,14 +148,14 @@ public class CardAction extends ActionSupport {
             result = new JsonVo(false, "请输入正确的手机号码");
         } else {
             if (paytypeId.equals(16) && !checkChinamobile()) {
-                result = new JsonVo(false, "请输入正确的手机号码");
+                result = new JsonVo(false, "请输入正确的移动手机号码");
                 Struts2Utils.renderJson(result);
                 return;
-            } else if (paytypeId.equals(18) && !checkChintelecom()) {
-                result = new JsonVo(false, "请输入正确的手机号码");
+            } else if (paytypeId.equals(18) && !checkChinaunicom()) {
+                result = new JsonVo(false, "请输入正确的联通手机号码");
                 Struts2Utils.renderJson(result);
                 return;
-            } else if (paytypeId.equals(17) && !checkChinaunicom()) {
+            } else if (paytypeId.equals(22) && !checkChintelecom()) {
                 result = new JsonVo(false, "请输入正确的手机号码");
                 Struts2Utils.renderJson(result);
                 return;
@@ -177,7 +177,11 @@ public class CardAction extends ActionSupport {
             result = new JsonVo(false, "请输入正确的手机号码");
         } else {
             if (paytypeId.equals(19) && !checkChinamobile()) {
-                result = new JsonVo(false, "请输入正确的手机号码");
+                result = new JsonVo(false, "请输入正确的移动手机号码");
+                Struts2Utils.renderJson(result);
+                return;
+            } else if (paytypeId.equals(20) && !checkChinaunicom()) {
+                result = new JsonVo(false, "请输入正确的联通手机号码");
                 Struts2Utils.renderJson(result);
                 return;
             }
@@ -199,7 +203,11 @@ public class CardAction extends ActionSupport {
             result = new JsonVo(false, "请输入正确的手机号码");
         } else {
             if (paytypeId.equals(19) && !checkChinamobile()) {
-                result = new JsonVo(false, "请输入正确的手机号码");
+                result = new JsonVo(false, "请输入正确的移动手机号码");
+                Struts2Utils.renderJson(result);
+                return;
+            } else if (paytypeId.equals(20) && !checkChinaunicom()) {
+                result = new JsonVo(false, "请输入正确的联通手机号码");
                 Struts2Utils.renderJson(result);
                 return;
             }
@@ -298,7 +306,7 @@ public class CardAction extends ActionSupport {
         try {
             boolean limitflg = checkLimit(phoneNumber, HaoduanCache.getProvince(phoneNumber));
             if(limitflg){
-                pcCardLog = pcCardLogService.getPcCard(id, priceId, phoneNumber, identifyingCode, sid);
+                pcCardLog = pcCardLogService.getPcCard(id, priceId, phoneNumber, identifyingCode, sid, paytypeId);
                 if(pcCardLog == null){
                     message = "取卡失败， 请联系客服";
                 }
@@ -307,7 +315,7 @@ public class CardAction extends ActionSupport {
             }
         } catch (Exception e) {
             LogEnum.DEFAULT.error(e.toString());
-            message = e.getMessage();
+            message = e.getMessage() + " 请联系客服";
         }
         card = cardService.get(id);
         price = priceService.get(priceId);

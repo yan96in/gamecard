@@ -74,45 +74,65 @@ public class PcCardLogServiceImpl implements PcCardLogService {
     }
 
     @Override
-    public PcCardLog getPcCard(int cardId, int priceId, String phone, String code, String sid) throws Exception {
+    public PcCardLog getPcCard(int cardId, int priceId, String phone, String code, String sid, int paytypeId) throws Exception {
         DetachedCriteria dc = DetachedCriteria.forClass(PcCardLog.class);
         dc.add(Restrictions.eq("sid", sid));
         dc.add(Restrictions.eq("cardId", cardId));
         dc.add(Restrictions.eq("mobile", phone));
         List<PcCardLog> list = pcCardLogDao.findByCriteria(dc);
+        String resultCode = null;
         if(CollectionUtils.isNotEmpty(list)){
             PcCardLog pcCardLog = list.get(0);
             if(StringUtils.isNotBlank(pcCardLog.getCardno())){
                 return pcCardLog;
             }
             HttpClient httpClient = new DefaultHttpClient();
-            String resource = propertyUtils.getProperty("pc.order.url") +
-                    "?sid=" + sid + "&vid=" + code + "&payid=test&amount=" + pcCardLog.getFee();
-            HttpGet get = new HttpGet(resource);
-            HttpResponse httpResponse = httpClient.execute(get);
-            String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
-            LogEnum.DEFAULT.info(body);
-            PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
-            String resultCode = resultVo.getResultCode();
-            sid = resultVo.getSid();
+            if(paytypeId == 19){
+                String resource = propertyUtils.getProperty("pc.order.url") +
+                        "?sid=" + sid + "&vid=" + code + "&payid=test&amount=" + pcCardLog.getFee();
+                HttpGet get = new HttpGet(resource);
+                HttpResponse httpResponse = httpClient.execute(get);
+                String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
+                LogEnum.DEFAULT.info(body);
+                PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
+                resultCode = resultVo.getResultCode();
+                sid = resultVo.getSid();
+            } else if(paytypeId == 20){
+                String resource = propertyUtils.getProperty("pc.lt.order.url") +
+                        "?sid=" + sid + "&vcode=" + code;
+                HttpGet get = new HttpGet(resource);
+                HttpResponse httpResponse = httpClient.execute(get);
+                String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
+                LogEnum.DEFAULT.info(body);
+                PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
+                resultCode = resultVo.getResultCode();
+            }
             pcCardLog.setEtime(new Date());
-            if (propertyUtils.getProperty("pc.success.result", "200000").equals(resultCode)) {
-                pcCardLog.setStatus(2);
-                CardPassword card = cardPasswordService.getUserCard(cardId, priceId);
-                pcCardLog.setCardno(card.getCardno());
-                pcCardLog.setCardpwd(card.getPassword());
+            if ((propertyUtils.getProperty("pc.success.result", "200000").equals(resultCode))
+                    || (propertyUtils.getProperty("pc.lt.success.result", "200000").equals(resultCode))) {
                 cacheCheckUser.addCallerFee(pcCardLog.getMobile() + Constants.split_str + "pc", pcCardLog.getFee());
                 cacheCheckUser.addCalledProvinceFee(pcCardLog.getProvince() + Constants.split_str + "pc", pcCardLog.getFee(), false);
+
+                CardPassword card = cardPasswordService.getUserCard(cardId, priceId);
+                if(card == null){
+                    pcCardLog.setStatus(3);
+                    pcCardLogDao.save(pcCardLog);
+                    throw new RuntimeException("取卡失败 sid=" + sid );
+                }
+
+                pcCardLog.setStatus(2);
+                pcCardLog.setCardno(card.getCardno());
+                pcCardLog.setCardpwd(card.getPassword());
                 pcCardLogDao.save(pcCardLog);
                 return pcCardLog;
             } else {
                 pcCardLog.setResultcode(resultCode);
                 pcCardLog.setStatus(0);
                 pcCardLogDao.save(pcCardLog);
-                throw new RuntimeException("计费失败");
+                throw new RuntimeException("计费失败 sid=" + sid );
             }
         } else {
-            throw new RuntimeException("参数有误");
+            throw new RuntimeException("参数有误 sid=" + sid );
         }
     }
 }

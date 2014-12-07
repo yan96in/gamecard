@@ -109,6 +109,7 @@ public class UserCardLogServiceImpl implements UserCardLogSerivce {
     @Override
     public List getCardCount() {
         List<CardVo> list = userCardLogDao.getCardCount();
+
         if(list != null && list.size() > 0){
             for(CardVo cardVo : list){
                 cardVo.setCardName(CardCache.getCard(cardVo.getCardId()).getName());

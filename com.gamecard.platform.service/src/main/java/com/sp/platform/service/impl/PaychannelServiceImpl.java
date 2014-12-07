@@ -15,7 +15,9 @@ import com.sp.platform.vo.PcVo1;
 import com.yangl.common.hibernate.PaginationSupport;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -27,6 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,6 +50,7 @@ public class PaychannelServiceImpl implements PaychannelService {
     private PropertyUtils propertyUtils;
     @Autowired
     private PcCardLogService pcCardLogService;
+
     @Override
     public Paychannel get(int id) {
         return paychannelDao.get(id);
@@ -92,20 +98,43 @@ public class PaychannelServiceImpl implements PaychannelService {
                 chanels.setChannelId(paychannel.getId());
                 fee = paychannel.getFee();
                 HttpClient httpClient = new DefaultHttpClient();
-                String resource = propertyUtils.getProperty("pc.pay.url") +
-                        "?uid=" + phone + "&bid=" + fee + "&ext=test";
-                HttpGet get = new HttpGet(resource);
-                HttpResponse httpResponse = httpClient.execute(get);
-                String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
-                LogEnum.DEFAULT.info(body);
-                PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
-                resultCode = resultVo.getResultCode();
-                resultMessage = resultVo.getResultMsg();
-                sid = resultVo.getSid();
-                if ("0".equals(resultCode)) {
-                    chanels.setPcflag(true);
-                    chanels.setSid(sid);
-                    return chanels;
+                if (paytypeId == 19) {
+                    String resource = propertyUtils.getProperty("pc.pay.url") +
+                            "?uid=" + phone + "&bid=" + fee + "&ext=test";
+                    HttpGet get = new HttpGet(resource);
+                    HttpResponse httpResponse = httpClient.execute(get);
+                    if (HttpStatus.SC_OK == httpResponse.getStatusLine().getStatusCode()) {
+                        String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
+                        LogEnum.DEFAULT.info(body);
+                        PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
+                        resultCode = resultVo.getResultCode();
+                        resultMessage = resultVo.getResultMsg();
+                        sid = resultVo.getSid();
+                        if ("0".equals(resultCode)) {
+                            chanels.setPcflag(true);
+                            chanels.setSid(sid);
+                            return chanels;
+                        }
+                    }
+                } else if (paytypeId == 20) {
+                    String resource = propertyUtils.getProperty("pc.lt.pay.url") +
+                            "?uid=" + phone + "&bid=" + fee;
+                    HttpGet get = new HttpGet(resource);
+                    HttpResponse httpResponse = httpClient.execute(get);
+                    if (HttpStatus.SC_OK == httpResponse.getStatusLine().getStatusCode()) {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+
+                        resultCode = reader.readLine();
+                        if(StringUtils.isNotBlank(resource) && resultCode.indexOf(":") >=0){
+                            resultCode = resultCode.split(":")[1];
+                        }
+                        if ("1".equals(resultCode)) {
+                            chanels.setPcflag(true);
+                            sid = reader.readLine().split(":")[1];
+                            chanels.setSid(sid);
+                            return chanels;
+                        }
+                    }
                 }
             } catch (Exception e) {
                 LogEnum.TEMP.error("调用空中网PC网游接口Step1 Error：", e);
@@ -121,6 +150,8 @@ public class PaychannelServiceImpl implements PaychannelService {
                 pcCardLog.setResultmsg(resultMessage);
                 pcCardLog.setSid(sid);
                 pcCardLog.setStatus(1);
+                pcCardLog.setBtime(new Date());
+                pcCardLog.setEtime(new Date());
                 pcCardLogService.save(pcCardLog);
             }
         }

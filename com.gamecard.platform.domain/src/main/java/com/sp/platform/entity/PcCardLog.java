@@ -24,6 +24,9 @@ public class PcCardLog {
     private String sid;
     private String cardno;
     private String cardpwd;
+    /**
+     * 0: 计费失败， 1：申请验证码成功， 2：下发点卡成功， 3：计费成功，取卡失败
+     */
     private int status;
     private Date btime;
     private Date etime;

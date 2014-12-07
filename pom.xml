@@ -60,11 +60,11 @@
     <repositories>
         <repository>
             <id>release</id>
-            <url>http://218.206.72.142:8081/nexus/content/repositories/releases/</url>
+            <url>http://115.29.37.75:8081/nexus/content/repositories/releases/</url>
         </repository>
         <repository>
             <id>snapshots</id>
-            <url>http://218.206.72.142:8081/nexus/content/repositories/snapshots/</url>
+            <url>http://115.29.37.75:8081/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
 

@@ -109,8 +109,9 @@ public class UserCardLogDao extends HibernateDaoUtil<UserCardLog, Integer> {
     }
 
     public List<CardVo> getCardCount() {
-        String sql = "select cardid,priceid,count(*) as counts " +
-                "from gw_card_password where state=0 group by 1,2 order by 1,2";
+        String sql = "select a.cardid,a.priceid,coalesce(b.counts,0) as counts from gc_card_price a left join (" +
+                "select cardid,priceid,count(*) as counts from gw_card_password where state=0 group by 1,2" +
+                ") b on a.cardid=b.cardid and a.priceid=b.priceid order by 1,2";
 
         LogEnum.DEFAULT.info(sql);
 

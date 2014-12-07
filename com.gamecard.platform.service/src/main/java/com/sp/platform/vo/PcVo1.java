@@ -1,5 +1,8 @@
 package com.sp.platform.vo;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * Created with IntelliJ IDEA.
  * User: mopdzz
@@ -7,6 +10,8 @@ package com.sp.platform.vo;
  * Time: 上午1:00
  * To change this template use File | Settings | File Templates.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class PcVo1 {
     private String sid;
     private String resultCode;
