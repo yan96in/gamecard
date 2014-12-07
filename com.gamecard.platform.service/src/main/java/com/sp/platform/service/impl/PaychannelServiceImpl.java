@@ -125,14 +125,24 @@ public class PaychannelServiceImpl implements PaychannelService {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
 
                         resultCode = reader.readLine();
-                        if(StringUtils.isNotBlank(resource) && resultCode.indexOf(":") >=0){
+                        LogEnum.DEFAULT.info(phone + " 联通申请指令返回1:" + resultCode);
+                        if (StringUtils.isNotBlank(resource) && resultCode.indexOf(":") >= 0) {
                             resultCode = resultCode.split(":")[1];
                         }
                         if ("1".equals(resultCode)) {
                             chanels.setPcflag(true);
-                            sid = reader.readLine().split(":")[1];
+                            String temp = reader.readLine();
+                            LogEnum.DEFAULT.info(phone + " 联通申请指令返回2:" + temp);
+                            sid = temp.split(":")[1];
                             chanels.setSid(sid);
                             return chanels;
+                        } else {
+                            int i = 2;
+                            String body = reader.readLine();
+                            while (StringUtils.isNotBlank(body)) {
+                                LogEnum.DEFAULT.info(phone + " 联通申请指令返回" + i++ + ":" + body);
+                                body = reader.readLine();
+                            }
                         }
                     }
                 }
