@@ -155,6 +155,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                 pcCardLog.setCity(HaoduanCache.getCity(phone));
                 pcCardLog.setCardId(cardId);
                 pcCardLog.setPriceId(priceId);
+                pcCardLog.setChannelid(String.valueOf(paytypeId));
                 pcCardLog.setFee(fee);
                 pcCardLog.setResultcode(resultCode);
                 pcCardLog.setResultmsg(resultMessage);
