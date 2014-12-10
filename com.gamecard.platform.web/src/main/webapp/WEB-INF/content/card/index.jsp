@@ -65,7 +65,7 @@
                     <div class="field">
                         <input type="hidden" id="cardId" name="id" value="${card.id}">
                         <label class="lab">商品名称：</label>
-                        <strong class="product-name">${card.name}${card.description}</strong>
+                        <strong class="product-name" style="font-size:25"><b>${card.name}</b></strong><strong class="product-name">${card.description}</strong>
                     </div>
                     <div class="field">
                         <label class="lab">选择商品面值：</label>
