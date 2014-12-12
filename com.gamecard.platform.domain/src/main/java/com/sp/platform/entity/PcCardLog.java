@@ -14,7 +14,7 @@ public class PcCardLog {
     private String mobile;
     private String province;
     private String city;
-    private String channelid;
+    private int channelid;
     private int cardId;
     private int priceId;
     private int fee;
@@ -65,11 +65,11 @@ public class PcCardLog {
         this.city = city;
     }
 
-    public String getChannelid() {
+    public int getChannelid() {
         return channelid;
     }
 
-    public void setChannelid(String channelid) {
+    public void setChannelid(int channelid) {
         this.channelid = channelid;
     }
 

@@ -190,7 +190,7 @@ public class CardAction extends ActionSupport {
 
             channelVo = paychannelService.findPcChannels(id, priceId, paytypeId, phone.getProvince(), phoneNumber);
             channelVo.setPhoneVo(phone);
-            channelVo.setPcflag(checkLimit(phoneNumber, phone.getProvince()));
+            channelVo.setPcflag(checkLimit(phoneNumber, phone.getProvince(), paytypeId));
             result = new JsonVo(true, channelVo, "");
         }
         Struts2Utils.renderJson(result);
@@ -214,8 +214,8 @@ public class CardAction extends ActionSupport {
             PhoneVo phone = new PhoneVo(phoneNumber,
                     HaoduanCache.getProvince(phoneNumber), HaoduanCache.getCity(phoneNumber));
 
-            boolean limitflg = checkLimit(phoneNumber, HaoduanCache.getProvince(phoneNumber));
-            if(!limitflg){
+            boolean limitflg = checkLimit(phoneNumber, HaoduanCache.getProvince(phoneNumber), paytypeId);
+            if (!limitflg) {
                 channelVo = new ChannelVo();
                 channelVo.setPcflag(false);
                 result = new JsonVo(true, channelVo, "");
@@ -230,22 +230,22 @@ public class CardAction extends ActionSupport {
         Struts2Utils.renderJson(result);
     }
 
-    private boolean checkLimit(String phoneNumber, String province) {
-        boolean flag = callerLimit(phoneNumber);
-        if(!flag){
+    private boolean checkLimit(String phoneNumber, String province, int paytypeId) {
+        boolean flag = callerLimit(phoneNumber, paytypeId);
+        if (!flag) {
             return false;
         }
-        return provinceLimit(province);
+        return provinceLimit(province, paytypeId);
     }
 
-    private boolean callerLimit(String phoneNumber) {
+    private boolean callerLimit(String phoneNumber, int paytypeId) {
         //----------------------------- 用户日上限 -----------------------
         //取日上限
-        int limitFee = propertyUtils.getInteger("pc.caller.day.limit", 30);
+        int limitFee = propertyUtils.getInteger("pc.caller.day.limit" + paytypeId, 30);
 
         int tempFee = cacheCheckUser.getCallerDayFee(phoneNumber + Constants.split_str + "pc");
 
-        if (limitFee > 0 && tempFee > limitFee) {
+        if (limitFee > 0 && tempFee >= limitFee) {
             LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
                     append("---- 超用户日上限 ").append(limitFee)
                     .append(",日费用：")
@@ -255,11 +255,11 @@ public class CardAction extends ActionSupport {
 
         //----------------------------- 用户月上限 -----------------------
         //取月上限
-        limitFee = propertyUtils.getInteger("pc.caller.month.limit", 104);
+        limitFee = propertyUtils.getInteger("pc.caller.month.limit" + paytypeId, 104);
 
         tempFee = cacheCheckUser.getCallerMonthFee(phoneNumber + Constants.split_str + "pc");
         //如果没有设置上限， 或者费用未达到上限，继续
-        if (limitFee > 0 && tempFee > limitFee) {
+        if (limitFee > 0 && tempFee >= limitFee) {
             LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
                     append("---- 超用户月上限 ").append(limitFee)
                     .append(",月费用：")
@@ -270,14 +270,14 @@ public class CardAction extends ActionSupport {
         return true;
     }
 
-    private boolean provinceLimit(String province) {
+    private boolean provinceLimit(String province, int paytypeId) {
         //----------------------------- 省份日上限 -----------------------
         //取省份日上限
-        int limitFee = propertyUtils.getInteger("pc.province.day.limit", 2000);
+        int limitFee = propertyUtils.getInteger("pc.province.day.limit" + paytypeId, 2000);
 
         int tempFee = cacheCheckUser.getCalledProvinceDayFee(province + Constants.split_str + "pc");
 
-        if (limitFee > 0 && tempFee > limitFee) {
+        if (limitFee > 0 && tempFee >= limitFee) {
             LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
                     append("---- 超省份日上限 ").append(limitFee)
                     .append(",日费用：")
@@ -286,11 +286,11 @@ public class CardAction extends ActionSupport {
         }
 
         //----------------------------- 省份月上限 -----------------------
-        limitFee = propertyUtils.getInteger("pc.province.month.limit", 50000);
+        limitFee = propertyUtils.getInteger("pc.province.month.limit" + paytypeId, 50000);
 
         tempFee = cacheCheckUser.getCalledProvinceMonthFee(province + Constants.split_str + "pc");
 
-        if (limitFee > 0 && tempFee > limitFee) {
+        if (limitFee > 0 && tempFee >= limitFee) {
             LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
                     append("---- 超省份月上限 ").append(limitFee)
                     .append(",月费用：")
@@ -304,10 +304,10 @@ public class CardAction extends ActionSupport {
     @Action("getPcCard")
     public String getPcCard() {
         try {
-            boolean limitflg = checkLimit(phoneNumber, HaoduanCache.getProvince(phoneNumber));
-            if(limitflg){
+            boolean limitflg = checkLimit(phoneNumber, HaoduanCache.getProvince(phoneNumber), paytypeId);
+            if (limitflg) {
                 pcCardLog = pcCardLogService.getPcCard(id, priceId, phoneNumber, identifyingCode, sid, paytypeId);
-                if(pcCardLog == null){
+                if (pcCardLog == null) {
                     message = "取卡失败， 请联系客服";
                 }
             } else {

@@ -23,6 +23,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +73,21 @@ public class PcCardLogServiceImpl implements PcCardLogService {
 
     @Override
     public PaginationSupport getPage(PaginationSupport page, Order[] orders, PageView pageView) {
-        return null;
+        DetachedCriteria dc = DetachedCriteria.forClass(PcCardLog.class);
+        DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        dc.add(Restrictions.ge("btime", DateTime.parse(pageView.getBtime(), format).toDate()));
+        dc.add(Restrictions.le("etime", DateTime.parse(pageView.getEtime(), format).toDate()));
+        if(StringUtils.isNotBlank(pageView.getCaller())){
+            dc.add(Restrictions.eq("mobile", pageView.getCaller()));
+        }
+        if(2 == pageView.getType()){
+            dc.add(Restrictions.eq("status", pageView.getType()));
+        }
+        if(pageView.getSpid() > 0){
+            dc.add(Restrictions.eq("channelid", pageView.getSpid()));
+        }
+        dc.addOrder(Order.desc("btime"));
+        return pcCardLogDao.findPageByCriteria(dc, page, orders);
     }
 
     @Override
@@ -93,7 +110,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 HttpGet get = new HttpGet(resource);
                 HttpResponse httpResponse = httpClient.execute(get);
                 String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
-                LogEnum.DEFAULT.info(body);
+                LogEnum.DEFAULT.info(body + " YD sid=" + sid);
                 PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
                 resultCode = resultVo.getResultCode();
                 sid = resultVo.getSid();
@@ -103,7 +120,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 HttpGet get = new HttpGet(resource);
                 HttpResponse httpResponse = httpClient.execute(get);
                 String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
-                LogEnum.DEFAULT.info(body);
+                LogEnum.DEFAULT.info(body + " LT sid=" + sid);
                 PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
                 resultCode = resultVo.getResultCode();
             }
