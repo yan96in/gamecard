@@ -11,6 +11,7 @@ import com.sp.platform.service.PcCardLogService;
 import com.sp.platform.util.CacheCheckUser;
 import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
+import com.sp.platform.vo.PcBillVo;
 import com.sp.platform.vo.PcVo1;
 import com.yangl.common.hibernate.PaginationSupport;
 import org.apache.commons.collections.CollectionUtils;
@@ -134,7 +135,8 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 if(card == null){
                     pcCardLog.setStatus(3);
                     pcCardLogDao.save(pcCardLog);
-                    throw new RuntimeException("取卡失败 sid=" + sid );
+                    LogEnum.DEFAULT.warn("取卡失败 sid=" + sid + " cardId=" + cardId + " priceId=" + priceId ) ;
+                    return null;
                 }
 
                 pcCardLog.setStatus(2);
@@ -146,10 +148,17 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 pcCardLog.setResultcode(resultCode);
                 pcCardLog.setStatus(0);
                 pcCardLogDao.save(pcCardLog);
-                throw new RuntimeException("计费失败 sid=" + sid );
+                LogEnum.DEFAULT.warn("计费失败 sid=" + sid + " resultCode=" + resultCode ) ;
+                return null;
             }
         } else {
-            throw new RuntimeException("参数有误 sid=" + sid );
+            LogEnum.DEFAULT.error("参数有误 sid=" + sid + " cardId=" + cardId  + " phone=" + phone ); ;
+            return null;
         }
+    }
+
+    @Override
+    public List<PcBillVo> getBillInfo(PageView pageView) {
+        return pcCardLogDao.getBillInfo(pageView);
     }
 }

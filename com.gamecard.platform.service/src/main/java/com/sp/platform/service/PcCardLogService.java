@@ -1,6 +1,10 @@
 package com.sp.platform.service;
 
+import com.sp.platform.common.PageView;
 import com.sp.platform.entity.PcCardLog;
+import com.sp.platform.vo.PcBillVo;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,4 +15,6 @@ import com.sp.platform.entity.PcCardLog;
  */
 public interface PcCardLogService extends AbstractService<PcCardLog> {
     public PcCardLog getPcCard(int cardId, int priceId, String phone, String code, String sid, int paytypeId) throws Exception;
+
+    List<PcBillVo> getBillInfo(PageView pageView);
 }

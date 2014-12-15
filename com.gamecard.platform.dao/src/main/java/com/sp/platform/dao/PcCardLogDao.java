@@ -1,20 +1,24 @@
 package com.sp.platform.dao;
 
+import com.sp.platform.common.GroupType;
 import com.sp.platform.common.PageView;
 import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.entity.UserCardLog;
 import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
+import com.sp.platform.util.TimeUtils;
+import com.sp.platform.vo.BillVo;
 import com.sp.platform.vo.CardVo;
+import com.sp.platform.vo.PcBillVo;
+import com.sp.platform.vo.SmsBillVo;
 import com.yangl.common.hibernate.HibernateDaoUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -75,6 +79,41 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
             return 0;
         }
         return Integer.parseInt(obj.toString());
+    }
+
+    public List<PcBillVo> getBillInfo(PageView pageView) {
+        String[] sj;
+        if (StringUtils.isNotBlank(pageView.getDate())) {
+            sj = TimeUtils.chuli(pageView.getDate(), pageView.getDate());
+        } else {
+            sj = TimeUtils.chuli(pageView.getBtime(), pageView.getEtime());
+        }
+        String kssj = sj[0];
+        String jssj = sj[1];
+
+        //  查询字段 --------------------------
+        String sql = "select left(btime, 10) date, cardid, priceid, count(*) num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
+        if(pageView.getSpid() > 0){
+            sql = sql + "and channelid=" + pageView.getSpid() + " ";
+        }
+        sql = sql + "and status in (2,3) group by left(btime, 10), cardid, priceid";
+
+        LogEnum.DEFAULT.info(sql);
+
+        Iterator<Map<String, Object>> result2 = jdbcTemplate.queryForList(sql).iterator();
+        Map<String, Object> map = null;
+        List<PcBillVo> list = new ArrayList<PcBillVo>();
+        while (result2.hasNext()) {
+            map = result2.next();
+            PcBillVo vo = new PcBillVo();
+            vo.setDate(map.get("date").toString());
+            vo.setCardid(map.get("cardid").toString());
+            vo.setPriceid(map.get("priceid").toString());
+            vo.setNum(map.get("num").toString());
+            vo.setFee(map.get("fee").toString());
+            list.add(vo);
+        }
+        return list;
     }
 
 }

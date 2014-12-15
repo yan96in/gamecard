@@ -1,9 +1,13 @@
 package com.sp.platform.web.action.card;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sp.platform.cache.CpSyncCache;
+import com.sp.platform.cache.SpInfoCache;
 import com.sp.platform.common.PageView;
 import com.sp.platform.service.PcCardLogService;
 import com.sp.platform.util.TimeUtils;
+import com.sp.platform.vo.PcBillVo;
+import com.sp.platform.vo.SmsBillVo;
 import com.yangl.common.Struts2Utils;
 import com.yangl.common.hibernate.PaginationSupport;
 import org.apache.commons.lang.StringUtils;
@@ -12,6 +16,7 @@ import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,7 +33,7 @@ import java.util.List;
 @Scope("prototype")
 @InterceptorRefs({@InterceptorRef("loginInterceptor")})
 @Results({
-        @Result(name = "userbill", location = "user_bill.jsp"),
+        @Result(name = "list", location = "bill_list.jsp"),
         @Result(name = "userbilllist", location = "user_bill_list.jsp"),
         @Result(name = "usercardlist", location = "user_card_list.jsp")})
 public class PccardAction extends ActionSupport {
@@ -81,6 +86,36 @@ public class PccardAction extends ActionSupport {
         pageGoto = PaginationSupport.getClientPageContent(paginationSupport);
         list = paginationSupport.getItems();
         return "usercardlist";
+    }
+
+    public String list() {
+        if (pageView == null) {
+            pageView = new PageView();
+        }
+        if (StringUtils.isEmpty(pageView.getBtime()) || StringUtils.isEmpty(pageView.getEtime())) {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            String shj = format.format(new Date());
+            pageView.setBtime(shj);
+            pageView.setEtime(shj);
+        }
+        if (StringUtils.isNotBlank(pageView.getProvince())) {
+            try {
+                pageView.setProvince(new String(pageView.getProvince().getBytes("ISO-8859-1"), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        list = pcCardLogService.getBillInfo(pageView);
+        return "list";
+    }
+
+    private int toInt(String val) {
+        if (StringUtils.isBlank(val)) {
+            return 3;
+        } else {
+            return Integer.parseInt(val);
+        }
     }
 
     public int getPageSize() {
