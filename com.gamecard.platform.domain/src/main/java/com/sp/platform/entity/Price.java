@@ -18,6 +18,14 @@ public class Price extends BaseEntity{
     private Integer price;
     private String description;
     private List<Paytype> paytypes;
+    public static final Price NULL = new Price("");
+
+    public Price(String description) {
+        this.description = description;
+    }
+
+    public Price() {
+    }
 
     public Integer getPrice() {
         return price;

@@ -18,6 +18,14 @@ public class Card extends BaseEntity {
     private String name;
     private String description;
     private List<Price> prices;
+    public static final Card NULL = new Card("");
+
+    public Card(String name) {
+        this.name = name;
+    }
+
+    public Card() {
+    }
 
     public String getName() {
         return name;

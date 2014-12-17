@@ -68,14 +68,14 @@ public class CardCache extends AbstractBaseTimer {
 
     public static Card getCard(Integer key) {
         if (key == null) {
-            return null;
+            return Card.NULL;
         }
         return cardMap.get(key);
     }
 
     public static Price getPrice(Integer key) {
         if (key == null) {
-            return null;
+            return Price.NULL;
         }
         return priceMap.get(key);
     }

@@ -103,6 +103,10 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
         Iterator<Map<String, Object>> result2 = jdbcTemplate.queryForList(sql).iterator();
         Map<String, Object> map = null;
         List<PcBillVo> list = new ArrayList<PcBillVo>();
+
+        int fcounts = 0;
+        float ffees = 0;
+        BigDecimal bFees;
         while (result2.hasNext()) {
             map = result2.next();
             PcBillVo vo = new PcBillVo();
@@ -112,7 +116,18 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
             vo.setNum(map.get("num").toString());
             vo.setFee(map.get("fee").toString());
             list.add(vo);
+
+            bFees = new BigDecimal(vo.getFee());
+            ffees = ffees + bFees.floatValue();
+            fcounts = fcounts + Integer.parseInt(vo.getNum());
         }
+        PcBillVo vo = new PcBillVo();
+        vo.setDate("总计");
+        vo.setCardid("");
+        vo.setPriceid("");
+        vo.setNum(fcounts + "");
+        vo.setFee(ffees + "");
+        list.add(vo);
         return list;
     }
 
