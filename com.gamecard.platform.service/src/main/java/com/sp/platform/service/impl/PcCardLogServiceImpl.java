@@ -159,6 +159,10 @@ public class PcCardLogServiceImpl implements PcCardLogService {
 
     @Override
     public List<PcBillVo> getBillInfo(PageView pageView) {
-        return pcCardLogDao.getBillInfo(pageView);
+        if(pageView.getCpid() == 1){
+            return pcCardLogDao.getProvinceBillInfo(pageView);
+        } else {
+            return pcCardLogDao.getBillInfo(pageView);
+        }
     }
 }

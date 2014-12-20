@@ -131,4 +131,49 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
         return list;
     }
 
+    public List<PcBillVo> getProvinceBillInfo(PageView pageView) {
+        String[] sj;
+        if (StringUtils.isNotBlank(pageView.getDate())) {
+            sj = TimeUtils.chuli(pageView.getDate(), pageView.getDate());
+        } else {
+            sj = TimeUtils.chuli(pageView.getBtime(), pageView.getEtime());
+        }
+        String kssj = sj[0];
+        String jssj = sj[1];
+
+        //  查询字段 --------------------------
+        String sql = "select province, count(*) num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
+        if(pageView.getSpid() > 0){
+            sql = sql + "and channelid=" + pageView.getSpid() + " ";
+        }
+        sql = sql + "and status in (2,3) group by province order by 3 desc";
+
+        LogEnum.DEFAULT.info(sql);
+
+        Iterator<Map<String, Object>> result2 = jdbcTemplate.queryForList(sql).iterator();
+        Map<String, Object> map = null;
+        List<PcBillVo> list = new ArrayList<PcBillVo>();
+
+        int fcounts = 0;
+        float ffees = 0;
+        BigDecimal bFees;
+        while (result2.hasNext()) {
+            map = result2.next();
+            PcBillVo vo = new PcBillVo();
+            vo.setProvince(map.get("province").toString());
+            vo.setNum(map.get("num").toString());
+            vo.setFee(map.get("fee").toString());
+            list.add(vo);
+
+            bFees = new BigDecimal(vo.getFee());
+            ffees = ffees + bFees.floatValue();
+            fcounts = fcounts + Integer.parseInt(vo.getNum());
+        }
+        PcBillVo vo = new PcBillVo();
+        vo.setProvince("总计");
+        vo.setNum(fcounts + "");
+        vo.setFee(ffees + "");
+        list.add(vo);
+        return list;
+    }
 }

@@ -34,6 +34,7 @@ import java.util.List;
 @InterceptorRefs({@InterceptorRef("loginInterceptor")})
 @Results({
         @Result(name = "list", location = "bill_list.jsp"),
+        @Result(name = "province_list", location = "province_bill_list.jsp"),
         @Result(name = "userbilllist", location = "user_bill_list.jsp"),
         @Result(name = "usercardlist", location = "user_card_list.jsp")})
 public class PccardAction extends ActionSupport {
@@ -107,6 +108,9 @@ public class PccardAction extends ActionSupport {
         }
 
         list = pcCardLogService.getBillInfo(pageView);
+        if(pageView.getCpid() == 1){
+            return "province_list";
+        }
         return "list";
     }
 

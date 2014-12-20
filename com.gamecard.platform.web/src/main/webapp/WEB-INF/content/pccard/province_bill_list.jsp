@@ -94,17 +94,13 @@
                         <table width="100%" cellpadd
                                ing="0" class="Table1" border="1" cellspacing="0">
                             <tr height="20">
-                                <th width="8%" class="left_bt2">日期</th>
-                                <th width="8%" class="left_bt2">点卡</th>
-                                <th width="8%" class="left_bt2">资费</th>
+                                <th width="8%" class="left_bt2">省</th>
                                 <th width="8%" class="left_bt2">数量</th>
                                 <th width="8%" class="left_bt2">信息费(元)</th>
                             </tr>
                             <s:iterator value="list" id="bean">
                                 <tr class='t2'>
-                                    <td>${bean.date}</td>
-                                    <td><s:property value="@com.sp.platform.cache.CardCache@getCard(#bean.cardid).name"/></td>
-                                    <td><s:property value="@com.sp.platform.cache.CardCache@getPrice(#bean.priceid).description"/></td>
+                                    <td>${bean.province}</td>
                                     <td>${bean.num}</td>
                                     <td>${bean.fee}</td>
                                 </tr>
