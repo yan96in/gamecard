@@ -111,7 +111,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 HttpGet get = new HttpGet(resource);
                 HttpResponse httpResponse = httpClient.execute(get);
                 String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
-                LogEnum.DEFAULT.info(body + " YD sid=" + sid);
+                LogEnum.DEFAULT.info(phone+ "  提交验证码 " + body + " YD sid=" + sid);
                 PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
                 resultCode = resultVo.getResultCode();
                 sid = resultVo.getSid();
@@ -121,7 +121,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 HttpGet get = new HttpGet(resource);
                 HttpResponse httpResponse = httpClient.execute(get);
                 String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
-                LogEnum.DEFAULT.info(body + " LT sid=" + sid);
+                LogEnum.DEFAULT.info(phone+ "  提交验证码 " + body + " LT sid=" + sid);
                 PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
                 resultCode = resultVo.getResultCode();
             }
@@ -135,7 +135,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 if(card == null){
                     pcCardLog.setStatus(3);
                     pcCardLogDao.save(pcCardLog);
-                    LogEnum.DEFAULT.warn("取卡失败 sid=" + sid + " cardId=" + cardId + " priceId=" + priceId ) ;
+                    LogEnum.DEFAULT.warn(phone+ "  提交验证码 " + "取卡失败 sid=" + sid + " cardId=" + cardId + " priceId=" + priceId ) ;
                     return null;
                 }
 
@@ -148,11 +148,11 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 pcCardLog.setResultcode(resultCode);
                 pcCardLog.setStatus(0);
                 pcCardLogDao.save(pcCardLog);
-                LogEnum.DEFAULT.warn("计费失败 sid=" + sid + " resultCode=" + resultCode ) ;
+                LogEnum.DEFAULT.warn(phone+ "  提交验证码 " + "计费失败 sid=" + sid + " resultCode=" + resultCode ) ;
                 return null;
             }
         } else {
-            LogEnum.DEFAULT.error("参数有误 sid=" + sid + " cardId=" + cardId  + " phone=" + phone ); ;
+            LogEnum.DEFAULT.error(phone+ "  提交验证码 " + "参数有误 sid=" + sid + " cardId=" + cardId  + " phone=" + phone ); ;
             return null;
         }
     }
