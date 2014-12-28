@@ -92,11 +92,11 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
         String jssj = sj[1];
 
         //  查询字段 --------------------------
-        String sql = "select left(btime, 10) date, cardid, priceid, count(*) num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
+        String sql = "select cardid, priceid, count(*) num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
         if(pageView.getSpid() > 0){
             sql = sql + "and channelid=" + pageView.getSpid() + " ";
         }
-        sql = sql + "and status in (2,3) group by left(btime, 10), cardid, priceid";
+        sql = sql + "and status in (2,3) group by cardid, priceid";
 
         LogEnum.DEFAULT.info(sql);
 
@@ -110,7 +110,6 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
         while (result2.hasNext()) {
             map = result2.next();
             PcBillVo vo = new PcBillVo();
-            vo.setDate(map.get("date").toString());
             vo.setCardid(map.get("cardid").toString());
             vo.setPriceid(map.get("priceid").toString());
             vo.setNum(map.get("num").toString());
@@ -122,8 +121,7 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
             fcounts = fcounts + Integer.parseInt(vo.getNum());
         }
         PcBillVo vo = new PcBillVo();
-        vo.setDate("总计");
-        vo.setCardid("");
+        vo.setCardid("总计");
         vo.setPriceid("");
         vo.setNum(fcounts + "");
         vo.setFee(ffees + "");
