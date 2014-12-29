@@ -129,7 +129,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
             if ((propertyUtils.getProperty("pc.success.result", "200000").equals(resultCode))
                     || (propertyUtils.getProperty("pc.lt.success.result", "200000").equals(resultCode))) {
                 cacheCheckUser.addCallerFee(pcCardLog.getMobile() + Constants.split_str + "pc", pcCardLog.getFee());
-                cacheCheckUser.addCalledProvinceFee(pcCardLog.getProvince() + Constants.split_str + "pc", pcCardLog.getFee(), false);
+                cacheCheckUser.addCalledProvinceFee(pcCardLog.getProvince() + Constants.split_str + "pc" + paytypeId, pcCardLog.getFee(), false);
 
                 CardPassword card = cardPasswordService.getUserCard(cardId, priceId);
                 if(card == null){
