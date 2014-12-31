@@ -40,7 +40,6 @@ public class BillTest {
         List<String> list = FileUtils.readLines(new File("e://sp-platform-sp.log"));
         int i = 0;
 
-
         for (String str : list) {
             if (StringUtils.indexOf(str, "status=DELIVRD") >= 0) {
                 String s = StringUtils.left(str, 144);
