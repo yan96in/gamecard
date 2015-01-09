@@ -32,6 +32,7 @@ public class CallerAction extends ActionSupport {
     private List list;
     private List list2;
 
+    @Action("caller!list")
     public String list() {
         if (StringUtils.isNotBlank(pageView.getCaller())) {
             list = billLogService.getByCaller(pageView.getCaller());
@@ -42,6 +43,8 @@ public class CallerAction extends ActionSupport {
         }
         return "list";
     }
+
+    @Action("caller!smslist")
     public String smslist() {
         if (StringUtils.isNotBlank(pageView.getCaller())) {
             list = billLogService.getSmsByCaller(pageView.getCaller());
@@ -58,6 +61,7 @@ public class CallerAction extends ActionSupport {
      *
      * @return
      */
+    @Action("caller!bufa")
     public String bufa(){
 
         if(pageView.getId() > 0){
@@ -67,6 +71,7 @@ public class CallerAction extends ActionSupport {
         return list();
     }
 
+    @Action("caller!bufasms")
     public String bufasms(){
 
         if(pageView.getId() > 0){
@@ -81,6 +86,7 @@ public class CallerAction extends ActionSupport {
      *
      * @return
      */
+    @Action("caller!sync")
     public String sync(){
 
         if(pageView.getId() > 0){
@@ -89,6 +95,8 @@ public class CallerAction extends ActionSupport {
 
         return list();
     }
+
+    @Action("caller!syncsms")
     public String syncsms(){
 
         if(pageView.getId() > 0){

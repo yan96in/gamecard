@@ -46,6 +46,7 @@ public class CpsmsbillAction extends ActionSupport {
     private List list2;
     private List list3;
 
+    @Action("cpsmsbill!list")
     public String list() {
         if (pageView == null) {
             pageView = new PageView();

@@ -104,14 +104,9 @@
                             <s:iterator value="list" id="bean">
                                 <tr class='t2'>
                                     <td>
-                                        <s:if test="#bean.cardid=='总计'">
-                                            总计
-                                        </s:if>
-                                        <s:else>
-                                            <s:property value="@com.sp.platform.cache.CardCache@getCard(#bean.cardid).name"/>
-                                        </s:else>
+                                        ${bean.cardid}
                                     </td>
-                                    <td><s:property value="@com.sp.platform.cache.CardCache@getPrice(#bean.priceid).description"/></td>
+                                    <td>${bean.priceid}</td>
                                     <td>${bean.num}</td>
                                     <td>${bean.fee}</td>
                                 </tr>

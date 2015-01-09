@@ -44,6 +44,7 @@ public class CpbillAction extends ActionSupport {
     private List<BillVo> list;
     private List list3;
 
+    @Action("cpbill!list")
     public String list() {
         if (pageView == null) {
             pageView = new PageView();

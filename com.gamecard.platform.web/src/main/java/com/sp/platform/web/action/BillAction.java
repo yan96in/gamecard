@@ -42,6 +42,7 @@ public class BillAction extends ActionSupport {
     private List list2;
     private List list3;
 
+    @Action("bill!list")
     public String list() {
         if (pageView == null) {
             pageView = new PageView();
@@ -96,6 +97,7 @@ public class BillAction extends ActionSupport {
         return "list";
     }
 
+    @Action("bill!cplist")
     public String cplist() {
         if (pageView == null) {
             pageView = new PageView();

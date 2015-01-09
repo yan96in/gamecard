@@ -47,6 +47,7 @@ public class SnumAction extends ActionSupport {
     private ServiceNum serviceNum;
     private PageView pageView = new PageView();
 
+    @Action("snum!list")
     public String list() {
         if (pageNum < 1)
             pageNum = 1;
@@ -81,6 +82,7 @@ public class SnumAction extends ActionSupport {
         }
     }
 
+    @Action("snum!delete")
     public String delete() {
         if (pageView.getId() > 0) {
             snumService.delete(pageView.getId());
@@ -88,6 +90,7 @@ public class SnumAction extends ActionSupport {
         return list();
     }
 
+    @Action("snum!add")
     public String add() {
         if (pageView.getId() > 0) {
             serviceNum = snumService.get(pageView.getId());
@@ -97,6 +100,7 @@ public class SnumAction extends ActionSupport {
         return "add";
     }
 
+    @Action("snum!daAdd")
     public String doAdd() {
         Date now = new Date();
         if (pageView.getId() <= 0) {

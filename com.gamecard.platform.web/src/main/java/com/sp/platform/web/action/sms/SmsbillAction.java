@@ -43,6 +43,7 @@ public class SmsbillAction extends ActionSupport {
     private List list2;
     private List list3;
 
+    @Action("smsbill!list")
     public String list() {
         if (pageView == null) {
             pageView = new PageView();
@@ -97,6 +98,7 @@ public class SmsbillAction extends ActionSupport {
         return "list";
     }
 
+    @Action("smsbill!cplist")
     public String cplist() {
         if (pageView == null) {
             pageView = new PageView();

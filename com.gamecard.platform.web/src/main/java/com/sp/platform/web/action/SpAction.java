@@ -41,6 +41,7 @@ public class SpAction extends ActionSupport {
     private int id;
     private SpInfo spInfo;
 
+    @Action("sp!list")
     public String list() {
         if (pageNum < 1)
             pageNum = 1;
@@ -58,6 +59,7 @@ public class SpAction extends ActionSupport {
         return "list";
     }
 
+    @Action("sp!add")
     public String add() {
         if (id > 0) {
             spInfo = spInfoService.get(id);
@@ -65,6 +67,7 @@ public class SpAction extends ActionSupport {
         return "add";
     }
 
+    @Action("sp!doAdd")
     public String doAdd() {
         if (spInfo != null) {
             User user = (User) Struts2Utils.getSession().getAttribute(Constants.SESSION_KEY);
@@ -93,6 +96,7 @@ public class SpAction extends ActionSupport {
         return list();
     }
 
+    @Action("sp!delete")
     public String delete(){
         if(id > 0){
             spInfoService.delete(id);

@@ -35,15 +35,18 @@ public class SysAction extends ActionSupport {
 
     private List list;
 
+    @Action("sys!init")
     public String init() {
         return "sys";
     }
 
+    @Action("sys!select1")
     public String select1() {
         list = sysService.select(pageView);
         return "sys";
     }
 
+    @Action("sys!update1")
     public String update1() {
         pageView.setMessage("共执行了 " + sysService.exec(pageView) + " 条");
         return "sys";

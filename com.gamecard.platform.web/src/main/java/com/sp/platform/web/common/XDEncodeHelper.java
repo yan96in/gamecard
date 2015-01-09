@@ -107,13 +107,13 @@ public class XDEncodeHelper {
 
         String key = "tch5VEeZSAJ2VU4lUoqaYddP"; //双方约定的KEY(密钥),用来加密,解密
         XDEncodeHelper xdHelper = new XDEncodeHelper(key);
-        String encodeStr = "22080538$DELIVRD$13478351349$1AU01";//MR源数据 QF2rxWhSb0FXKzFyU5iMRyyBvzNsJKeoI9%2F9bC8pAItTfo1HjGyDpQ%3D%3D
+        String encodeStr = "49916347";//MR源数据 QF2rxWhSb0FXKzFyU5iMRyyBvzNsJKeoI9%2F9bC8pAItTfo1HjGyDpQ%3D%3D
 //        String encodeStr = "13478351349$0000019052$1AU01$22080538$280$1$1"; //MO源数据 sVJNjn6t571mHpHpzQeB7fvRPr2RgToaEQOKxSbTZzXMZlXvuAtAfEXwFveLV6PTIuQL7xeup5Q%3D
         System.out.println("加密前字符 " + encodeStr);
         encodeStr = xdHelper.XDEncode(encodeStr); //通过密钥进行加密
-        System.out.println("加密后字符" + encodeStr);
+        System.out.println("加密后字符 " + encodeStr);
         encodeStr = xdHelper.XDDecode(encodeStr, true);//通过密钥进行解密
-        System.out.println("解密后字符" + encodeStr);
+        System.out.println("解密后字符 " + encodeStr);
 
         String SPLIT_KEY = "_";
         String[] datas = StringUtils.split(encodeStr, "$");

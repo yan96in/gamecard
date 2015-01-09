@@ -1,6 +1,7 @@
 package com.sp.platform.web.action.card;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sp.platform.cache.CardCache;
 import com.sp.platform.cache.CpSyncCache;
 import com.sp.platform.cache.SpInfoCache;
 import com.sp.platform.common.PageView;
@@ -50,6 +51,7 @@ public class PccardAction extends ActionSupport {
     private PageView pageView = new PageView();
     private List list;
 
+    @Action("pccard!userCardList")
     public String userCardList() {
         if (pageNum < 1)
             pageNum = 1;
@@ -89,6 +91,7 @@ public class PccardAction extends ActionSupport {
         return "usercardlist";
     }
 
+    @Action("pccard!list")
     public String list() {
         if (pageView == null) {
             pageView = new PageView();
@@ -110,6 +113,17 @@ public class PccardAction extends ActionSupport {
         list = pcCardLogService.getBillInfo(pageView);
         if(pageView.getCpid() == 1){
             return "province_list";
+        } else {
+            for(int i = 0; i < list.size(); i++){
+                PcBillVo pcBillVo = (PcBillVo) list.get(i);
+                if(pcBillVo.getCardid().equals("总计")){
+                    pcBillVo.setCardid("总计");
+                    pcBillVo.setPriceid("");
+                }else {
+                    pcBillVo.setCardid(CardCache.getCard(Integer.parseInt(pcBillVo.getCardid())).getName());
+                    pcBillVo.setPriceid(CardCache.getPrice(Integer.parseInt(pcBillVo.getPriceid())).getDescription());
+                }
+            }
         }
         return "list";
     }

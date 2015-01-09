@@ -34,6 +34,16 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>jce</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>rt</artifactId>
+            <version>1.7</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -53,10 +63,10 @@
                     <source>1.6</source>
                     <target>1.6</target>
                     <encoding>UTF-8</encoding>
-                    <compilerArguments>
-                        <verbose />
-                        <bootclasspath>C://Program Files//Java//jdk1.7.0_15//jre//lib//rt.jar;C://Program Files//Java//jdk1.7.0_15//jre//lib//jce.jar</bootclasspath>
-                    </compilerArguments>
+                    <!--<compilerArguments>-->
+                    <!--<verbose />-->
+                    <!--<bootclasspath>C://Program Files//Java//jdk1.7.0_15//jre//lib//rt.jar;C://Program Files//Java//jdk1.7.0_15//jre//lib//jce.jar</bootclasspath>-->
+                    <!--</compilerArguments>-->
                 </configuration>
             </plugin>
             <plugin>

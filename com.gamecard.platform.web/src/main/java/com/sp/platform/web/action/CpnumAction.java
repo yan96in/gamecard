@@ -56,6 +56,7 @@ public class CpnumAction extends ActionSupport {
     private PageView pageView = new PageView();
     private CpNum cpNum;
 
+    @Action("cpnum!list")
     public String list() {
         User user = (User) Struts2Utils.getSession().getAttribute(Constants.SESSION_KEY);
 
@@ -77,6 +78,7 @@ public class CpnumAction extends ActionSupport {
         return "list";
     }
 
+    @Action("cpnum!add")
     public String add() {
         if (pageView.getId() > 0) {
             cpNum = cpNumService.get(pageView.getId());
@@ -87,6 +89,7 @@ public class CpnumAction extends ActionSupport {
         return "add";
     }
 
+    @Action("cpnum!doAdd")
     public String doAdd() {
         Date now = new Date();
         if (pageView.getId() <= 0) {
@@ -132,6 +135,7 @@ public class CpnumAction extends ActionSupport {
         cpNum.setBlackinfo(pageView.getMemo());
     }
 
+    @Action("cpnum!delete")
     public String delete() {
         if (pageView.getId() > 0) {
             cpNumService.delete(pageView.getId());
@@ -140,12 +144,13 @@ public class CpnumAction extends ActionSupport {
     }
 
 
-
+    @Action("cpnum!prlist")
     public String prlist(){
         list = provReduceService.getByCalled(pageView.getCalled().replace("-", "#"));
         return "provReduceList";
     }
 
+    @Action("cpnum!prdelete")
     public String prdelete() {
         if (pageView.getId() > 0) {
             provReduceService.delete(pageView.getId());
@@ -153,6 +158,7 @@ public class CpnumAction extends ActionSupport {
         return prlist();
     }
 
+    @Action("cpnum!pradd")
     public String pradd(){
         list2 = ProvinceVo.list;
         if(pageView.getId() > 0){
@@ -167,6 +173,7 @@ public class CpnumAction extends ActionSupport {
     }
 
 
+    @Action("cpnum!doPradd")
     public String doPradd() {
         Date now = new Date();
         ProvReduce provReduce;

@@ -47,6 +47,7 @@ public class CpAction extends ActionSupport {
     private User user;
     private PageView pageView = new PageView();
 
+    @Action("cp!list")
     public String list() {
         User user = (User) Struts2Utils.getSession().getAttribute(Constants.SESSION_KEY);
         if(user.getRole() == 10){
@@ -80,6 +81,7 @@ public class CpAction extends ActionSupport {
         return "list";
     }
 
+    @Action("cp!add")
     public String add() {
         if (pageView.getId() > 0) {
             user = userService.get(pageView.getId());
@@ -88,6 +90,7 @@ public class CpAction extends ActionSupport {
         return "add";
     }
 
+    @Action("cp!doAdd")
     public String doAdd() {
         Date now = new Date();
         if (pageView.getId() <= 0) {
@@ -105,6 +108,7 @@ public class CpAction extends ActionSupport {
         return list();
     }
 
+    @Action("cp!delete")
     public String delete() {
         if (pageView.getId() > 0) {
             userService.delete(pageView.getId());
@@ -112,10 +116,12 @@ public class CpAction extends ActionSupport {
         return list();
     }
 
+    @Action("cp!updatePasswd")
     public String updatePasswd(){
         return "updatePasswd";
     }
 
+    @Action("cp!doUpdate")
     public String doUpdate(){
         User sessionUser = (User) Struts2Utils.getSession().getAttribute(Constants.SESSION_KEY);
         if(sessionUser.getPasswd().equals(pageView.getPasswd())){

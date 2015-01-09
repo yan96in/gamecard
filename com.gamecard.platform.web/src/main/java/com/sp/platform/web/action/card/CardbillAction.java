@@ -70,6 +70,7 @@ public class CardbillAction extends ActionSupport {
     private Order[] orders;
     private String pageGoto;
 
+    @Action("cardbill!list")
     public String list() {
         if (pageView == null) {
             pageView = new PageView();
@@ -85,11 +86,13 @@ public class CardbillAction extends ActionSupport {
         return "list";
     }
 
+    @Action("cardbill!provinceList")
     public String provinceList() {
         list = userCardLogSerivce.getCardProvince(pageView);
         return "provincelist";
     }
 
+    @Action("cardbill!userBill")
     public String userBill() {
         if (StringUtils.isEmpty(pageView.getBtime()) || StringUtils.isEmpty(pageView.getEtime())) {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -108,6 +111,7 @@ public class CardbillAction extends ActionSupport {
         return "userbill";
     }
 
+    @Action("cardbill!userBillList")
     public String userBillList() {
         if (pageNum < 1)
             pageNum = 1;
@@ -134,6 +138,7 @@ public class CardbillAction extends ActionSupport {
         return "userbilllist";
     }
 
+    @Action("cardbill!userCardList")
     public String userCardList() {
         if (pageNum < 1)
             pageNum = 1;
@@ -160,6 +165,7 @@ public class CardbillAction extends ActionSupport {
         return "usercardlist";
     }
 
+    @Action("cardbill!cardCount")
     public String cardCount() {
         list = userCardLogSerivce.getCardCount();
         return "cardcount";
