@@ -4,7 +4,7 @@
         "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
     <!-- 上传相关信息 -->
-    <constant name="struts.multipart.saveDir" value="/mnt/user/skyd/data"/>
+    <constant name="struts.multipart.saveDir" value="${sp.platform.data.path}"/>
     <constant name="struts.multipart.maxSize" value="4096000"/>
     <!-- 指定Web应用的默认编码集，相当于hgttpServletRequest的setCharacterEncoding方法 -->
     <constant name="struts.i18n.encoding" value="UTF-8"/>

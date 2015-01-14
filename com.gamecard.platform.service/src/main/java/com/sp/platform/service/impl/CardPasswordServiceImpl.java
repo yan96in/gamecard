@@ -26,11 +26,11 @@ public class CardPasswordServiceImpl implements CardPasswordService {
     @Autowired
     private CardPasswordDao cardPasswordDao;
 
-    public CardPassword getUserCard(int cardid, int priceid){
+    public CardPassword getUserCard(int cardid, int priceid) {
         String sql = "select a.* from gw_card_password a where a.cardid=" + cardid + " and priceid=" + priceid +
                 " and state=0 ORDER BY rand() LIMIT 1";
         List<CardPassword> list = cardPasswordDao.getSessionFactory().getCurrentSession().createSQLQuery(sql).addEntity(CardPassword.class).list();
-        if(list != null && list.size() > 0){
+        if (list != null && list.size() > 0) {
             CardPassword card = list.get(0);
             card.setState(1);
             card.setUtime(new Date());
@@ -42,7 +42,7 @@ public class CardPasswordServiceImpl implements CardPasswordService {
 
     @Override
     public void save(List<CardPassword> cards) {
-        for(CardPassword card : cards){
+        for (CardPassword card : cards) {
             cardPasswordDao.save(card);
         }
     }

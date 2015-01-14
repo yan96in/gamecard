@@ -125,7 +125,7 @@
                                     <td>${bean.mobile}</td>
                                     <td>${bean.province}-${bean.city}</td>
                                     <td>${bean.fee}</td>
-                                    <td><s:property value="@com.sp.platform.cache.CardCache@getCard(#bean.cardId).name"/>-<s:property value="@com.sp.platform.cache.CardCache@getPrice(#bean.priceId).description"/>  </td>
+                                    <td>${bean.cardId}"/>-${bean.priceId}</td>
                                     <td>${bean.cardno}-${bean.cardpwd}</td>
                                     <td>
                                         ${bean.btime}<br>

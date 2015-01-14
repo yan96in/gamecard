@@ -77,7 +77,7 @@ public class PccardAction extends ActionSupport {
         url.append(pageView.getBtime());
         url.append("&pageView.etime=");
         url.append(pageView.getEtime());
-        if(StringUtils.isNotBlank(pageView.getCalled())){
+        if(StringUtils.isNotBlank(pageView.getCaller())){
             url.append("&pageView.caller=");
             url.append(pageView.getCaller());
         }

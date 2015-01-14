@@ -11,6 +11,7 @@ import com.sp.platform.service.PcCardLogService;
 import com.sp.platform.util.CacheCheckUser;
 import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
+import com.sp.platform.util.XDEncodeHelper;
 import com.sp.platform.vo.PcBillVo;
 import com.sp.platform.vo.PcVo1;
 import com.yangl.common.hibernate.PaginationSupport;
@@ -138,10 +139,11 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                     LogEnum.DEFAULT.warn(phone+ "  提交验证码 " + "取卡失败 sid=" + sid + " cardId=" + cardId + " priceId=" + priceId ) ;
                     return null;
                 }
+                XDEncodeHelper xdEncodeHelper = new XDEncodeHelper(propertyUtils.getProperty("DESede.key", "tch5VEeZSAJ2VU4lUoqaYddP"));
 
                 pcCardLog.setStatus(2);
-                pcCardLog.setCardno(card.getCardno());
-                pcCardLog.setCardpwd(card.getPassword());
+                pcCardLog.setCardno(xdEncodeHelper.XDDecode(card.getCardno(), true));
+                pcCardLog.setCardpwd(xdEncodeHelper.XDDecode(card.getPassword(), true));
                 pcCardLogDao.save(pcCardLog);
                 return pcCardLog;
             } else {

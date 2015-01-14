@@ -9,6 +9,7 @@ import com.sp.platform.service.CardPasswordService;
 import com.sp.platform.service.UserCardLogSerivce;
 import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
+import com.sp.platform.util.XDEncodeHelper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -72,9 +73,10 @@ public class SendCardTask implements Callable<String> {
                             LogEnum.DEFAULT.error("下发点卡失败，无卡{}", userCardLog);
                             return returnFunc(start);
                         }
+                        XDEncodeHelper xdEncodeHelper = new XDEncodeHelper(propertyUtils.getProperty("DESede.key", "tch5VEeZSAJ2VU4lUoqaYddP"));
 
-                        userCardLog.setCardno(card.getCardno());
-                        userCardLog.setCardpwd(card.getPassword());
+                        userCardLog.setCardno(xdEncodeHelper.XDDecode(card.getCardno(), true));
+                        userCardLog.setCardpwd(xdEncodeHelper.XDDecode(card.getPassword(), true));
                     }
                     message = MessageFormat.format(propertyUtils.getProperty("hljw.card.message"),
                             CardCache.getPrice(paychannel.getPriceId()).getDescription() + CardCache.getCard(paychannel.getCardId()).getName(),

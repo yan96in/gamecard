@@ -6,6 +6,8 @@ import com.sp.platform.entity.CardPassword;
 import com.sp.platform.service.CardPasswordService;
 import com.sp.platform.service.CardService;
 import com.sp.platform.service.PriceService;
+import com.sp.platform.util.PropertyUtils;
+import com.sp.platform.util.XDEncodeHelper;
 import com.sp.platform.vo.JsonVo;
 import com.yangl.common.Struts2Utils;
 import org.apache.commons.lang.StringUtils;
@@ -37,6 +39,8 @@ public class CardAdminAction extends ActionSupport {
     private PriceService priceService;
     @Autowired
     private CardPasswordService cardPasswordService;
+    @Autowired
+    private PropertyUtils propertyUtils;
 
     private Integer id;
     private Integer priceId;
@@ -71,14 +75,16 @@ public class CardAdminAction extends ActionSupport {
             String blackUser;
             blackUser = reader.readLine();
             List<CardPassword> cards = new ArrayList<CardPassword>();
-            Date now = new Date();
+            Date now = new Date();XDEncodeHelper xdEncodeHelper = new XDEncodeHelper(propertyUtils.getProperty("DESede.key", "tch5VEeZSAJ2VU4lUoqaYddP"));
             while (StringUtils.isNotBlank(blackUser)) {
                 String[] temp = blackUser.split(",");
                 CardPassword card = new CardPassword();
                 card.setCardid(id);
                 card.setPriceid(priceId);
-                card.setCardno(temp[0]);
-                card.setPassword(temp[1]);
+                card.setCardno(xdEncodeHelper.XDEncode(temp[0]));
+                card.setPassword(xdEncodeHelper.XDEncode(temp[1]));
+//                card.setCardno(temp[0]);
+//                card.setPassword(temp[1]);
                 card.setState(0);
                 card.setCtime(now);
                 card.setUtime(now);
