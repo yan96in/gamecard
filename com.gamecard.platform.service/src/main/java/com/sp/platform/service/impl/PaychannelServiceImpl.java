@@ -101,6 +101,10 @@ public class PaychannelServiceImpl implements PaychannelService {
                 if (paytypeId == 19) {
                     String resource = propertyUtils.getProperty("pc.pay.url") +
                             "?uid=" + phone + "&bid=" + fee + "&ext=test";
+                    if(HaoduanCache.getProvince(phone).equals("湖南")){
+                        resource = propertyUtils.getProperty("pc.pay.url.hn") +
+                                "?uid=" + phone + "&bid=" + fee + "&ext=test";
+                    }
                     HttpGet get = new HttpGet(resource);
                     HttpResponse httpResponse = httpClient.execute(get);
                     if (HttpStatus.SC_OK == httpResponse.getStatusLine().getStatusCode()) {
