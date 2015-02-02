@@ -117,6 +117,15 @@
                                 </a>
                             </div>
                         </li>
+                        <li class="last">
+                            <h4><span><a href="${stx}/card/index.action?id=8">
+                                天宏一卡通</a></span> </h4>
+                            <div class="icon">
+                                <a href="${stx}/card/index.action?id=8" title="点击进入官网">
+                                    <img alt="进入官网" src="${stx}/card-resources/main/th.png">
+                                </a>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>

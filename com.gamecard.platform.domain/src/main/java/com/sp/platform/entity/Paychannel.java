@@ -2,6 +2,7 @@ package com.sp.platform.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,6 +28,8 @@ public class Paychannel extends BaseEntity{
     private String description;
     private String note1;
     private String note2;
+    private int errorFlg;
+    private String errorMessage;
 
     public Integer getCardId() {
         return cardId;
@@ -138,5 +141,24 @@ public class Paychannel extends BaseEntity{
 
     public void setNote2(String note2) {
         this.note2 = note2;
+    }
+
+
+    @Transient
+    public int getErrorFlg() {
+        return errorFlg;
+    }
+
+    public void setErrorFlg(int errorFlg) {
+        this.errorFlg = errorFlg;
+    }
+
+    @Transient
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -71,16 +72,16 @@ public class PaychannelServiceImpl implements PaychannelService {
         return paychannelDao.getAll();
     }
 
-    public ChannelVo findChannels(int cardId, int priceId, int paytypeId, String province) {
+    public ChannelVo findChannels(int cardId, int priceId, int paytypeId, String province, String phone) {
         ChannelVo chanels = new ChannelVo();
-        chanels.setChannels1(find(cardId, priceId, paytypeId, 1, province));
-        chanels.setChannels2(find(cardId, priceId, paytypeId, 2, province));
+        chanels.setChannels1(find(cardId, priceId, paytypeId, 1, province, phone, null));
+        chanels.setChannels2(find(cardId, priceId, paytypeId, 2, province, phone, null));
         return chanels;
     }
 
     public ChannelVo findPcChannels(int cardId, int priceId, int paytypeId, String province, String phone) {
         ChannelVo chanels = new ChannelVo();
-        List<Paychannel> paychannels = find(cardId, priceId, paytypeId, 1, province);
+        List<Paychannel> paychannels = find(cardId, priceId, paytypeId, 1, province, phone, null);
         chanels.setPcflag(!CollectionUtils.isEmpty(paychannels));
         return chanels;
     }
@@ -91,7 +92,7 @@ public class PaychannelServiceImpl implements PaychannelService {
         String resultCode = null;
         String resultMessage = null;
         String sid = null;
-        List<Paychannel> paychannels = find(cardId, priceId, paytypeId, 1, province);
+        List<Paychannel> paychannels = find(cardId, priceId, paytypeId, 1, province, phone, null);
         if (!CollectionUtils.isEmpty(paychannels)) {
             try {
                 Paychannel paychannel = paychannels.get(0);
@@ -101,10 +102,11 @@ public class PaychannelServiceImpl implements PaychannelService {
                 if (paytypeId == 19) {
                     String resource = propertyUtils.getProperty("pc.pay.url") +
                             "?uid=" + phone + "&bid=" + fee + "&ext=test";
-                    if(HaoduanCache.getProvince(phone).equals("湖南")){
+                    if(StringUtils.equals(HaoduanCache.getProvince(phone), "湖南")){
                         resource = propertyUtils.getProperty("pc.pay.url.hn") +
                                 "?uid=" + phone + "&bid=" + fee + "&ext=test";
                     }
+
                     HttpGet get = new HttpGet(resource);
                     HttpResponse httpResponse = httpClient.execute(get);
                     if (HttpStatus.SC_OK == httpResponse.getStatusLine().getStatusCode()) {
@@ -174,14 +176,60 @@ public class PaychannelServiceImpl implements PaychannelService {
         return chanels;
     }
 
-    public List<Paychannel> find(int cardId, int priceId, int paytypeId, int feetype, String province) {
+    public List<Paychannel> find(int cardId, int priceId, int paytypeId, int feetype, String province, String phone, String msg) {
+        String parameter = cardId + ":" + priceId + ":" + paytypeId + ":" + feetype + ":" + phone;
         DetachedCriteria dc = DetachedCriteria.forClass(Paychannel.class);
         dc.add(Restrictions.eq("cardId", cardId));
         dc.add(Restrictions.eq("priceId", priceId));
         dc.add(Restrictions.eq("paytypeId", paytypeId));
         dc.add(Restrictions.eq("feetype", feetype));
         dc.add(Restrictions.or(Restrictions.like("province", province, MatchMode.ANYWHERE), Restrictions.eq("province", "ALL")));
-        return paychannelDao.findByCriteria(dc);
+        List<Paychannel> list = paychannelDao.findByCriteria(dc);
+        if (list != null && list.size() > 0) {
+            Iterator<Paychannel> iterator = list.iterator();
+            while (iterator.hasNext()) {
+                Paychannel paychannel = iterator.next();
+
+                if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum"), paychannel.getSpnum())) {
+                    try {
+                        if (StringUtils.isNotBlank(msg)) {
+                            paychannel.setMsg(msg);
+                        } else {
+                            HttpClient client = new DefaultHttpClient();
+                            String url = propertyUtils.getProperty("kz.sms.url");
+                            String type = propertyUtils.getProperty("kz.sms.type." + cardId + "." + priceId);
+                            HttpGet get = new HttpGet(url + "?mobile=" + phone + "&type=" + type);
+                            HttpResponse response = client.execute(get);
+                            System.out.println(response.getStatusLine().getStatusCode());
+                            String body = StringUtils.trim(IOUtils.toString(response.getEntity().getContent(), "GBK"));
+                            if (StringUtils.startsWith(body, "true") || StringUtils.startsWith(body, "True")) {
+                                String[] strs = body.split(":");
+                                paychannel.setMsg(strs[6]);
+                            } else if(StringUtils.startsWith(body, "-1")){
+                                LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
+                                paychannel.setErrorFlg(9);
+                                paychannel.setErrorMessage("您有未完成订单，请先完成之前的订单。");
+                            } else if(StringUtils.startsWith(body, "0")){
+                                LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
+                                paychannel.setErrorFlg(10);
+                                paychannel.setErrorMessage("该号码所属省份无可用通道，请选择其它方式。");
+                            } else if(StringUtils.startsWith(body, "1")){
+                                LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
+                                paychannel.setErrorFlg(11);
+                                paychannel.setErrorMessage("您当月订购次数已满，请下个月继续使用该业务。");
+                            } else {
+                                LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
+                                iterator.remove();
+                            }
+                        }
+                    } catch (Exception e) {
+                        LogEnum.DEFAULT.error("空中短信获取通道异常：" + parameter + "，异常信息： " + e);
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     @Override

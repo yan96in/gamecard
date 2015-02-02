@@ -12,6 +12,7 @@ import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.vo.ChannelVo;
 import com.sp.platform.vo.JsonVo;
 import com.sp.platform.vo.PhoneVo;
+import com.yangl.common.IpAddressUtil;
 import com.yangl.common.Struts2Utils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.convention.annotation.*;
@@ -74,6 +75,7 @@ public class CardAction extends ActionSupport {
     private String sid;
     private PcCardLog pcCardLog;
     private String message;
+    private String msg;
 
     @Action("main")
     public String main() {
@@ -136,7 +138,7 @@ public class CardAction extends ActionSupport {
         card = cardService.get(paychannel.getCardId());
         price = priceService.getDetail(paychannel.getPriceId(), paychannel.getCardId());
         paytype = paytypeService.get(paychannel.getPaytypeId());
-        list = paychannelService.find(paychannel.getCardId(), paychannel.getPriceId(), paychannel.getPaytypeId(), paychannel.getFeetype(), phoneVo.getProvince());
+        list = paychannelService.find(paychannel.getCardId(), paychannel.getPriceId(), paychannel.getPaytypeId(), paychannel.getFeetype(), phoneVo.getProvince(), phoneNumber, msg);
 
         return "channel";
     }
@@ -147,7 +149,7 @@ public class CardAction extends ActionSupport {
         if (StringUtils.isBlank(phoneNumber)) {
             result = new JsonVo(false, "请输入正确的手机号码");
         } else {
-            if (paytypeId.equals(16) && !checkChinamobile()) {
+            if ((paytypeId.equals(16)||paytypeId.equals(23)) && !checkChinamobile()) {
                 result = new JsonVo(false, "请输入正确的移动手机号码");
                 Struts2Utils.renderJson(result);
                 return;
@@ -163,7 +165,7 @@ public class CardAction extends ActionSupport {
             PhoneVo phone = new PhoneVo(phoneNumber,
                     HaoduanCache.getProvince(phoneNumber), HaoduanCache.getCity(phoneNumber));
 
-            channelVo = paychannelService.findChannels(id, priceId, paytypeId, phone.getProvince());
+            channelVo = paychannelService.findChannels(id, priceId, paytypeId, phone.getProvince(), phoneNumber);
             channelVo.setPhoneVo(phone);
             result = new JsonVo(true, channelVo, "");
         }
@@ -233,6 +235,10 @@ public class CardAction extends ActionSupport {
     }
 
     private boolean checkLimit(String phoneNumber, String province, int paytypeId) {
+        LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
+                append("---- 请求IP：").append(IpAddressUtil.getRealIp())
+                .append(", 省份：")
+                .append(province).toString());
         boolean flag = callerLimit(phoneNumber, paytypeId);
         if (!flag) {
             return false;
@@ -287,6 +293,11 @@ public class CardAction extends ActionSupport {
             return false;
         }
 
+        StringBuilder message = new StringBuilder(phoneNumber).
+                append("---- 省份").append(province).append("收入正常，")
+                .append("日费用：")
+                .append(tempFee);
+
         //----------------------------- 省份月上限 -----------------------
         limitFee = propertyUtils.getInteger("pc.province.month.limit." + paytypeId, 50000);
 
@@ -299,6 +310,9 @@ public class CardAction extends ActionSupport {
                     .append(tempFee).toString());
             return false;
         }
+
+        LogEnum.DEFAULT.info(message.append(", 月费用：").append(tempFee).toString());
+
         //----------------------------- 号码上限 -----------------------
         return true;
     }
@@ -510,5 +524,13 @@ public class CardAction extends ActionSupport {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 }

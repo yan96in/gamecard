@@ -107,6 +107,7 @@
         </li>
     </ul>
     <form id="form1" name="form1" action="channel.action" method="post">
+        <input type="hidden" name="msg" id="msg"/>
         <ol class="tab-hd clearfix" id="divChannelClassList">
             <c:forEach var="paytype" items="${price.paytypes}">
                 <li id="chc_${paytype.id}" ref="${paytype.id}">
@@ -260,6 +261,7 @@
         $("#txtPayPhoneTip").removeClass("onFocus").removeClass("onCorrect").addClass("onError").html("请输入正确的手机号码！");
     }
     function codeCheck(phoneNumber){
+        var paytypeId = ${paytype.id};
         $.ajax({
             type: "GET",
             url: "checkPhone.action",
@@ -267,50 +269,61 @@
             dataType: "json",
             success: function (data) {
                 if (data.flag) {
-                    flag = true;
                     $("#txtPayPhoneTip").removeClass("onFocus").addClass("onCorrect").html("OK!");
                     $("#pPayPhoneArea").html("号码所属：<strong>" + data.result.phoneVo.province + "省 " +
-                        data.result.phoneVo.city + "市</strong></p>").show();
+                    data.result.phoneVo.city + "市</strong></p>").show();
                     var flag = 0;
-                    feetypeStr= '';
-                    channel1= '';
-                    channel2= '';
-                    if(data.result.channels1 != null && data.result.channels1.length>0){
+                    feetypeStr = '';
+                    channel1 = '';
+                    channel2 = '';
+                    var errorMessage = '该号码所属省份无可用通道，请选择其它方式';
+                    if (data.result.channels1 != null && data.result.channels1.length > 0) {
                         feetypeStr = feetypeStr + '<label id="ft_1" ref="101111" class="selected" onclick="javascript:funChannel(this);"><a href="javascript:void(0);" class="radio-box">大额通道(单次扣费)<i class="icon-triangle"></i></a></label>';
                     }
-                    if(data.result.channels2 != null && data.result.channels2.length>0){
+                    if (data.result.channels2 != null && data.result.channels2.length > 0) {
                         feetypeStr = feetypeStr + '<label id="ft_2" ref="102112" class="" onclick="javascript:funChannel(this);"><a href="javascript:void(0);" class="radio-box">点播通道(多条扣费)<i class="icon-triangle"></i></a></label>';
                     }
-                    if(data.result.channels1 != null && data.result.channels1.length>0){
+                    if (data.result.channels1 != null && data.result.channels1.length > 0) {
                         flag = flag + 1;
                         channel1 = channel1 + '<div class="channel-list" id="divPayChannelList"><ul>';
-                        jQuery.each(data.result.channels1, function(index,channel){
-                            channel1 = channel1 + '<li id="ch_'+channel.id+'" ref="'+channel.id+'" class="selected"><input type="radio" id="payChannel_'+channel.id+'" name="channelId" checked="checked" value="'+channel.id+'"><label for="payChannel_'+channel.id+'">短信支付'+(index+1)+'：需支付<strong class="c-num">'+channel.fee+'</strong>元话费（'+channel.fee+'元/次，共扣1次)</label>';
+                        jQuery.each(data.result.channels1, function (index, channel) {
+                            channel1 = channel1 + '<li id="ch_' + channel.id + '" ref="' + channel.id + '" class="selected"><input type="radio" id="payChannel_' + channel.id + '" name="channelId" checked="checked" value="' + channel.id + '"><label for="payChannel_' + channel.id + '">短信支付' + (index + 1) + '：需支付<strong class="c-num">' + channel.fee + '</strong>元话费（' + channel.fee + '元/次，共扣1次)</label>';
+                            $("#msg").val(channel.msg);
+                            if(channel.errorFlg >8){
+                                flag = 0;
+                                errorMessage = channel.errorMessage;
+                            }
                         });
                         channel1 = channel1 + '</ul></div>';
                     }
-                    if(data.result.channels2 != null && data.result.channels2.length>0){
+                    if (data.result.channels2 != null && data.result.channels2.length > 0) {
+                        flag = flag + 2;
                         channel2 = channel2 + '<div class="channel-list" id="divPayChannelList"><ul>';
-                        jQuery.each(data.result.channels2, function(index,channel){
-                            channel2 = channel2 + '<li id="ch_'+channel.id+'" ref="'+channel.id+'" class="selected"><input type="radio" id="payChannel_'+channel.id+'" name="channelId" checked="checked" value="'+channel.id+'"><label for="payChannel_'+channel.id+'">短信支付'+(index+1)+'：需支付<strong class="c-num">'+channel.fee+'</strong>元话费（'+channel.fee+'元/次，共扣'+channel.feecount+'次)</label>';
+                        jQuery.each(data.result.channels2, function (index, channel) {
+                            channel2 = channel2 + '<li id="ch_' + channel.id + '" ref="' + channel.id + '" class="selected"><input type="radio" id="payChannel_' + channel.id + '" name="channelId" checked="checked" value="' + channel.id + '"><label for="payChannel_' + channel.id + '">短信支付' + (index + 1) + '：需支付<strong class="c-num">' + channel.fee + '</strong>元话费（' + channel.fee + '元/次，共扣' + channel.feecount + '次)</label>';
+                            $("#msg").val(channel.msg);
+                            if(channel.errorFlg >8){
+                                flag = 0;
+                                errorMessage = channel.errorMessage;
+                            }
                         });
                         channel2 = channel2 + '</ul></div>';
-                        flag = flag + 2;
                     }
 
-                    if(flag > 0){
+                    if (flag > 0) {
                         submitflag = true;
                         $("#divNoChannelTip").hide();
                         var html = "";
-                        if(flag == 1 || flag == 3){
+                        if (flag == 1 || flag == 3) {
                             html = feetypeStr + channel1;
-                        }else if(flag == 2){
+                        } else if (flag == 2) {
                             html = feetypeStr + channel2;
                         }
                         $("#divFeeTypeList").html(html).show();
-                    }else{
-                        $("#divNoChannelTip").html("<font color='red'><b>该号码所属省份无可用通道，请选择其它方式</b></font>");
+                    } else {
+                        $("#divNoChannelTip").html("<font color='red'><b>" + errorMessage + "</b></font>");
                     }
+
                 }else {
                     codeError();
                 }

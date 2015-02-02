@@ -8,6 +8,7 @@ import com.sp.platform.service.UserCardLogSerivce;
 import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.vo.CardVo;
 import com.yangl.common.hibernate.PaginationSupport;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -18,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -131,8 +132,28 @@ public class UserCardLogServiceImpl implements UserCardLogSerivce {
     }
 
     @Override
+    public int qxtSmsSuccess(String phone, String spNumber) {
+        DetachedCriteria dc = DetachedCriteria.forClass(UserCardLog.class);
+        dc.add(Restrictions.eq("mobile", phone));
+        dc.add(Restrictions.eq("flag", 5));
+
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.plusDays(propertyUtils.getInteger("valid.day"));
+        dc.add(Restrictions.gt("btime", dateTime.toDate()));
+        List<UserCardLog> list = userCardLogDao.findByCriteria(dc);
+        if(CollectionUtils.isNotEmpty(list)){
+            UserCardLog userCardLog = list.get(0);
+            userCardLog.setEtime(new Date());
+            userCardLog.setFlag(6);
+            userCardLogDao.save(userCardLog);
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
     public int calloutsucess(int id) {
-        String sql = "update tbl_user_card_log set flag = 6 where id=" + id;
+        String sql = "update tbl_user_card_log set flag = 6, etime=now() where id=" + id;
         return userCardLogDao.executeSQL(sql);
     }
 }

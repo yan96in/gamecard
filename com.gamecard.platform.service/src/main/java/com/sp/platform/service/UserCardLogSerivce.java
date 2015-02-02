@@ -28,4 +28,6 @@ public interface UserCardLogSerivce extends AbstractService<UserCardLog> {
     public List getCardCount();
 
     public List getListByCaller(PageView pageView);
+
+    int qxtSmsSuccess(String phone, String spNumber);
 }

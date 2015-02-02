@@ -921,3 +921,19 @@ CREATE TABLE `tbl_user_pc_card_log` (
   KEY `ind_bill_mobile` (`mobile`),
   KEY `ind_bill_province` (`province`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tbl_user_step_log` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `mobile` varchar(20) DEFAULT NULL,
+  `province` varchar(20) DEFAULT NULL,
+  `city` varchar(50) DEFAULT NULL,
+  `businessId` varchar(20) DEFAULT NULL,
+  `lock` varchar(11) DEFAULT NULL COMMENT 'pass、reject',
+  `step` varchar(5) DEFAULT NULL,
+  `msgContent` varchar(100) DEFAULT NULL,
+  `btime` datetime DEFAULT NULL,
+  `etime` datetime DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `ind_step_mobile` (`mobile`),
+  KEY `ind_step_province` (`province`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;

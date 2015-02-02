@@ -27,8 +27,8 @@
                 <sp.platform.db.type>mysql</sp.platform.db.type>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
                 <jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3301/skyd?useUnicode=true&amp;autoReconnect=true&amp;characterEncoding=utf-8]]></jdbc.url>
-                <jdbc.username>root</jdbc.username>
-                <jdbc.password>123153</jdbc.password>
+                <jdbc.username>ivruser</jdbc.username>
+                <jdbc.password>skyd@ivruser</jdbc.password>
                 <hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernate.dialect>
                 <hibernate.show_sql>true</hibernate.show_sql>
                 <hibernate.format_sql>false</hibernate.format_sql>

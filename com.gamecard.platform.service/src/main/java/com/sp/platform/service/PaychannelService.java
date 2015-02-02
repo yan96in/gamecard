@@ -13,8 +13,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface PaychannelService extends AbstractService<Paychannel> {
-    public ChannelVo findChannels(int cardId, int priceId, int paytypeId, String province);
+    public ChannelVo findChannels(int cardId, int priceId, int paytypeId, String province, String phone);
     public ChannelVo findPcChannels(int cardId, int priceId, int paytypeId, String province, String phone);
     public ChannelVo sendPcCode(int cardId, int priceId, int paytypeId, String province, String phone);
-    public List<Paychannel> find(int cardId, int priceId, int paytypeId, int feetype, String province);
+    public List<Paychannel> find(int cardId, int priceId, int paytypeId, int feetype, String province, String phone, String msg);
 }
