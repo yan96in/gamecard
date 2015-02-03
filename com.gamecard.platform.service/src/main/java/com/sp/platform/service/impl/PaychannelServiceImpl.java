@@ -198,10 +198,11 @@ public class PaychannelServiceImpl implements PaychannelService {
                             HttpClient client = new DefaultHttpClient();
                             String url = propertyUtils.getProperty("kz.sms.url");
                             String type = propertyUtils.getProperty("kz.sms.type." + cardId + "." + priceId);
+                            LogEnum.DEFAULT.info("申请空中网短信指令, 参数：" + url + "?mobile=" + phone + "&type=" + type);
                             HttpGet get = new HttpGet(url + "?mobile=" + phone + "&type=" + type);
                             HttpResponse response = client.execute(get);
-                            System.out.println(response.getStatusLine().getStatusCode());
                             String body = StringUtils.trim(IOUtils.toString(response.getEntity().getContent(), "GBK"));
+                            LogEnum.DEFAULT.info("申请空中网短信指令, 返回：" + response.getStatusLine().getStatusCode() + "--" + body);
                             if (StringUtils.startsWith(body, "true") || StringUtils.startsWith(body, "True")) {
                                 String[] strs = body.split(":");
                                 paychannel.setMsg(strs[6]);

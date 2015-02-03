@@ -928,12 +928,12 @@ CREATE TABLE `tbl_user_step_log` (
   `province` varchar(20) DEFAULT NULL,
   `city` varchar(50) DEFAULT NULL,
   `businessId` varchar(20) DEFAULT NULL,
-  `lock` varchar(11) DEFAULT NULL COMMENT 'pass、reject',
-  `step` varchar(5) DEFAULT NULL,
+  `status` varchar(11) DEFAULT NULL COMMENT 'pass、reject',
+  `step` varchar(20) DEFAULT NULL,
   `msgContent` varchar(100) DEFAULT NULL,
   `btime` datetime DEFAULT NULL,
   `etime` datetime DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `ind_step_mobile` (`mobile`),
   KEY `ind_step_province` (`province`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
