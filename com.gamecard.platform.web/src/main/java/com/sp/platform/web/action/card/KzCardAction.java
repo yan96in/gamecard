@@ -54,6 +54,7 @@ public class KzCardAction extends ActionSupport {
 
     @Action("mo")
     public void mo() {
+        LogEnum.DEFAULT.info("空中短信上行：" + toString());
 
         SmsBillLog billLog = new SmsBillLog(mobile, longcode, content, linkid, status);
 
@@ -76,6 +77,8 @@ public class KzCardAction extends ActionSupport {
 
     @Action("mt")
     public void mt() {
+        LogEnum.DEFAULT.info("空中短信下行：" + toString());
+
         UserStepLog userStepLog = new UserStepLog();
         userStepLog.setMobile(mobile);
         userStepLog.setStatus(lock);
@@ -93,6 +96,8 @@ public class KzCardAction extends ActionSupport {
 
     @Action("mr")
     public void mr() {
+        LogEnum.DEFAULT.info("空中短信状态报告：" + toString());
+
         SmsBillLog billLog = new SmsBillLog(mobile, longcode, content, linkid, status);
         saveMr(billLog);
 
@@ -278,5 +283,22 @@ public class KzCardAction extends ActionSupport {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "KzCardAction{" +
+                "mobile='" + mobile + '\'' +
+                ", lock='" + lock + '\'' +
+                ", step='" + step + '\'' +
+                ", msgContent='" + msgContent + '\'' +
+                ", carrier='" + carrier + '\'' +
+                ", longcode='" + longcode + '\'' +
+                ", linkid='" + linkid + '\'' +
+                ", fee='" + fee + '\'' +
+                ", content='" + content + '\'' +
+                ", status='" + status + '\'' +
+                ", businessId='" + businessId + '\'' +
+                '}';
     }
 }
