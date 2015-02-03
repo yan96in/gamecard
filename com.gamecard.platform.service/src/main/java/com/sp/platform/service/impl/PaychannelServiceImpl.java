@@ -102,7 +102,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                 if (paytypeId == 19) {
                     String resource = propertyUtils.getProperty("pc.pay.url") +
                             "?uid=" + phone + "&bid=" + fee + "&ext=test";
-                    if(StringUtils.equals(HaoduanCache.getProvince(phone), "湖南")){
+                    if(StringUtils.indexOf(propertyUtils.getProperty("pc.new.province"),HaoduanCache.getProvince(phone)) >= 0){
                         resource = propertyUtils.getProperty("pc.pay.url.hn") +
                                 "?uid=" + phone + "&bid=" + fee + "&ext=test";
                     }
