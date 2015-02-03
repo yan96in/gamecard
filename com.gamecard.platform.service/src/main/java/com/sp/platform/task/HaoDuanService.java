@@ -88,7 +88,8 @@ public class HaoDuanService {
     }
 
     public static void main(String[] args) {
-        String url = "http://v.showji.com/locating/showji.com1118.aspx?output=json&callback=querycallback&m=13900008888";
+        //String url = "http://v.showji.com/locating/showji.com1118.aspx?output=json&callback=querycallback&m=13900008888";
+        String url = "http://v.showji.com/Locating/showji.com20150108.aspx?m=13900008888&output=json&callback=querycallback";
         HttpClient client = new DefaultHttpClient();
         try {
             HttpGet get = new HttpGet(url);
