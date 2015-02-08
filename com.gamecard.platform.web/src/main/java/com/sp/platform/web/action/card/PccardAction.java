@@ -5,10 +5,12 @@ import com.sp.platform.cache.CardCache;
 import com.sp.platform.cache.CpSyncCache;
 import com.sp.platform.cache.SpInfoCache;
 import com.sp.platform.common.PageView;
+import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.service.PcCardLogService;
 import com.sp.platform.util.TimeUtils;
 import com.sp.platform.vo.PcBillVo;
 import com.sp.platform.vo.SmsBillVo;
+import com.sp.platform.web.constants.Constants;
 import com.yangl.common.Struts2Utils;
 import com.yangl.common.hibernate.PaginationSupport;
 import org.apache.commons.lang.StringUtils;
@@ -77,7 +79,7 @@ public class PccardAction extends ActionSupport {
         url.append(pageView.getBtime());
         url.append("&pageView.etime=");
         url.append(pageView.getEtime());
-        if(StringUtils.isNotBlank(pageView.getCaller())){
+        if (StringUtils.isNotBlank(pageView.getCaller())) {
             url.append("&pageView.caller=");
             url.append(pageView.getCaller());
         }
@@ -88,6 +90,14 @@ public class PccardAction extends ActionSupport {
 
         pageGoto = PaginationSupport.getClientPageContent(paginationSupport);
         list = paginationSupport.getItems();
+
+        for (int i = 0; i < list.size(); i++) {
+            PcCardLog pcCardLog = (PcCardLog) list.get(i);
+            pcCardLog.setCardShowName(CardCache.getCard(pcCardLog.getCardId()).getName() + "-"
+                    + CardCache.getPrice(pcCardLog.getPriceId()).getDescription());
+            pcCardLog.setResultcode(Constants.getErrorMessage(pcCardLog.getResultcode()));
+        }
+
         return "usercardlist";
     }
 
@@ -111,15 +121,15 @@ public class PccardAction extends ActionSupport {
         }
 
         list = pcCardLogService.getBillInfo(pageView);
-        if(pageView.getCpid() == 1){
+        if (pageView.getCpid() == 1) {
             return "province_list";
         } else {
-            for(int i = 0; i < list.size(); i++){
+            for (int i = 0; i < list.size(); i++) {
                 PcBillVo pcBillVo = (PcBillVo) list.get(i);
-                if(pcBillVo.getCardid().equals("总计")){
+                if (pcBillVo.getCardid().equals("总计")) {
                     pcBillVo.setCardid("总计");
                     pcBillVo.setPriceid("");
-                }else {
+                } else {
                     pcBillVo.setCardid(CardCache.getCard(Integer.parseInt(pcBillVo.getCardid())).getName());
                     pcBillVo.setPriceid(CardCache.getPrice(Integer.parseInt(pcBillVo.getPriceid())).getDescription());
                 }

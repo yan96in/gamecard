@@ -30,6 +30,7 @@ public class PcCardLog {
     private int status;
     private Date btime;
     private Date etime;
+    private String cardShowName;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -167,6 +168,15 @@ public class PcCardLog {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Transient
+    public String getCardShowName() {
+        return cardShowName;
+    }
+
+    public void setCardShowName(String cardShowName) {
+        this.cardShowName = cardShowName;
     }
 
     @Override

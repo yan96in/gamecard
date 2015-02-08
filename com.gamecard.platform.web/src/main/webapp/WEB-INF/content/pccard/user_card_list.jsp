@@ -126,7 +126,7 @@
                                     <td>${bean.mobile}</td>
                                     <td>${bean.province}-${bean.city}</td>
                                     <td>${bean.fee}</td>
-                                    <td>${bean.cardId}"/>-${bean.priceId}</td>
+                                    <td>${bean.cardId}-${bean.priceId}</td>
                                     <td>${bean.cardno}-${bean.cardpwd}</td>
                                     <td>
                                         ${bean.btime}<br>
