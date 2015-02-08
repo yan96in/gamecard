@@ -92,7 +92,7 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
         String jssj = sj[1];
 
         //  查询字段 --------------------------
-        String sql = "select cardid, priceid, count(*) num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
+        String sql = "select cardid, priceid, sum(case status when 2 then 1 else 0 end) as num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
         if(pageView.getSpid() > 0){
             sql = sql + "and channelid=" + pageView.getSpid() + " ";
         }
