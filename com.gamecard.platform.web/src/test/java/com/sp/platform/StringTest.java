@@ -1,5 +1,6 @@
 package com.sp.platform;
 
+import com.sp.platform.util.XDEncodeHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -104,15 +105,20 @@ public class StringTest {
 
     @Test
     public void test2() throws Exception {
-        File file = new File("d://new4.txt");
+        XDEncodeHelper xdEncodeHelper = new XDEncodeHelper("tch5VEeZSAJ2VU4lUoqaYaaP");
+        File file = new File("/Users/yanglei/card.txt");
         List<String> list = FileUtils.readLines(file);
         int line = 0;
         Set<String> set = new HashSet<String>();
+        Thread.sleep(5000);
+
         for (String str : list) {
             line++;
-            System.out.println(str);
-            set.add(str);
+            String[] strs = str.split(",");
+            System.out.println(xdEncodeHelper.XDDecode(strs[0],true) + ","+xdEncodeHelper.XDDecode(strs[1],true));
         }
+
+
         System.out.println(line);
         System.out.println(set.size());
     }

@@ -75,7 +75,8 @@ public class CardAdminAction extends ActionSupport {
             String blackUser;
             blackUser = reader.readLine();
             List<CardPassword> cards = new ArrayList<CardPassword>();
-            Date now = new Date();XDEncodeHelper xdEncodeHelper = new XDEncodeHelper(propertyUtils.getProperty("DESede.key", "tch5VEeZSAJ2VU4lUoqaYddP"));
+            Date now = new Date();
+            XDEncodeHelper xdEncodeHelper = new XDEncodeHelper(propertyUtils.getProperty("DESede.key", "tch5VEeZSAJ2VU4lUoqaYddP"));
             while (StringUtils.isNotBlank(blackUser)) {
                 String[] temp = blackUser.split(",");
                 CardPassword card = new CardPassword();
