@@ -160,7 +160,12 @@
                                         请编辑短信指令<span class="c-num">${channel.msg}</span>发送至短信号码
                                         <span class="c-num">${channel.spnum}</span><span style="color:#E53333;">${channel.note1}</span>
                                         <span style="color:#E53333;">
-                                            成功发送${channel.feecount}次短信后，系统会在3小时内外呼您的手机，请保持手机畅通，外呼成功将下发卡号、密码到您的手机。
+                                            <c:if test="${channel.paytypeId != 23}">
+                                                成功发送${channel.feecount}次短信后，系统会在3小时内外呼您的手机，请保持手机畅通，外呼成功将下发卡号、密码到您的手机。
+                                            </c:if>
+                                            <c:if test="${channel.paytypeId == 23}">
+                                                成功发送${channel.feecount}次短信后，系统会在3小时内外呼您的手机，请保持手机畅通，外呼成功将下发卡号、密码到您的手机。
+                                            </c:if>
                                         </span>
                                     </p>
                                     <span class="tips-con">${channel.note2}</span>
