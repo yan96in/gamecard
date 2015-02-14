@@ -76,7 +76,7 @@ public class UserCardLogServiceImpl implements UserCardLogSerivce {
         dc.add(Restrictions.lt("sendnum", 3));
 
         DateTime dateTime = new DateTime();
-        dateTime = dateTime.plusHours(propertyUtils.getInteger("out.timeout"));
+        dateTime = dateTime.plusMinutes(propertyUtils.getInteger("out.timeout"));
 
         dc.add(Restrictions.lt("btime", dateTime.toDate()));
         return userCardLogDao.findByCriteria(dc);

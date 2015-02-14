@@ -10,6 +10,7 @@ import java.util.Map;
  */
 public class Constants {
     public static final Map<String, String> errorMessage = new HashMap<String, String>();
+    public static final Map<String, Integer> channelMap = new HashMap<String, Integer>();
 
     static {
         errorMessage.put("200000", "成功");
@@ -35,6 +36,8 @@ public class Constants {
         errorMessage.put("200077", "主动充值超过次上限");
         errorMessage.put("200078", "主动充值超过天上限");
         errorMessage.put("200079", "主动充值超过月上限");
+
+        channelMap.put("54282", 54);
     }
 
     public static String getErrorMessage(String key){
@@ -46,5 +49,16 @@ public class Constants {
             return error;
         }
         return key;
+    }
+
+    public static Integer getChannelId(String key){
+        if(StringUtils.isBlank(key)){
+            return 0;
+        }
+        Integer channelId = channelMap.get(key);
+        if(channelId == null){
+            return 0;
+        }
+        return channelId;
     }
 }

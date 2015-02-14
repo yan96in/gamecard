@@ -2,6 +2,7 @@ package com.sp.platform;
 
 import com.sp.platform.util.XDEncodeHelper;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -12,6 +13,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,11 +38,30 @@ public class StringTest {
 
         String message = "恭喜您获得一张{0},卡号:{1},密码:{2}";
         message = MessageFormat.format(message, "900点骏卡", "123132123", "ccc");
-        if(message.indexOf("获得")>=0){
+        if (message.indexOf("获得") >= 0) {
             System.out.println(true);
         }
         System.out.println(message);
         System.out.println(new String(message.getBytes("utf-8"), "gb2312"));
+        String bodys = "TTGameCard_PACKAGES_checkuser~13552922122~125905112~";
+        System.out.println(bodys.indexOf("PACK"));
+        System.out.println("PACK".indexOf(bodys));
+
+        if (bodys.indexOf("checkuser") >= 0) {
+            bodys = StringUtils.substringAfter(bodys, "TTGameCard_PACKAGES_");
+            String temp2 = StringUtils.substringBefore(bodys, "~");
+            bodys = StringUtils.substringAfter(bodys, "checkuser~") + "00101";
+            System.out.println(bodys);
+            System.out.println(temp2);
+        }
+    }
+
+    @Test
+    public void testBody() throws UnsupportedEncodingException {
+
+        String body = "%c4%fa%d2%d1%be%ad%b7%a2%cb%cd%c1%cb%d7%e3%b9%bb%b5%c4%cc%f5%ca%fd%a3%ac%c7%eb%bb%d8%b8%b48%a3%ac%bd%ab%d4%da1%b7%d6%d6%d3%d2%d4%c4%da%b8%f8%c4%fa%b7%a2%cb%cd%d3%ce%cf%b7%bf%a8%c3%dc%2c%bb%d8%b8%b4%d6%bb%ca%d5%c8%a10.1%d4%aa%b6%cc%d0%c5%cf%a2%b7%d1%d3%c3%5b%b6%df%c0%b2%cd%f8%5d";
+        System.out.println(URLDecoder.decode(body, "GBK"));
+
     }
 
     @Test
@@ -75,13 +96,11 @@ public class StringTest {
 
     @Test
     public void http() throws Exception {
-        String str = "res.sms?link_id=15166817&mo_from=18660292918&mo_to=10669699&content=C%23BL01&service=FBBD&motime=2013-11-20+12%3A45%3A05.013";
-        str = "res.sms?link_id=15166817&mo=18660292918&status=DELIVRD&serviceid=FBBD&fee=2.0";
         HttpClient client = new DefaultHttpClient();
-        HttpGet get = new HttpGet("http://218.206.72.142:8080/spff/receivesms/4/" + str);
+        HttpGet get = new HttpGet("http://pc.rsbwl.com/CBS/jfpc/zhjw_cuc.jsp?uid=13112341234&pid=1");
         HttpResponse response = client.execute(get);
         System.out.println(response.getStatusLine().getStatusCode());
-        Thread.sleep(200);
+        System.out.println(IOUtils.toString(response.getEntity().getContent()));
     }
 
     @Test
@@ -115,7 +134,7 @@ public class StringTest {
         for (String str : list) {
             line++;
             String[] strs = str.split(",");
-            System.out.println(xdEncodeHelper.XDDecode(strs[0],true) + ","+xdEncodeHelper.XDDecode(strs[1],true));
+            System.out.println(xdEncodeHelper.XDDecode(strs[0], true) + "," + xdEncodeHelper.XDDecode(strs[1], true));
         }
 
 

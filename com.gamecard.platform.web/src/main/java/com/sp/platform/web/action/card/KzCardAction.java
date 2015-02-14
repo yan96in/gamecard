@@ -68,7 +68,7 @@ public class KzCardAction extends ActionSupport {
         billLog.setFee(Integer.parseInt(fee));
         billLog.setSfid(3);
         billLog.setCpid(2);
-        billLog.setChannelid(33);
+        billLog.setChannelid(com.sp.platform.web.constants.Constants.getChannelId(StringUtils.left(content, 5)));
         billLog.setParentid(billLog.getCpid());
 
         saveBill(billLog, Integer.parseInt(fee), false);
