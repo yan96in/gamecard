@@ -2,7 +2,6 @@ package com.sp.platform.web.action.card;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sp.platform.cache.HaoduanCache;
-import com.sp.platform.cache.SnumCache;
 import com.sp.platform.common.Constants;
 import com.sp.platform.entity.*;
 import com.sp.platform.service.*;
@@ -15,7 +14,10 @@ import com.sp.platform.vo.PhoneVo;
 import com.yangl.common.IpAddressUtil;
 import com.yangl.common.Struts2Utils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.struts2.convention.annotation.*;
+import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
@@ -138,7 +140,13 @@ public class CardAction extends ActionSupport {
         card = cardService.get(paychannel.getCardId());
         price = priceService.getDetail(paychannel.getPriceId(), paychannel.getCardId());
         paytype = paytypeService.get(paychannel.getPaytypeId());
-        list = paychannelService.find(paychannel.getCardId(), paychannel.getPriceId(), paychannel.getPaytypeId(), paychannel.getFeetype(), phoneVo.getProvince(), phoneNumber, msg);
+        if (StringUtils.isNotBlank(msg)) {
+            paychannel.setMsg(msg);
+            list = new ArrayList(1);
+            list.add(paychannel);
+        } else {
+            list = paychannelService.find(paychannel.getCardId(), paychannel.getPriceId(), paychannel.getPaytypeId(), paychannel.getFeetype(), phoneVo.getProvince(), phoneNumber, msg);
+        }
 
         return "channel";
     }
@@ -149,7 +157,7 @@ public class CardAction extends ActionSupport {
         if (StringUtils.isBlank(phoneNumber)) {
             result = new JsonVo(false, "请输入正确的手机号码");
         } else {
-            if ((paytypeId.equals(16)||paytypeId.equals(23)) && !checkChinamobile()) {
+            if ((paytypeId.equals(16) || paytypeId.equals(23)) && !checkChinamobile()) {
                 result = new JsonVo(false, "请输入正确的移动手机号码");
                 Struts2Utils.renderJson(result);
                 return;

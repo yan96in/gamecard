@@ -218,6 +218,14 @@ public class PaychannelServiceImpl implements PaychannelService {
                                 LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
                                 paychannel.setErrorFlg(11);
                                 paychannel.setErrorMessage("您当月订购次数已满，请下个月继续使用该业务。");
+                            } else if(StringUtils.startsWith(body, "2")){
+                                LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
+                                paychannel.setErrorFlg(12);
+                                paychannel.setErrorMessage("您已经定购过10元业务，本月不能再订购10元业务。");
+                            } else if(StringUtils.startsWith(body, "3")){
+                                LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
+                                paychannel.setErrorFlg(13);
+                                paychannel.setErrorMessage("您已经定购过16元业务，本月不能再订购16元业务。");
                             } else {
                                 LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
                                 iterator.remove();

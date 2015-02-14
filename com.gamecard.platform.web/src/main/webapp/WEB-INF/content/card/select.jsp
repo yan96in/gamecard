@@ -222,6 +222,7 @@
     var channel2 = "";
     var feetypeStr= '';
     var submitflag = false;
+    var isGetCode = false;
     $(document).ready(function () {
         $("#form1").submit(function(){
             if(submitflag){
@@ -235,6 +236,7 @@
 
         $("#phoneNumber").focus(function(){
             submitflag = false;
+            isGetCode = false;
             $(this).removeClass("input_error").addClass("input_show");
             $("#pPayPhoneArea").html("").hide();
             $("#divNoChannelTip").html("请先输入支付号码，然后再获取可用支付通道！").show();
@@ -249,7 +251,9 @@
         }).blur(function(){
             var phonenumber = $(this).val();
             if(phonenumber.length == 11){
-                codeCheck(phonenumber);
+                if(!isGetCode){
+                    codeCheck(phonenumber);
+                }
             } else {
                 codeError();
             }
@@ -287,7 +291,8 @@
                         flag = flag + 1;
                         channel1 = channel1 + '<div class="channel-list" id="divPayChannelList"><ul>';
                         jQuery.each(data.result.channels1, function (index, channel) {
-                            channel1 = channel1 + '<li id="ch_' + channel.id + '" ref="' + channel.id + '" class="selected"><input type="radio" id="payChannel_' + channel.id + '" name="channelId" checked="checked" value="' + channel.id + '"><label for="payChannel_' + channel.id + '">短信支付' + (index + 1) + '：需支付<strong class="c-num">' + channel.fee + '</strong>元话费（' + channel.fee + '元/次，共扣1次)</label>';
+                            channel1 = channel1 + '<li id="ch_' + channel.id + '" ref="' + channel.id + '" class="selected">' +
+                            '<input type="radio" onclick="setSmsMsg(' + channel.msg + ');" id="payChannel_' + channel.id + '" name="channelId" checked="checked" value="' + channel.id + '"><label for="payChannel_' + channel.id + '">短信支付' + (index + 1) + '：需支付<strong class="c-num">' + channel.fee + '</strong>元话费（' + channel.fee + '元/次，共扣1次)</label>';
                             $("#msg").val(channel.msg);
                             if(channel.errorFlg >8){
                                 flag = 0;
@@ -300,7 +305,9 @@
                         flag = flag + 2;
                         channel2 = channel2 + '<div class="channel-list" id="divPayChannelList"><ul>';
                         jQuery.each(data.result.channels2, function (index, channel) {
-                            channel2 = channel2 + '<li id="ch_' + channel.id + '" ref="' + channel.id + '" class="selected"><input type="radio" id="payChannel_' + channel.id + '" name="channelId" checked="checked" value="' + channel.id + '"><label for="payChannel_' + channel.id + '">短信支付' + (index + 1) + '：需支付<strong class="c-num">' + channel.fee + '</strong>元话费（' + channel.fee + '元/次，共扣' + channel.feecount + '次)</label>';
+                            channel2 = channel2 + '<li id="ch_' + channel.id + '" ref="' + channel.id + '" class="selected">' +
+                            '<input type="radio" onclick="setSmsMsg(' + channel.msg + ');" id="payChannel_' + channel.id + '" name="channelId" checked="checked" value="' + channel.id + '">' +
+                            '<label for="payChannel_' + channel.id + '">短信支付' + (index + 1) + '：需支付<strong class="c-num">' + channel.fee + '</strong>元话费（' + channel.fee + '元/次，共扣' + channel.feecount + '次)</label>';
                             $("#msg").val(channel.msg);
                             if(channel.errorFlg >8){
                                 flag = 0;
@@ -312,6 +319,7 @@
 
                     if (flag > 0) {
                         submitflag = true;
+                        isGetCode = true;
                         $("#divNoChannelTip").hide();
                         var html = "";
                         if (flag == 1 || flag == 3) {
@@ -349,6 +357,9 @@
             $("#ft_1").attr("class","");
             $("#ft_2").attr("class","selected");
         }
+    }
+    function setSmsMsg(obj){
+        $("#msg").val(obj);
     }
 </script>
 
