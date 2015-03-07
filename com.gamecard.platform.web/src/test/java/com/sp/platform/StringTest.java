@@ -1,6 +1,7 @@
 package com.sp.platform;
 
 import com.sp.platform.util.XDEncodeHelper;
+import com.sp.platform.web.constants.Constants;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -61,6 +62,7 @@ public class StringTest {
 
         String body = "%c4%fa%d2%d1%be%ad%b7%a2%cb%cd%c1%cb%d7%e3%b9%bb%b5%c4%cc%f5%ca%fd%a3%ac%c7%eb%bb%d8%b8%b48%a3%ac%bd%ab%d4%da1%b7%d6%d6%d3%d2%d4%c4%da%b8%f8%c4%fa%b7%a2%cb%cd%d3%ce%cf%b7%bf%a8%c3%dc%2c%bb%d8%b8%b4%d6%bb%ca%d5%c8%a10.1%d4%aa%b6%cc%d0%c5%cf%a2%b7%d1%d3%c3%5b%b6%df%c0%b2%cd%f8%5d";
         System.out.println(URLDecoder.decode(body, "GBK"));
+        System.out.println(Constants.getChannelId("Yxx82".toUpperCase()));
 
     }
 

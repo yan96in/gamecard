@@ -160,10 +160,10 @@
                                         请编辑短信指令<span class="c-num">${channel.msg}</span>发送至短信号码
                                         <span class="c-num">${channel.spnum}</span><span style="color:#E53333;">${channel.note1}</span>
                                         <span style="color:#E53333;">
-                                            <c:if test="${channel.paytypeId != 23}">
+                                            <c:if test="${channel.paytypeId < 23}">
                                                 成功发送${channel.feecount}次短信后，系统会在3小时内外呼您的手机，请保持手机畅通，外呼成功将下发卡号、密码到您的手机。
                                             </c:if>
-                                            <c:if test="${channel.paytypeId == 23}">
+                                            <c:if test="${channel.paytypeId >= 22}">
                                                 ,按短信提示操作，发送足够条数后，等待半小时，会收到一条短信，按内容回复以后（该短信不收取信息费），会收到点卡的卡密。
                                             </c:if>
                                         </span>

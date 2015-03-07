@@ -38,7 +38,8 @@ public class Constants {
         errorMessage.put("200079", "主动充值超过月上限");
 
         channelMap.put("54282", 54);
-        channelMap.put("84482", 54);
+        channelMap.put("84482", 55);
+        channelMap.put("YXX82", 56);
     }
 
     public static String getErrorMessage(String key){
