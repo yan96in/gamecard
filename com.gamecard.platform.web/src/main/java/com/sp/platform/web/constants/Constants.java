@@ -13,6 +13,28 @@ public class Constants {
     public static final Map<String, Integer> channelMap = new HashMap<String, Integer>();
 
     static {
+        initErrorMessage();
+
+        initKzChannelConfig();
+
+    }
+
+    private static void initKzChannelConfig() {
+        channelMap.put("54282", 54);
+        channelMap.put("84482", 55);
+        channelMap.put("YXX82", 56);
+        channelMap.put("54252", 57);
+        channelMap.put("84452", 58);
+        channelMap.put("YXX52", 59);
+        channelMap.put("54251", 60);
+        channelMap.put("84451", 61);
+        channelMap.put("YXX51", 62);
+        channelMap.put("54281", 63);
+        channelMap.put("84481", 64);
+        channelMap.put("YXX81", 65);
+    }
+
+    private static void initErrorMessage() {
         errorMessage.put("200000", "成功");
         errorMessage.put("200001", "系统内部错误");
         errorMessage.put("200002", "接入鉴权失败");
@@ -36,10 +58,6 @@ public class Constants {
         errorMessage.put("200077", "主动充值超过次上限");
         errorMessage.put("200078", "主动充值超过天上限");
         errorMessage.put("200079", "主动充值超过月上限");
-
-        channelMap.put("54282", 54);
-        channelMap.put("84482", 55);
-        channelMap.put("YXX82", 56);
     }
 
     public static String getErrorMessage(String key){
@@ -62,5 +80,12 @@ public class Constants {
             return 0;
         }
         return channelId;
+    }
+
+    public static void main(String[] args) {
+
+        initKzChannelConfig();
+
+        System.out.println(channelMap.size());
     }
 }
