@@ -335,10 +335,10 @@ public class CardAction extends ActionSupport {
             if (limitflg) {
                 pcCardLog = pcCardLogService.getPcCard(id, priceId, phoneNumber, identifyingCode, sid, paytypeId);
                 if (pcCardLog == null) {
-                    message = "取卡失败， 请联系客服";
+                    message = "购买不成功，请确认您的手机是否有足额话费，并认真填写验证码，如有疑问，请联系客服";
                 }
             } else {
-                message = "取卡失败， 请联系客服";
+                message = "购买不成功，请确认您的手机是否有足额话费，并认真填写验证码，如有疑问，请联系客服";
             }
         } catch (Exception e) {
             LogEnum.DEFAULT.error(e.toString());
