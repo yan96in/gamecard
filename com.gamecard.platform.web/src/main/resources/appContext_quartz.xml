@@ -16,6 +16,8 @@
                 <ref bean="calloutTimer"/>
                 <!--4. 下发点卡 	 注：每分种运行一次 -->
                 <ref bean="sendCardTimer"/>
+                <!--5. 处理空中同步失败数据 	 注：每5分种运行一次 -->
+                <ref bean="kzProcessErrorTimer"/>
             </list>
         </property>
     </bean>
@@ -93,6 +95,25 @@
         </property>
         <property name="cronExpression">
             <value>0 0/1 * * * ? *</value>
+        </property>
+    </bean>
+
+    <!--5. 处理空中同步失败数据 	 注：每5分种运行一次 -->
+    <bean id="kzProcessErrorJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="kzProcessErrorService"/>
+        <property name="targetMethod" value="processError"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!--5. 处理空中同步失败数据 	 注：每5分种运行一次 -->
+    <bean id="kzProcessErrorTimer"
+          class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="kzProcessErrorJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 0/3 * * * ? *</value>
         </property>
     </bean>
 
