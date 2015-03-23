@@ -125,6 +125,7 @@ public class BillTempServiceImpl implements BillTempService {
             billTempDao.save(billTemp);
         }
     }
+
     @Override
     public void syncsms(int id) {
         SmsBillTemp billTemp = smsBillTempDao.get(id);
@@ -261,5 +262,18 @@ public class BillTempServiceImpl implements BillTempService {
         dc.add(Restrictions.le("etime", DateTime.parse(pageView.getEtime(), format).toDate()));
         dc.addOrder(Order.desc("btime"));
         return billTempDao.findByCriteria(dc);
+    }
+
+    @Override
+    public int updateUserFlag(String mobile, Integer channelid) {
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.plusHours(-24);
+
+        String sql = "update sms_bill_temp set flag=3,fee=200,channelid=" + channelid
+                + ",status='DELIVRD', etime=now() where (btime>'"
+                + dateTime.toString("yyyy-MM-dd HH:mm:ss") + "' or etime>'" +
+                dateTime.toString("yyyy-MM-dd HH:mm:ss") + "') and mobile='" + mobile
+                + "' and flag <3";
+        return billTempDao.executeSQL(sql);
     }
 }

@@ -5,7 +5,10 @@ import com.sp.platform.dao.UserStepLogDao;
 import com.sp.platform.entity.UserStepLog;
 import com.sp.platform.service.UserStepLogService;
 import com.yangl.common.hibernate.PaginationSupport;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,5 +47,15 @@ public class UserStepLogServiceImpl implements UserStepLogService {
     @Override
     public PaginationSupport getPage(PaginationSupport page, Order[] orders, PageView pageView) {
         return null;
+    }
+
+    @Override
+    public List<UserStepLog> getCardMaxStepInfo() {
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.plusMinutes(-6);
+        DetachedCriteria dc = DetachedCriteria.forClass(UserStepLog.class);
+        dc.add(Restrictions.gt("btime", dateTime.toDate()));
+        dc.add(Restrictions.in("step", new String[]{"5", "8"}));
+        return userStepLogDao.findByCriteria(dc);
     }
 }

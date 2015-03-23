@@ -46,4 +46,7 @@ public interface BillTempService extends AbstractService<BillTemp>{
     public void deleteSmsTempByLinkId(String linkId);
 
     public List getSmsByCaller(PageView pageView);
+
+    public int updateUserFlag(String mobile, Integer msgContent);
+
 }

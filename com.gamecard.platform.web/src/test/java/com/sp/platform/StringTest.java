@@ -1,7 +1,7 @@
 package com.sp.platform;
 
 import com.sp.platform.util.XDEncodeHelper;
-import com.sp.platform.web.constants.Constants;
+import com.sp.platform.constants.Constants;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
