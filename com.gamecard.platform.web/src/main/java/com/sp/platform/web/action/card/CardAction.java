@@ -153,6 +153,9 @@ public class CardAction extends ActionSupport {
 
     @Action("checkPhone")
     public void checkPhone() {
+        LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
+                append("--checkPcPhone-- 请求IP：").append(IpAddressUtil.getRealIp())
+                .append(" ：").toString());
         JsonVo result = null;
         if (StringUtils.isBlank(phoneNumber)) {
             result = new JsonVo(false, "请输入正确的手机号码");
@@ -244,7 +247,7 @@ public class CardAction extends ActionSupport {
 
     private boolean checkLimit(String phoneNumber, String province, int paytypeId) {
         LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
-                append("---- 请求IP：").append(IpAddressUtil.getRealIp())
+                append("--checkLimit-- 请求IP：").append(IpAddressUtil.getRealIp())
                 .append(", 省份：")
                 .append(province).toString());
         boolean flag = callerLimit(phoneNumber, paytypeId);
