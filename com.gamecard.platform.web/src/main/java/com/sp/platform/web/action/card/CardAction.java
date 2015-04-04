@@ -11,6 +11,7 @@ import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.vo.ChannelVo;
 import com.sp.platform.vo.JsonVo;
 import com.sp.platform.vo.PhoneVo;
+import com.sp.platform.web.cache.CheckUserCache;
 import com.yangl.common.IpAddressUtil;
 import com.yangl.common.Struts2Utils;
 import org.apache.commons.lang.StringUtils;
@@ -154,9 +155,23 @@ public class CardAction extends ActionSupport {
     @Action("checkPhone")
     public void checkPhone() {
         LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
-                append("--checkPcPhone-- 请求IP：").append(IpAddressUtil.getRealIp())
+                append("--checkPhone-- 请求IP：").append(IpAddressUtil.getRealIp())
                 .append(" ：").toString());
         JsonVo result = null;
+        if (!CheckUserCache.checkUser(phoneNumber)) {
+            CheckUserCache.addIp(IpAddressUtil.getRealIp());
+            result = new JsonVo(false, "超过限制");
+            Struts2Utils.renderJson(result);
+            LogEnum.DEFAULT.info("号码 超过限制 : " + phoneNumber);
+            return;
+        }
+        if (!CheckUserCache.checkIp(IpAddressUtil.getRealIp())) {
+            result = new JsonVo(false, "超过限制");
+            Struts2Utils.renderJson(result);
+            LogEnum.DEFAULT.info("IP 超过限制 : " + IpAddressUtil.getRealIp());
+            return;
+        }
+
         if (StringUtils.isBlank(phoneNumber)) {
             result = new JsonVo(false, "请输入正确的手机号码");
         } else {
@@ -185,7 +200,19 @@ public class CardAction extends ActionSupport {
 
     @Action("checkPcPhone")
     public void checkPcPhone() {
+        LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
+                append("--checkPcPhone-- 请求IP：").append(IpAddressUtil.getRealIp())
+                .append(" ：").toString());
         JsonVo result = null;
+        //判断是否超上限
+        if (!CheckUserCache.checkUser(phoneNumber)) {
+            CheckUserCache.addIp(IpAddressUtil.getRealIp());
+            result = new JsonVo(false, "超过限制");
+            Struts2Utils.renderJson(result);
+            LogEnum.DEFAULT.info("IP 超过限制 : " + IpAddressUtil.getRealIp());
+            return;
+        }
+
         if (StringUtils.isBlank(phoneNumber)) {
             result = new JsonVo(false, "请输入正确的手机号码");
         } else {

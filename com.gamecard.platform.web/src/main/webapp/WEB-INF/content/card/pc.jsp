@@ -270,6 +270,11 @@
         $("#txtPayPhoneTip").removeClass("onFocus").removeClass("onCorrect").addClass("onError").html("请输入正确的手机号码！");
     }
 
+    function codeError2(message){
+        $(this).removeClass("input_show").addClass("input_error")
+        $("#txtPayPhoneTip").removeClass("onFocus").removeClass("onCorrect").addClass("onError").html(message);
+    }
+
     function codeCheck(phoneNumber){
         $.ajax({
             type: "GET",
@@ -294,7 +299,7 @@
                         $("#divNoChannelTip").html("<font color='red'><b>该号码所属省份无法使用此通道，请选择其它方式</b></font>");
                     }
                 }else {
-                    codeError();
+                    codeError2(data.msg);
                 }
             },
             onWait: "正在校验手机号码，请稍候..."
