@@ -14,7 +14,12 @@ import com.sp.platform.vo.PhoneVo;
 import com.sp.platform.web.cache.CheckUserCache;
 import com.yangl.common.IpAddressUtil;
 import com.yangl.common.Struts2Utils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
@@ -22,6 +27,7 @@ import org.apache.struts2.convention.annotation.Results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -225,6 +231,14 @@ public class CardAction extends ActionSupport {
                 Struts2Utils.renderJson(result);
                 return;
             }
+
+            if (checkByKz()) {
+                LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber);
+                result = new JsonVo(false, "该用户暂时不能使用该业务");
+                Struts2Utils.renderJson(result);
+                return;
+            }
+
             PhoneVo phone = new PhoneVo(phoneNumber,
                     HaoduanCache.getProvince(phoneNumber), HaoduanCache.getCity(phoneNumber));
 
@@ -234,6 +248,22 @@ public class CardAction extends ActionSupport {
             result = new JsonVo(true, channelVo, "");
         }
         Struts2Utils.renderJson(result);
+    }
+
+    private boolean checkByKz() {
+        try {
+            HttpClient client = new DefaultHttpClient();
+            HttpGet get = new HttpGet("http://61.135.202.118:8083/indexForDB.jsp?mobile=" + phoneNumber + "&channel=XZHJW000S00");
+            HttpResponse response = client.execute(get);
+            String body = StringUtils.trim(IOUtils.toString(response.getEntity().getContent(), "GBK"));
+            if (StringUtils.equals("-2", body)) {
+                return true;
+            }
+        } catch (Exception e) {
+            LogEnum.DEFAULT.error("调用空中判断用户接口异常 {}", e);
+            return true;
+        }
+        return false;
     }
 
     @Action("sendPcCode")
