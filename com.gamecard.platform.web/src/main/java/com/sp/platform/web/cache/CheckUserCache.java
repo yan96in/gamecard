@@ -15,6 +15,7 @@ public class CheckUserCache {
     private static String date = "";
     private static long lastTime = 0;
     private static final Integer MAX_COUNT = 20;
+    private static final Integer MAX_COUNT_IP = 5;
 
     public static boolean checkUser(String mobile) {
         if (System.currentTimeMillis() - lastTime > 60000) {
@@ -53,7 +54,7 @@ public class CheckUserCache {
             ipCache.put(ip, 1);
             return true;
         }
-        if (count < MAX_COUNT) {
+        if (count < MAX_COUNT_IP) {
             ipCache.put(ip, count + 1);
             return true;
         }
@@ -66,7 +67,7 @@ public class CheckUserCache {
             ipCache.put(ip, 1);
             return;
         }
-        if (count < MAX_COUNT) {
+        if (count < MAX_COUNT_IP) {
             ipCache.put(ip, count + 1);
         }
     }

@@ -165,7 +165,6 @@ public class CardAction extends ActionSupport {
                 .append(" ：").toString());
         JsonVo result = null;
         if (!CheckUserCache.checkUser(phoneNumber)) {
-            CheckUserCache.addIp(IpAddressUtil.getRealIp());
             result = new JsonVo(false, "超过限制");
             Struts2Utils.renderJson(result);
             LogEnum.DEFAULT.info("号码 超过限制 : " + phoneNumber);
