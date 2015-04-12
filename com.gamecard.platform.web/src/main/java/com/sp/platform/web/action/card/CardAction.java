@@ -164,16 +164,23 @@ public class CardAction extends ActionSupport {
                 append("--checkPhone-- 请求IP：").append(IpAddressUtil.getRealIp())
                 .append(" ：").toString());
         JsonVo result = null;
-        if (!CheckUserCache.checkUser(phoneNumber)) {
-            result = new JsonVo(false, "超过限制");
-            Struts2Utils.renderJson(result);
-            LogEnum.DEFAULT.info("号码 超过限制 : " + phoneNumber);
-            return;
-        }
+//        if (!CheckUserCache.checkUser(phoneNumber)) {
+//            result = new JsonVo(false, "超过限制");
+//            Struts2Utils.renderJson(result);
+//            LogEnum.DEFAULT.info("号码 超过限制 : " + phoneNumber);
+//            return;
+//        }
         if (!CheckUserCache.checkIp(IpAddressUtil.getRealIp())) {
             result = new JsonVo(false, "超过限制");
             Struts2Utils.renderJson(result);
             LogEnum.DEFAULT.info("IP 超过限制 : " + IpAddressUtil.getRealIp());
+            return;
+        }
+
+        if (checkByKz()) {
+            LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber);
+            result = new JsonVo(false, "该用户暂时不能使用该业务");
+            Struts2Utils.renderJson(result);
             return;
         }
 
@@ -210,7 +217,7 @@ public class CardAction extends ActionSupport {
                 .append(" ：").toString());
         JsonVo result = null;
         //判断是否超上限
-        if (!CheckUserCache.checkUser(phoneNumber)) {
+        if (paytypeId.equals(20) && !CheckUserCache.checkUser(phoneNumber)) {
             CheckUserCache.addIp(IpAddressUtil.getRealIp());
             result = new JsonVo(false, "超过限制");
             Struts2Utils.renderJson(result);
@@ -227,13 +234,6 @@ public class CardAction extends ActionSupport {
                 return;
             } else if (paytypeId.equals(20) && !checkChinaunicom()) {
                 result = new JsonVo(false, "请输入正确的联通手机号码");
-                Struts2Utils.renderJson(result);
-                return;
-            }
-
-            if (checkByKz()) {
-                LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber);
-                result = new JsonVo(false, "该用户暂时不能使用该业务");
                 Struts2Utils.renderJson(result);
                 return;
             }

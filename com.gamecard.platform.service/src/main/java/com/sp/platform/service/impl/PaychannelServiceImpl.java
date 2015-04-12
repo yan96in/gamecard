@@ -111,7 +111,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                     HttpResponse httpResponse = httpClient.execute(get);
                     if (HttpStatus.SC_OK == httpResponse.getStatusLine().getStatusCode()) {
                         String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
-                        LogEnum.DEFAULT.info(phone + " 移动申请指令返回1:" + resultCode);
+                        LogEnum.DEFAULT.info(phone + " 移动申请指令返回1:" + body);
                         PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
                         resultCode = resultVo.getResultCode();
                         resultMessage = resultVo.getResultMsg();
