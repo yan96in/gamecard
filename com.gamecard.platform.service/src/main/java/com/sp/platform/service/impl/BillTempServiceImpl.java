@@ -1,5 +1,6 @@
 package com.sp.platform.service.impl;
 
+import com.sp.platform.cache.HaoduanCache;
 import com.sp.platform.common.PageView;
 import com.sp.platform.dao.BillTempDao;
 import com.sp.platform.dao.SmsBillTempDao;
@@ -275,5 +276,13 @@ public class BillTempServiceImpl implements BillTempService {
                 dateTime.toString("yyyy-MM-dd HH:mm:ss") + "') and mobile='" + mobile
                 + "' and flag <3";
         return billTempDao.executeSQL(sql);
+    }
+
+    @Override
+    public int getProvinceFee(String phoneNumber) {
+        String province = HaoduanCache.getProvince(phoneNumber);
+        DateTime dateTime = new DateTime();
+        String currentMonth = dateTime.toString("yyyy-MM");
+        return smsBillTempDao.getPrvonceFee(province, currentMonth+"-01");
     }
 }

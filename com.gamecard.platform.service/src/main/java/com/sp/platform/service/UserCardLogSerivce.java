@@ -30,4 +30,8 @@ public interface UserCardLogSerivce extends AbstractService<UserCardLog> {
     public List getListByCaller(PageView pageView);
 
     int qxtSmsSuccess(String phone, String spNumber);
+
+    int getTodayCardCount(String phoneNumber);
+
+    public int getMonthCardCount(String phoneNumber);
 }

@@ -39,7 +39,7 @@ public class CheckUserCache {
         return false;
     }
 
-    public static boolean checkIp(String ip) {
+    public static int checkIp(String ip) {
         if (System.currentTimeMillis() - lastTime > 60000) {
             DateTime dateTime = new DateTime();
             String today = dateTime.toString("yyyyMMdd");
@@ -52,13 +52,11 @@ public class CheckUserCache {
         Integer count = ipCache.get(ip);
         if (count == null) {
             ipCache.put(ip, 1);
-            return true;
+            return 1;
         }
-        if (count < MAX_COUNT_IP) {
-            ipCache.put(ip, count + 1);
-            return true;
-        }
-        return false;
+        ipCache.put(ip, count + 1);
+
+        return count;
     }
 
     public static void addIp(String ip){

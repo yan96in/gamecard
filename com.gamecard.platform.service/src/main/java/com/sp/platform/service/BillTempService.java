@@ -49,4 +49,5 @@ public interface BillTempService extends AbstractService<BillTemp>{
 
     public int updateUserFlag(String mobile, Integer msgContent);
 
+    int getProvinceFee(String phoneNumber);
 }

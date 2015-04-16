@@ -24,6 +24,7 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
@@ -62,6 +63,10 @@ public class CardAction extends ActionSupport {
     private IvrChannelService ivrChannelService;
     @Autowired
     private PropertyUtils propertyUtils;
+    @Autowired
+    private UserCardLogSerivce userCardLogSerivce;
+    @Autowired
+    private BillTempService billTempService;
 
     @Autowired
     private CacheCheckUser cacheCheckUser;
@@ -162,7 +167,7 @@ public class CardAction extends ActionSupport {
     public void checkPhone() {
         LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
                 append("--checkPhone-- 请求IP：").append(IpAddressUtil.getRealIp())
-                .append(" ：").toString());
+                .append(" ：").append(" , paytypeId: ").append(paytypeId).toString());
         JsonVo result = null;
 //        if (!CheckUserCache.checkUser(phoneNumber)) {
 //            result = new JsonVo(false, "超过限制");
@@ -170,18 +175,73 @@ public class CardAction extends ActionSupport {
 //            LogEnum.DEFAULT.info("号码 超过限制 : " + phoneNumber);
 //            return;
 //        }
-        if (!CheckUserCache.checkIp(IpAddressUtil.getRealIp())) {
-            result = new JsonVo(false, "超过限制");
-            Struts2Utils.renderJson(result);
-            LogEnum.DEFAULT.info("IP 超过限制 : " + IpAddressUtil.getRealIp());
-            return;
-        }
 
-        if (checkByKz()) {
-            LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber);
-            result = new JsonVo(false, "该用户暂时不能使用该业务");
-            Struts2Utils.renderJson(result);
-            return;
+        if (paytypeId.equals(22) || paytypeId.equals(23)) {
+            // 检查普通短信IP
+            int ipCount = CheckUserCache.checkIp(paytypeId + "_" + IpAddressUtil.getRealIp());
+            int maxCount = 0;
+            if (paytypeId.equals(23)) {
+                maxCount = 5;
+            } else if (paytypeId.equals(22)) {
+                maxCount = 8;
+            }
+            if (ipCount >= maxCount) {
+                result = new JsonVo(false, "访问数超过限制");
+                Struts2Utils.renderJson(result);
+                LogEnum.DEFAULT.info(phoneNumber + " IP 超过限制 : " + IpAddressUtil.getRealIp());
+                return;
+            }
+
+            // 单用户获卡上限， 日1， 月3
+            int dayCardCount = userCardLogSerivce.getTodayCardCount(phoneNumber);
+            maxCount = 0;
+            if (paytypeId.equals(23)) {
+                maxCount = 1;
+            } else if (paytypeId.equals(22)) {
+                maxCount = 2;
+            }
+            if (dayCardCount >= maxCount) {
+                result = new JsonVo(false, "取卡数超过限制");
+                Struts2Utils.renderJson(result);
+                LogEnum.DEFAULT.info(phoneNumber + " 日取卡数超过限制 : " + dayCardCount);
+                return;
+            }
+
+            int monthCardCount = userCardLogSerivce.getMonthCardCount(phoneNumber);
+            maxCount = 0;
+            if (paytypeId.equals(23)) {
+                maxCount = 3;
+            } else if (paytypeId.equals(22)) {
+                maxCount = 6;
+            }
+            if (monthCardCount >= maxCount) {
+                result = new JsonVo(false, "取卡数超过限制");
+                Struts2Utils.renderJson(result);
+                LogEnum.DEFAULT.info(phoneNumber + " 月取卡数超过限制 : " + monthCardCount);
+                return;
+            }
+
+            //省份上限
+            int provinceFee = billTempService.getProvinceFee(phoneNumber);
+            maxCount = 0;
+            if (paytypeId.equals(23)) {
+                maxCount = 1000;
+            } else if (paytypeId.equals(22)) {
+                maxCount = 3000;
+            }
+            if (provinceFee >= maxCount) {
+                result = new JsonVo(false, "收入超过限制");
+                Struts2Utils.renderJson(result);
+                LogEnum.DEFAULT.info(phoneNumber + " : " + HaoduanCache.getProvince(phoneNumber) + " 省份收超过限制 : " + monthCardCount);
+                return;
+            }
+
+            if (checkByKz()) {
+                LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber);
+                result = new JsonVo(false, "该用户暂时不能使用该业务");
+                Struts2Utils.renderJson(result);
+                return;
+            }
         }
 
         if (StringUtils.isBlank(phoneNumber)) {

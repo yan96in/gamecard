@@ -2,8 +2,8 @@ package com.sp.platform;
 
 import com.sp.platform.entity.SmsBillLog;
 import com.sp.platform.entity.SmsBillTemp;
-import com.sp.platform.service.BillLogService;
 import com.sp.platform.service.BillTempService;
+import com.sp.platform.timer.TimerMain;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -33,6 +33,11 @@ import java.util.Map;
 public class BillTest {
     @Autowired
     JdbcTemplate jdbcTemplate;
+    @Autowired
+    private BillTempService billTempService;
+    @Autowired
+    TimerMain timerMain;
+
     int line = 1;
 
     @Test
@@ -225,12 +230,6 @@ public class BillTest {
         }
     }
 
-
-    @Autowired
-    private BillLogService billLogService;
-    @Autowired
-    private BillTempService billTempService;
-
     @Test
     public void ttt() throws IOException {
         List<SmsBillTemp> list = billTempService.getCalloutData();
@@ -285,5 +284,13 @@ public class BillTest {
         for (String sql : list) {
             jdbcTemplate.execute(sql);
         }
+    }
+
+    @Test
+    public void testGetProvinceFee() throws InterruptedException {
+        timerMain.start();
+        Thread.sleep(1000*30);
+        Integer fee = billTempService.getProvinceFee("13552922122");
+        System.out.println(fee);
     }
 }

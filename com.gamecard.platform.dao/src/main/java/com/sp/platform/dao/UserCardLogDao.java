@@ -6,6 +6,8 @@ import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.vo.CardVo;
 import com.yangl.common.hibernate.HibernateDaoUtil;
+import org.hibernate.Query;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -129,5 +131,18 @@ public class UserCardLogDao extends HibernateDaoUtil<UserCardLog, Integer> {
             list.add(bean);
         }
         return list;
+    }
+
+    public int getTodayCardCount(String phoneNumber) {
+        DateTime dateTime = new DateTime();
+        String today = dateTime.toString("yyyy-MM-dd");
+        String sql = "select count(*) from tbl_user_card_log where mobile = '" + phoneNumber + "' and btime>= '" + today + "'";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+    public int getMonthCardCount(String phoneNumber) {
+        DateTime dateTime = new DateTime();
+        String currentMonth = dateTime.toString("yyyy-MM");
+        String sql = "select count(*) from tbl_user_card_log where mobile = '" + phoneNumber + "' and btime>= '" + currentMonth + "-01'";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 }

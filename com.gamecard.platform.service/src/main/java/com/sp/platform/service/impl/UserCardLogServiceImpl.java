@@ -9,6 +9,7 @@ import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.vo.CardVo;
 import com.yangl.common.hibernate.PaginationSupport;
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.Query;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -149,6 +150,14 @@ public class UserCardLogServiceImpl implements UserCardLogSerivce {
             return 1;
         }
         return 0;
+    }
+
+    @Override
+    public int getTodayCardCount(String phoneNumber) {
+        return userCardLogDao.getTodayCardCount(phoneNumber);
+    }
+    public int getMonthCardCount(String phoneNumber){
+        return userCardLogDao.getMonthCardCount(phoneNumber);
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.sp.platform.dao;
 import com.sp.platform.entity.SmsBillLog;
 import com.sp.platform.entity.SmsBillTemp;
 import com.yangl.common.hibernate.HibernateDaoUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -13,6 +15,9 @@ import java.util.Date;
  */
 @Repository
 public class SmsBillTempDao extends HibernateDaoUtil<SmsBillTemp, Integer> {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private static final String SAVE_BILL_TEMP_MR = "insert into sms_bill_temp(mobile,linkid,status,flag,etime,sendnum,fee,sfid,cpid,parentid,type) values(?,?,?,?,?,?,0,0,0,0,0)";
 
@@ -77,5 +82,14 @@ public class SmsBillTempDao extends HibernateDaoUtil<SmsBillTemp, Integer> {
                 .setParameter(16, date)
                 .setParameter(17, billLog.getChannelid())
                 .executeUpdate();
+    }
+
+    public int getPrvonceFee(String province, String time) {
+        String sql = "select sum(fee)/100 from sms_bill_temp where btime>='" + time + "' and flag>=3 and province='" + province + "'";
+        Integer fee = jdbcTemplate.queryForObject(sql, Integer.class);
+        if(fee == null){
+            return 0;
+        }
+        return fee;
     }
 }
