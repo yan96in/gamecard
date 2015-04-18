@@ -236,12 +236,12 @@ public class CardAction extends ActionSupport {
                 return;
             }
 
-            if (checkByKz()) {
-                LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber);
-                result = new JsonVo(false, "该用户暂时不能使用该业务");
-                Struts2Utils.renderJson(result);
-                return;
-            }
+//            if (checkByKz()) {
+//                LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber);
+//                result = new JsonVo(false, "该用户暂时不能使用该业务");
+//                Struts2Utils.renderJson(result);
+//                return;
+//            }
         }
 
         if (StringUtils.isBlank(phoneNumber)) {
