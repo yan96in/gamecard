@@ -102,14 +102,14 @@ public class PaychannelServiceImpl implements PaychannelService {
                 if (paytypeId == 19) {
                     String resource = propertyUtils.getProperty("pc.pay.url") +
                             "?uid=" + phone + "&bid=" + fee + "&ext=test";
-                    if(StringUtils.indexOf(propertyUtils.getProperty("pc.province.qzsj"),HaoduanCache.getProvince(phone)) >= 0){
+                    if (StringUtils.indexOf(propertyUtils.getProperty("pc.province.qzsj"), HaoduanCache.getProvince(phone)) >= 0) {
                         resource = propertyUtils.getProperty("pc.province.qzsj.url") +
                                 "?uid=" + phone + "&bid=" + fee + "&ext=test";
-                    } else if(StringUtils.indexOf(propertyUtils.getProperty("pc.province.gfyx"),HaoduanCache.getProvince(phone)) >= 0){
+                    } else if (StringUtils.indexOf(propertyUtils.getProperty("pc.province.gfyx"), HaoduanCache.getProvince(phone)) >= 0) {
                         resource = propertyUtils.getProperty("pc.province.gfyx.url") +
                                 "?uid=" + phone + "&bid=" + fee + "&ext=test";
                     }
-
+                    LogEnum.DEFAULT.info(resource);
                     HttpGet get = new HttpGet(resource);
                     HttpResponse httpResponse = httpClient.execute(get);
                     if (HttpStatus.SC_OK == httpResponse.getStatusLine().getStatusCode()) {
@@ -128,6 +128,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                 } else if (paytypeId == 20) {
                     String resource = propertyUtils.getProperty("pc.lt.pay.url") +
                             "?uid=" + phone + "&bid=" + fee;
+                    LogEnum.DEFAULT.info(resource);
                     HttpGet get = new HttpGet(resource);
                     HttpResponse httpResponse = httpClient.execute(get);
                     if (HttpStatus.SC_OK == httpResponse.getStatusLine().getStatusCode()) {
@@ -174,6 +175,8 @@ public class PaychannelServiceImpl implements PaychannelService {
                 pcCardLog.setEtime(new Date());
                 pcCardLogService.save(pcCardLog);
             }
+        } else {
+            LogEnum.DEFAULT.info(cardId + " " + priceId + " " + paytypeId + " " + province + " " + phone + " 无可用通道");
         }
         chanels.setPcflag(false);
         return chanels;
@@ -209,23 +212,23 @@ public class PaychannelServiceImpl implements PaychannelService {
                             if (StringUtils.startsWith(body, "true") || StringUtils.startsWith(body, "True")) {
                                 String[] strs = body.split(":");
                                 paychannel.setMsg(strs[6]);
-                            } else if(StringUtils.startsWith(body, "-1")){
+                            } else if (StringUtils.startsWith(body, "-1")) {
                                 LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
                                 paychannel.setErrorFlg(9);
                                 paychannel.setErrorMessage("您有未完成订单，请先完成之前的订单。");
-                            } else if(StringUtils.startsWith(body, "0")){
+                            } else if (StringUtils.startsWith(body, "0")) {
                                 LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
                                 paychannel.setErrorFlg(10);
                                 paychannel.setErrorMessage("该号码所属省份无可用通道，请选择其它方式。");
-                            } else if(StringUtils.startsWith(body, "1")){
+                            } else if (StringUtils.startsWith(body, "1")) {
                                 LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
                                 paychannel.setErrorFlg(11);
                                 paychannel.setErrorMessage("您当月订购次数已满，请下个月继续使用该业务。");
-                            } else if(StringUtils.startsWith(body, "2")){
+                            } else if (StringUtils.startsWith(body, "2")) {
                                 LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
                                 paychannel.setErrorFlg(12);
                                 paychannel.setErrorMessage("您已经定购过10元业务，本月不能再订购10元业务。");
-                            } else if(StringUtils.startsWith(body, "3")){
+                            } else if (StringUtils.startsWith(body, "3")) {
                                 LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
                                 paychannel.setErrorFlg(13);
                                 paychannel.setErrorMessage("您已经定购过16元业务，本月不能再订购16元业务。");
