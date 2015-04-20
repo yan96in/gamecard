@@ -236,12 +236,11 @@ public class CardAction extends ActionSupport {
                 return;
             }
 
-//            if (checkByKz()) {
-//                LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber);
-//                result = new JsonVo(false, "该用户暂时不能使用该业务");
-//                Struts2Utils.renderJson(result);
-//                return;
-//            }
+            if (!checkByKz()) {
+                result = new JsonVo(false, "该用户暂时不能使用该业务");
+                Struts2Utils.renderJson(result);
+                return;
+            }
         }
 
         if (StringUtils.isBlank(phoneNumber)) {
@@ -317,6 +316,8 @@ public class CardAction extends ActionSupport {
             String body = StringUtils.trim(IOUtils.toString(response.getEntity().getContent(), "GBK"));
             if (StringUtils.equals("-2", body)) {
                 return true;
+            } else {
+                LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber + " error code :" + body);
             }
         } catch (Exception e) {
             LogEnum.DEFAULT.error("调用空中判断用户接口异常 {}", e);
