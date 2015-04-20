@@ -54,7 +54,6 @@ public class CheckUserCache {
             ipCache.put(ip, 1);
             return 1;
         }
-        ipCache.put(ip, count + 1);
 
         return count;
     }
@@ -65,8 +64,6 @@ public class CheckUserCache {
             ipCache.put(ip, 1);
             return;
         }
-        if (count < MAX_COUNT_IP) {
-            ipCache.put(ip, count + 1);
-        }
+        ipCache.put(ip, count + 1);
     }
 }

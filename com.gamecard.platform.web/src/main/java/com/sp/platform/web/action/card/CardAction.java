@@ -142,6 +142,8 @@ public class CardAction extends ActionSupport {
             return "403";
         }
 
+        CheckUserCache.addIp(IpAddressUtil.getRealIp());
+
         phoneVo = new PhoneVo(phoneNumber,
                 HaoduanCache.getProvince(phoneNumber), HaoduanCache.getCity(phoneNumber));
         paychannel = paychannelService.get(channelId);
@@ -277,7 +279,6 @@ public class CardAction extends ActionSupport {
         JsonVo result = null;
         //判断是否超上限
         if (paytypeId.equals(20) && !CheckUserCache.checkUser(phoneNumber)) {
-            CheckUserCache.addIp(IpAddressUtil.getRealIp());
             result = new JsonVo(false, "超过限制");
             Struts2Utils.renderJson(result);
             LogEnum.DEFAULT.info("IP 超过限制 : " + IpAddressUtil.getRealIp());
@@ -354,6 +355,8 @@ public class CardAction extends ActionSupport {
                 Struts2Utils.renderJson(result);
                 return;
             }
+
+            CheckUserCache.addIp(IpAddressUtil.getRealIp());
 
             channelVo = paychannelService.sendPcCode(id, priceId, paytypeId, phone.getProvince(), phoneNumber);
             channelVo.setPhoneVo(phone);
