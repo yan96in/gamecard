@@ -144,4 +144,9 @@ public class StringTest {
         System.out.println(set.size());
     }
 
+    @Test
+    public void testAppName() throws UnsupportedEncodingException {
+        String appname = "%E6%B8%B8%E6%88%8F%E9%A3%8E%E6%9A%B4";
+        System.out.println(URLDecoder.decode(appname, "utf-8"));
+    }
 }

@@ -12,6 +12,7 @@ import com.sp.platform.vo.ChannelVo;
 import com.sp.platform.vo.JsonVo;
 import com.sp.platform.vo.PhoneVo;
 import com.sp.platform.web.cache.CheckUserCache;
+import com.sp.platform.web.util.PinyinUtil;
 import com.yangl.common.IpAddressUtil;
 import com.yangl.common.Struts2Utils;
 import org.apache.commons.io.IOUtils;
@@ -411,8 +412,15 @@ public class CardAction extends ActionSupport {
 
     private boolean provinceLimit(String province, int paytypeId) {
         //----------------------------- 省份日上限 -----------------------
+        int provinceMacFee = propertyUtils.getInteger("pc.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+        int limitFee;
+        if(provinceMacFee == 0){
+            limitFee = propertyUtils.getInteger("pc.province.day.limit." + paytypeId);
+        } else {
+            limitFee = provinceMacFee;
+        }
+
         //取省份日上限
-        int limitFee = propertyUtils.getInteger("pc.province.day.limit." + paytypeId, 2000);
 
         int tempFee = cacheCheckUser.getCalledProvinceDayFee(province + Constants.split_str + "pc" + paytypeId);
 
