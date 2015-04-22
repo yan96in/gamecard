@@ -239,7 +239,8 @@ public class CardAction extends ActionSupport {
                 return;
             }
 
-            if (!checkByKz()) {
+            if (StringUtils.indexOf(propertyUtils.getProperty("kz.validator.paytype.ids"), paytypeId.toString()) >= 0
+                    && !checkByKz()) {
                 result = new JsonVo(false, "该用户暂时不能使用该业务");
                 Struts2Utils.renderJson(result);
                 return;
@@ -317,6 +318,7 @@ public class CardAction extends ActionSupport {
             HttpResponse response = client.execute(get);
             String body = StringUtils.trim(IOUtils.toString(response.getEntity().getContent(), "GBK"));
             if (StringUtils.equals("-2", body)) {
+                LogEnum.DEFAULT.error("调用空中判断用户接口正常 {}", phoneNumber);
                 return true;
             } else {
                 LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber + " error code :" + body);
