@@ -22,10 +22,10 @@ public class SmsBillTempDao extends HibernateDaoUtil<SmsBillTemp, Integer> {
     private static final String SAVE_BILL_TEMP_MR = "insert into sms_bill_temp(mobile,linkid,status,flag,etime,sendnum,fee,sfid,cpid,parentid,type) values(?,?,?,?,?,?,0,0,0,0,0)";
 
     private static final String SAVE_BILL_TEMP_MT = "insert into sms_bill_temp(mobile,spnum,msg,linkid,btime,province,city," +
-            "fee,sfid,cpid,flag,sendnum,syncurl,parentid,type, channelid) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            "fee,sfid,cpid,flag,sendnum,syncurl,parentid,type, channelid,paymentcode) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final String SAVE_BILL_TEMP_BILL = "insert into sms_bill_temp(mobile,spnum,msg,linkid,btime,province,city," +
-            "fee,sfid,cpid,flag,sendnum,syncurl,parentid,type,status,etime, channelid) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            "fee,sfid,cpid,flag,sendnum,syncurl,parentid,type,status,etime, channelid,paymentcode) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     public void saveMr(SmsBillLog billLog) {
         getSession().createSQLQuery(SAVE_BILL_TEMP_MR)
@@ -56,6 +56,7 @@ public class SmsBillTempDao extends HibernateDaoUtil<SmsBillTemp, Integer> {
                 .setParameter(13, billLog.getParentid())
                 .setParameter(14, billLog.getType())
                 .setParameter(15, billLog.getChannelid())
+                .setParameter(16, billLog.getPaymentcode())
                 .executeUpdate();
     }
 
@@ -81,6 +82,7 @@ public class SmsBillTempDao extends HibernateDaoUtil<SmsBillTemp, Integer> {
                 .setParameter(15, billLog.getStatus())
                 .setParameter(16, date)
                 .setParameter(17, billLog.getChannelid())
+                .setParameter(18, billLog.getPaymentcode())
                 .executeUpdate();
     }
 

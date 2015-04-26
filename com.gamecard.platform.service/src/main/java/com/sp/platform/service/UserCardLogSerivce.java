@@ -2,6 +2,9 @@ package com.sp.platform.service;
 
 
 import com.sp.platform.common.PageView;
+import com.sp.platform.entity.Paychannel;
+import com.sp.platform.entity.PcCardLog;
+import com.sp.platform.entity.SmsBillTemp;
 import com.sp.platform.entity.UserCardLog;
 import com.sp.platform.vo.CardVo;
 
@@ -34,4 +37,6 @@ public interface UserCardLogSerivce extends AbstractService<UserCardLog> {
     int getTodayCardCount(String phoneNumber);
 
     public int getMonthCardCount(String phoneNumber);
+
+    UserCardLog getLthjCard(SmsBillTemp billTemp, Paychannel paychannel);
 }

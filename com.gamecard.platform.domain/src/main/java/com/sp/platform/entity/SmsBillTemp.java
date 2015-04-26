@@ -14,6 +14,7 @@ public class SmsBillTemp {
     private String mobile;
     private String spnum;
     private String msg;
+    private String paymentcode;
     private String linkid;
     private String status;
     private Date btime;
@@ -201,6 +202,14 @@ public class SmsBillTemp {
         this.channelid = channelid;
     }
 
+    public String getPaymentcode() {
+        return paymentcode;
+    }
+
+    public void setPaymentcode(String paymentcode) {
+        this.paymentcode = paymentcode;
+    }
+
     @Override
     public String toString() {
         return "SmsBillTemp{" +
@@ -208,6 +217,7 @@ public class SmsBillTemp {
                 ", mobile='" + mobile + '\'' +
                 ", spnum='" + spnum + '\'' +
                 ", msg='" + msg + '\'' +
+                ", paymentcode='" + paymentcode + '\'' +
                 ", linkid='" + linkid + '\'' +
                 ", status='" + status + '\'' +
                 ", btime=" + btime +

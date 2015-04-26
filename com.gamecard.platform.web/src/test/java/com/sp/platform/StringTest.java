@@ -16,10 +16,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: yangl
@@ -148,5 +145,14 @@ public class StringTest {
     public void testAppName() throws UnsupportedEncodingException {
         String appname = "%E6%B8%B8%E6%88%8F%E9%A3%8E%E6%9A%B4";
         System.out.println(URLDecoder.decode(appname, "utf-8"));
+
+        StringBuffer buffer = new StringBuffer("abcdefghijklmnopqrstuvwxyz1234567890");
+        StringBuffer sb = new StringBuffer("");
+        Random r = new Random();
+        int range = buffer.length();
+        for (int i = 0; i < 6; i++) {
+            sb.append(buffer.charAt(r.nextInt(range)));
+        }
+        System.out.println(sb.toString());
     }
 }

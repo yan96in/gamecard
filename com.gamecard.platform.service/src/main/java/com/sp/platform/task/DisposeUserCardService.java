@@ -1,10 +1,10 @@
 package com.sp.platform.task;
 
-import com.sp.platform.entity.BillTemp;
 import com.sp.platform.entity.SmsBillTemp;
 import com.sp.platform.service.BillTempService;
 import com.sp.platform.util.AppContextHolder;
 import com.sp.platform.util.LogEnum;
+import com.sp.platform.util.PropertyUtils;
 import com.yangl.common.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +25,8 @@ public class DisposeUserCardService {
 
     @Autowired
     private BillTempService billTempService;
+    @Autowired
+    private PropertyUtils propertyUtils;
 
     ThreadPoolExecutor threadPool2 = new ThreadPoolExecutor(10, 20, 30,
             TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(30),
@@ -39,14 +41,19 @@ public class DisposeUserCardService {
             int channelid = 0;
             List<SmsBillTemp> smsBillTemps = new ArrayList<SmsBillTemp>();
             for (SmsBillTemp billTemp : list) {
-                if(!billTemp.getMobile().equals(mobile) && StringUtils.isNotBlank(mobile)){
+                if (org.apache.commons.lang.StringUtils.indexOf(propertyUtils.getProperty("lthj.channel.id"), String.valueOf(billTemp.getChannelid())) >= 0) {
+                    LogEnum.DEFAULT.info("不处理联通华建的数据" + billTemp.getId());
+                    continue; //不处理联通华建的数据
+                }
+
+                if (!billTemp.getMobile().equals(mobile) && StringUtils.isNotBlank(mobile)) {
                     i++;
                     UserCardTask userCardTask = (UserCardTask) AppContextHolder.getContext().getBean("userCardTask");
                     userCardTask.setData(smsBillTemps);
                     temp.add(userCardTask);
                     smsBillTemps = new ArrayList<SmsBillTemp>();
-                }else{
-                    if(billTemp.getChannelid() != channelid && channelid > 0){
+                } else {
+                    if (billTemp.getChannelid() != channelid && channelid > 0) {
                         i++;
                         UserCardTask userCardTask = (UserCardTask) AppContextHolder.getContext().getBean("userCardTask");
                         userCardTask.setData(smsBillTemps);

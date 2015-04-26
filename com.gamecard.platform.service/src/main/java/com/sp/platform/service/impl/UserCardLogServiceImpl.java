@@ -1,11 +1,21 @@
 package com.sp.platform.service.impl;
 
 import com.sp.platform.cache.CardCache;
+import com.sp.platform.common.Constants;
 import com.sp.platform.common.PageView;
+import com.sp.platform.dao.SmsBillTempDao;
 import com.sp.platform.dao.UserCardLogDao;
+import com.sp.platform.entity.CardPassword;
+import com.sp.platform.entity.Paychannel;
+import com.sp.platform.entity.SmsBillTemp;
 import com.sp.platform.entity.UserCardLog;
+import com.sp.platform.service.CardPasswordService;
+import com.sp.platform.service.PaychannelService;
 import com.sp.platform.service.UserCardLogSerivce;
+import com.sp.platform.util.CacheCheckUser;
+import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
+import com.sp.platform.util.XDEncodeHelper;
 import com.sp.platform.vo.CardVo;
 import com.yangl.common.hibernate.PaginationSupport;
 import org.apache.commons.collections.CollectionUtils;
@@ -38,6 +48,14 @@ public class UserCardLogServiceImpl implements UserCardLogSerivce {
 
     @Autowired
     private UserCardLogDao userCardLogDao;
+    @Autowired
+    private PaychannelService paychannelService;
+    @Autowired
+    private SmsBillTempDao smsBillTempDao;
+    @Autowired
+    private CacheCheckUser cacheCheckUser;
+    @Autowired
+    private CardPasswordService cardPasswordService;
 
     @Override
     public UserCardLog get(int id) {
@@ -164,5 +182,48 @@ public class UserCardLogServiceImpl implements UserCardLogSerivce {
     public int calloutsucess(int id) {
         String sql = "update tbl_user_card_log set flag = 6, etime=now() where id=" + id;
         return userCardLogDao.executeSQL(sql);
+    }
+
+
+
+    @Override
+    public UserCardLog getLthjCard(SmsBillTemp billTemp, Paychannel paychannel) {
+        try {
+            cacheCheckUser.addCallerFee(billTemp.getMobile() + Constants.split_str + "lthj", billTemp.getFee());
+            cacheCheckUser.addCalledProvinceFee(billTemp.getProvince() + Constants.split_str + "lthj" + paychannel.getPaytypeId(), billTemp.getFee(), false);
+            UserCardLog cardLog = null;
+            cardLog = userCardLogDao.getCardBySms(billTemp.getMobile(), billTemp.getId());
+            if(cardLog != null){
+                billTemp.setFlag(billTemp.getFlag() + 1);
+                return cardLog;
+            }
+
+            CardPassword card = cardPasswordService.getUserCard(paychannel.getCardId(), paychannel.getPriceId());
+            if (card == null) {
+                LogEnum.DEFAULT.warn(billTemp.getMobile() + "  提交验证码 " + "取卡失败 paymentcode=" + billTemp.getPaymentcode() + " cardId=" + paychannel.getCardId() + " priceId=" + paychannel.getPriceId());
+                return null;
+            }
+            billTemp.setFlag(billTemp.getFlag() + 1);
+
+            XDEncodeHelper xdEncodeHelper = new XDEncodeHelper(propertyUtils.getProperty("DESede.key", "tch5VEeZSAJ2VU4lUoqaYddP"));
+            cardLog = new UserCardLog();
+            cardLog.setMobile(billTemp.getMobile());
+            cardLog.setProvince(billTemp.getProvince());
+            cardLog.setCity(billTemp.getCity());
+            cardLog.setChannelid(String.valueOf(paychannel.getId()));
+            cardLog.setCardId(paychannel.getCardId());
+            cardLog.setPriceId(paychannel.getPriceId());
+            cardLog.setFlag(7);
+            cardLog.setSmsids(String.valueOf(billTemp.getId()));
+            cardLog.setCardno(xdEncodeHelper.XDDecode(card.getCardno(), true));
+            cardLog.setCardpwd(xdEncodeHelper.XDDecode(card.getPassword(), true));
+            Date now = new Date();
+            cardLog.setBtime(now);
+            cardLog.setEtime(now);
+            userCardLogDao.save(cardLog);
+            return cardLog;
+        } finally {
+            smsBillTempDao.save(billTemp);
+        }
     }
 }

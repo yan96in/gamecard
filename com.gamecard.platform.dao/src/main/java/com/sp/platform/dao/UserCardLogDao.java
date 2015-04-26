@@ -6,7 +6,10 @@ import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.vo.CardVo;
 import com.yangl.common.hibernate.HibernateDaoUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Query;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -144,5 +147,16 @@ public class UserCardLogDao extends HibernateDaoUtil<UserCardLog, Integer> {
         String currentMonth = dateTime.toString("yyyy-MM");
         String sql = "select count(*) from tbl_user_card_log where mobile = '" + phoneNumber + "' and btime>= '" + currentMonth + "-01'";
         return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
+    public UserCardLog getCardBySms(String mobile, Integer id) {
+        DetachedCriteria dc = DetachedCriteria.forClass(UserCardLog.class);
+        dc.add(Restrictions.eq("mobile", mobile));
+        dc.add(Restrictions.eq("smsids", String.valueOf(id)));
+        List<UserCardLog> list = findByCriteria(dc);
+        if(CollectionUtils.isNotEmpty(list)){
+            return list.get(0);
+        }
+        return null;
     }
 }

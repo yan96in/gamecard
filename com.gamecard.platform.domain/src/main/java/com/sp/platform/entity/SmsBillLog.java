@@ -32,6 +32,17 @@ public class SmsBillLog {
     private String syncurl;
     private int parentid;
 
+    private String paymentcode;
+
+    @Transient
+    public String getPaymentcode() {
+        return paymentcode;
+    }
+
+    public void setPaymentcode(String paymentcode) {
+        this.paymentcode = paymentcode;
+    }
+
     public SmsBillLog(){}
 
     public SmsBillLog(String mobile, String spnum, String msg, String linkid, String status){

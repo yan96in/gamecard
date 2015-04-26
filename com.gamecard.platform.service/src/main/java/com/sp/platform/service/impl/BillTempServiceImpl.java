@@ -12,6 +12,7 @@ import com.sp.platform.service.BillTempService;
 import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
 import com.yangl.common.hibernate.PaginationSupport;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -284,5 +285,23 @@ public class BillTempServiceImpl implements BillTempService {
         DateTime dateTime = new DateTime();
         String currentMonth = dateTime.toString("yyyy-MM");
         return smsBillTempDao.getPrvonceFee(province, currentMonth+"-01");
+    }
+
+    @Override
+    public SmsBillTemp getByCode(String mobile, String msgcontent) {
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.plusHours(-24);
+
+        DetachedCriteria dc = DetachedCriteria.forClass(SmsBillTemp.class);
+        dc.add(Restrictions.eq("mobile", mobile));
+        dc.add(Restrictions.eq("paymentcode", msgcontent));
+        dc.add(Restrictions.ge("btime", dateTime.toDate()));
+        dc.addOrder(Order.desc("btime"));
+        List<SmsBillTemp> list = smsBillTempDao.findByCriteria(dc);
+        if(CollectionUtils.isEmpty(list)){
+            return null;
+        } else {
+            return list.get(0);
+        }
     }
 }
