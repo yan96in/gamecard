@@ -93,7 +93,7 @@ public class LthjAction extends ActionSupport {
             saveBill(billLog, billLog.getFee(), false);
 
             //下发下行短信（包含取卡验证码）
-//            sendMt(lthjService, code);
+            sendMt(lthjService, code);
         } catch (Exception e) {
             LogEnum.DEFAULT.error("联通华建短信下行 error: " + e);
         }
