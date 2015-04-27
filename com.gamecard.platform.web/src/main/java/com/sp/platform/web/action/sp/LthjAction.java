@@ -4,14 +4,18 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sp.platform.cache.CpSyncCache;
 import com.sp.platform.cache.HaoduanCache;
 import com.sp.platform.common.Constants;
-import com.sp.platform.entity.SmsBillLog;
-import com.sp.platform.entity.SmsBillTemp;
-import com.sp.platform.service.BillLogService;
-import com.sp.platform.service.BillTempService;
+import com.sp.platform.entity.*;
+import com.sp.platform.service.*;
 import com.sp.platform.util.CacheCheckUser;
 import com.sp.platform.util.LogEnum;
+import com.sp.platform.web.constants.LthjService;
 import com.yangl.common.Struts2Utils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
@@ -19,7 +23,9 @@ import org.apache.struts2.convention.annotation.Results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
+import java.io.IOException;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by yanglei on 15/3/31.
@@ -27,7 +33,8 @@ import java.util.Date;
 @Namespace("/sp/lthj")
 @Scope("prototype")
 @Results({@Result(name = "main", location = "main.jsp"),
-        @Result(name = "index", location = "index.jsp")})
+        @Result(name = "lthj-card", location = "card.jsp"),
+        @Result(name = "lthj-card-error", location = "error.jsp")})
 public class LthjAction extends ActionSupport {
     @Autowired
     private BillTempService billTempService;
@@ -35,38 +42,82 @@ public class LthjAction extends ActionSupport {
     private BillLogService billLogService;
     @Autowired
     private CacheCheckUser cacheCheckUser;
+    @Autowired
+    private PaychannelService paychannelService;
+    @Autowired
+    private UserCardLogSerivce cardLogService;
+    @Autowired
+    private CardService cardService;
+    @Autowired
+    private PriceService priceService;
+    @Autowired
+    private PaytypeService paytypeService;
 
     private String mobile;
     private String serviceid;
     private String msgcontent;
     private String linkid;
 
-    private String fee;
     private String status;
-
+    private String errorMsg;
+    private UserCardLog userCardLog;
+    private Card card;
+    private Price price;
+    private Paytype paytype;
+    private Paychannel paychannel;
 
     @Action("mo")
     public void mo() {
-        LogEnum.DEFAULT.info("联通华建短信上行：" + toString());
+        try {
+            LogEnum.DEFAULT.info("联通华建短信上行: " + toString());
+            LthjService lthjService = com.sp.platform.web.constants.Constants.getLthjService(msgcontent);
+            if (lthjService == null) {
+                throw new Exception("联通华建指令未配置: " + msgcontent);
+            }
+            Paychannel paychannel = paychannelService.get(lthjService.getChannelid());
 
-        SmsBillLog billLog = new SmsBillLog(mobile, serviceid, msgcontent, linkid, null);
+            SmsBillLog billLog = new SmsBillLog(mobile, paychannel.getSpnum(), msgcontent, linkid, null);
 
-        billLog.setProvince(HaoduanCache.getProvince(mobile));
-        billLog.setCity(HaoduanCache.getCity(mobile));
-        billLog.setFee(Integer.parseInt(fee));
-        billLog.setSfid(4);
-        billLog.setCpid(2);
-        billLog.setChannelid(com.sp.platform.constants.Constants.getChannelId(StringUtils.left(msgcontent, 5).toUpperCase()));
-        billLog.setParentid(billLog.getCpid());
+            billLog.setProvince(HaoduanCache.getProvince(mobile));
+            billLog.setCity(HaoduanCache.getCity(mobile));
+            billLog.setSfid(4);
+            billLog.setCpid(2);
 
-        saveBill(billLog, Integer.parseInt(fee), false);
+            billLog.setFee(paychannel.getFee());
+            billLog.setChannelid(lthjService.getChannelid());
+            billLog.setParentid(billLog.getCpid());
+
+            String code = randString();
+
+            billLog.setPaymentcode(code);
+            saveBill(billLog, billLog.getFee(), false);
+
+            //下发下行短信（包含取卡验证码）
+//            sendMt(lthjService, code);
+        } catch (Exception e) {
+            LogEnum.DEFAULT.error("联通华建短信下行 error: " + e);
+        }
         Struts2Utils.renderText("1");
+    }
+
+    private void sendMt(LthjService lthjService, String code) throws IOException {
+        String msg = "您的验证码为:" + code + "," + lthjService.getMsg();
+        String url = "http://sms.uupay.com.cn/smsservice/order/cpsendsmstelecom.jsp?" +
+                "mobile=" + mobile + "&serviceid=" + lthjService.getServiceid() +
+                "&msgcontent=" + msg + "&linkid=" + linkid + "&feetype=1";
+        LogEnum.DEFAULT.info("联通华建短信下行: " + url);
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(url);
+        HttpResponse response = client.execute(get);
+        LogEnum.DEFAULT.info(String.valueOf(response.getStatusLine().getStatusCode()));
+        String body = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+        LogEnum.DEFAULT.info(body);
     }
 
     @Action("mr")
     public void mr() {
         LogEnum.DEFAULT.info("联通华建短信状态报告：" + toString());
-        if(StringUtils.equals("0", msgcontent)){
+        if (StringUtils.equals("0:0", msgcontent)) {
             status = "DELIVRD";
         } else {
             status = "0";
@@ -75,7 +126,42 @@ public class LthjAction extends ActionSupport {
         SmsBillLog billLog = new SmsBillLog(mobile, serviceid, null, linkid, status);
         saveMr(billLog);
 
-        Struts2Utils.renderText("ok");
+        Struts2Utils.renderText("0");
+    }
+
+    @Action("getCard")
+    public String getUserCard() {
+        LogEnum.DEFAULT.info("联通华建取卡：" + toString());
+        paytype = paytypeService.get(22);
+        if(StringUtils.isBlank(mobile) || StringUtils.isBlank(msgcontent)){
+            errorMsg = "参数有误";
+        }
+        SmsBillTemp billTemp = billTempService.getByCode(mobile, msgcontent);
+        if(billTemp == null){
+            errorMsg = "手机号或验证码有误";
+            return "lthj-card-error";
+        }
+        if(billTemp.getFlag() < 3){
+            errorMsg = "订单状态有误，请等1分钟后重试";
+            return "lthj-card-error";
+        }
+        if(billTemp.getFlag() > 6){
+            errorMsg = "请勿重复刷新";
+            return "lthj-card-error";
+        }
+        billTemp.setPaymentcode(msgcontent);
+        paychannel = paychannelService.get(billTemp.getChannelid());
+        userCardLog = cardLogService.getLthjCard(billTemp, paychannel);
+        if(userCardLog == null){
+            errorMsg = "取卡失败";
+            return "lthj-card-error";
+        }
+
+        card = cardService.get(paychannel.getCardId());
+        price = priceService.get(paychannel.getPriceId());
+        paytype = paytypeService.get(paychannel.getPaytypeId());
+
+        return "lthj-card";
     }
 
 
@@ -132,6 +218,7 @@ public class LthjAction extends ActionSupport {
                 smsBillTemp.setFlag(3);
                 smsBillTemp.setSyncurl(billLog.getSyncurl());
                 smsBillTemp.setParentid(billLog.getParentid());
+                smsBillTemp.setPaymentcode(billLog.getPaymentcode());
                 billTempService.save(smsBillTemp);
             }
         }
@@ -179,6 +266,22 @@ public class LthjAction extends ActionSupport {
         LogEnum.DEFAULT.info("保存{}话单 mobile:{}, spnum:{}, msg:{}, linkid:{}, status:{}", temp, mobile, serviceid, msgcontent, linkid, status);
     }
 
+    /**
+     * 生成3位随即字符串
+     *
+     * @return
+     */
+    private String randString() {
+        StringBuffer buffer = new StringBuffer("abcdefghijklmnopqrstuvwxyz1234567890");
+        StringBuffer sb = new StringBuffer("");
+        Random r = new Random();
+        int range = buffer.length();
+        for (int i = 0; i < 6; i++) {
+            sb.append(buffer.charAt(r.nextInt(range)));
+        }
+        return sb.toString();
+    }
+
     public String getMobile() {
         return mobile;
     }
@@ -211,14 +314,6 @@ public class LthjAction extends ActionSupport {
         this.linkid = linkid;
     }
 
-    public String getFee() {
-        return fee;
-    }
-
-    public void setFee(String fee) {
-        this.fee = fee;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -227,11 +322,58 @@ public class LthjAction extends ActionSupport {
         this.status = status;
     }
 
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    public UserCardLog getUserCardLog() {
+        return userCardLog;
+    }
+
+    public void setUserCardLog(UserCardLog userCardLog) {
+        this.userCardLog = userCardLog;
+    }
+
+    public void setCard(Card card) {
+        this.card = card;
+    }
+
+    public Card getCard() {
+        return card;
+    }
+
+    public Price getPrice() {
+        return price;
+    }
+
+    public void setPrice(Price price) {
+        this.price = price;
+    }
+
+    public Paytype getPaytype() {
+        return paytype;
+    }
+
+    public void setPaytype(Paytype paytype) {
+        this.paytype = paytype;
+    }
+
+    public Paychannel getPaychannel() {
+        return paychannel;
+    }
+
+    public void setPaychannel(Paychannel paychannel) {
+        this.paychannel = paychannel;
+    }
+
     @Override
     public String toString() {
         return "LthjAction{" +
                 "status='" + status + '\'' +
-                ", fee='" + fee + '\'' +
                 ", linkid='" + linkid + '\'' +
                 ", msgcontent='" + msgcontent + '\'' +
                 ", serviceid='" + serviceid + '\'' +

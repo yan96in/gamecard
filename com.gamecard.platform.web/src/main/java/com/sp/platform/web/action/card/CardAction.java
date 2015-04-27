@@ -12,6 +12,7 @@ import com.sp.platform.vo.ChannelVo;
 import com.sp.platform.vo.JsonVo;
 import com.sp.platform.vo.PhoneVo;
 import com.sp.platform.web.cache.CheckUserCache;
+import com.sp.platform.web.constants.LthjService;
 import com.sp.platform.web.util.PinyinUtil;
 import com.yangl.common.IpAddressUtil;
 import com.yangl.common.Struts2Utils;
@@ -48,7 +49,8 @@ import java.util.List;
         @Result(name = "ivr", location = "ivr.jsp"),
         @Result(name = "pc", location = "pc.jsp"),
         @Result(name = "pccard", location = "pccard.jsp"),
-        @Result(name = "channel", location = "channel.jsp")})
+        @Result(name = "channel", location = "channel.jsp"),
+        @Result(name = "channel-lthj", location = "channel-lthj.jsp")})
 public class CardAction extends ActionSupport {
     @Autowired
     private CardService cardService;
@@ -155,15 +157,41 @@ public class CardAction extends ActionSupport {
         card = cardService.get(paychannel.getCardId());
         price = priceService.getDetail(paychannel.getPriceId(), paychannel.getCardId());
         paytype = paytypeService.get(paychannel.getPaytypeId());
-        if (StringUtils.isNotBlank(msg)) {
-            paychannel.setMsg(msg);
-            list = new ArrayList(1);
-            list.add(paychannel);
-        } else {
-            list = paychannelService.find(paychannel.getCardId(), paychannel.getPriceId(), paychannel.getPaytypeId(), paychannel.getFeetype(), phoneVo.getProvince(), phoneNumber, msg);
-        }
+//        if (!StringUtils.isNotBlank(msg)) {
+//            paychannel.setMsg(msg);
+//            list = new ArrayList(1);
+//            list.add(paychannel);
+//        } else {
+        list = paychannelService.find(paychannel.getCardId(), paychannel.getPriceId(), paychannel.getPaytypeId(), paychannel.getFeetype(), phoneVo.getProvince(), phoneNumber, msg);
+//        }
 
+        if (StringUtils.indexOf(propertyUtils.getProperty("lthj.channel.id"), String.valueOf(channelId)) >= 0) {
+            commitOrderToLthj();
+            return "channel-lthj";
+        }
         return "channel";
+    }
+
+    //向联通华建提交订单信息（
+    private void commitOrderToLthj() {
+        try {
+            HttpClient client = new DefaultHttpClient();
+            String url = "http://220.181.87.55/TeleNotificationServers/servlet/CancelWebOrder?mobile=" + phoneNumber;
+            HttpGet get = new HttpGet(url);
+            client.execute(get);
+            get.reset();
+
+            LthjService lthjService = com.sp.platform.web.constants.Constants.getLthjService(paychannel.getMsg());
+            url = "http://sms.uupay.com.cn/smsservice/order/telecom.jsp?" +
+                    "mobile=" + phoneNumber + "&serviceid=" + lthjService.getServiceid();
+            LogEnum.DEFAULT.info("联通华建短信提交订单: " + url);
+            get = new HttpGet(url);
+            HttpResponse response = client.execute(get);
+            String body = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+            LogEnum.DEFAULT.info("联通华建短信提交订单 phone: " + phoneNumber + " 结果: " + String.valueOf(body.indexOf(paychannel.getMsg()) >= 0));
+        } catch (Exception e) {
+            LogEnum.DEFAULT.error("联通华建短信提交订单出错 phone: " + phoneNumber + " - error: " + e);
+        }
     }
 
     @Action("checkPhone")
@@ -416,7 +444,7 @@ public class CardAction extends ActionSupport {
         //----------------------------- 省份日上限 -----------------------
         int provinceMacFee = propertyUtils.getInteger("pc.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
         int limitFee;
-        if(provinceMacFee == 0){
+        if (provinceMacFee == 0) {
             limitFee = propertyUtils.getInteger("pc.province.day.limit." + paytypeId);
         } else {
             limitFee = provinceMacFee;

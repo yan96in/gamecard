@@ -11,12 +11,64 @@ import java.util.Map;
 public class Constants {
     public static final Map<String, String> errorMessage = new HashMap<String, String>();
     public static final Map<String, Integer> channelMap = new HashMap<String, Integer>();
-
+    public static final Map<String, LthjService> lthjMap = new HashMap<String, LthjService>();
     static {
         initErrorMessage();
 
         initKzChannelConfig();
 
+        initLthjConfig();
+    }
+
+    private static void initLthjConfig() {
+        LthjService service = new LthjService();
+        service.setMo("1162");
+        service.setServiceid("ZHDXSD10Y");
+        service.setMsg("您已成功订购盛大3元点券,资费10元，不含通信费，客服电话4000974884");
+        service.setChannelid(74);
+        lthjMap.put("1162", service);
+
+        service = new LthjService();
+        service.setMo("1146");
+        service.setServiceid("ZHDXSD30Y");
+        service.setMsg("您已成功订购盛大9元点券,资费30元，不含通信费，客服电话4000974884");
+        service.setChannelid(75);
+        lthjMap.put("1146", service);
+
+        service = new LthjService();
+        service.setMo("1147");
+        service.setServiceid("ZHDXTX30Y");
+        service.setMsg("您已成功订购天下通10元点券,资费30元，不含通信费，客服电话4000974884");
+        service.setChannelid(76);
+        lthjMap.put("1147", service);
+
+        service = new LthjService();
+        service.setMo("1163");
+        service.setServiceid("ZHDXJW10Y");
+        service.setMsg("您已成功订购骏网3元点券,资费10元，不含通信费，客服电话4000974884");
+        service.setChannelid(72);
+        lthjMap.put("1163", service);
+
+        service = new LthjService();
+        service.setMo("1148");
+        service.setServiceid("ZHDXJW30Y");
+        service.setMsg("您已成功订购骏网9元点券,资费30元，不含通信费，客服电话4000974884");
+        service.setChannelid(73);
+        lthjMap.put("1148", service);
+
+        service = new LthjService();
+        service.setMo("1082");
+        service.setServiceid("ZHDXWM20Y");
+        service.setMsg("您已成功订购完美6元点券,资费20元，不含通信费，客服电话4000974884");
+        service.setChannelid(78);
+        lthjMap.put("1082", service);
+
+        service = new LthjService();
+        service.setMo("1149");
+        service.setServiceid("ZHDTH30Y");
+        service.setMsg("您已成功订购天宏10元点券,资费30元，不含通信费，客服电话4000974884");
+        service.setChannelid(77);
+        lthjMap.put("1149", service);
     }
 
     private static void initKzChannelConfig() {
@@ -90,6 +142,13 @@ public class Constants {
             return 0;
         }
         return channelId;
+    }
+
+    public static LthjService getLthjService(String key){
+        if(StringUtils.isBlank(key)){
+            return null;
+        }
+        return lthjMap.get(key);
     }
 
     public static void main(String[] args) {
