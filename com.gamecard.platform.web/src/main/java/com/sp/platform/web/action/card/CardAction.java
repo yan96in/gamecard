@@ -145,14 +145,14 @@ public class CardAction extends ActionSupport {
             return "403";
         }
 
-        CheckUserCache.addIp(IpAddressUtil.getRealIp());
-
         phoneVo = new PhoneVo(phoneNumber,
                 HaoduanCache.getProvince(phoneNumber), HaoduanCache.getCity(phoneNumber));
         paychannel = paychannelService.get(channelId);
         if (paychannel == null) {
             return "403";
         }
+
+        CheckUserCache.addIp(paychannel.getPaytypeId() + "_" + IpAddressUtil.getRealIp());
 
         card = cardService.get(paychannel.getCardId());
         price = priceService.getDetail(paychannel.getPriceId(), paychannel.getCardId());
@@ -387,7 +387,7 @@ public class CardAction extends ActionSupport {
                 return;
             }
 
-            CheckUserCache.addIp(IpAddressUtil.getRealIp());
+            CheckUserCache.addIp(paytypeId + "_" + IpAddressUtil.getRealIp());
 
             channelVo = paychannelService.sendPcCode(id, priceId, paytypeId, phone.getProvince(), phoneNumber);
             channelVo.setPhoneVo(phone);

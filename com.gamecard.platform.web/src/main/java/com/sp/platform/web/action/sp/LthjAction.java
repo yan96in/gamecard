@@ -8,7 +8,10 @@ import com.sp.platform.entity.*;
 import com.sp.platform.service.*;
 import com.sp.platform.util.CacheCheckUser;
 import com.sp.platform.util.LogEnum;
+import com.sp.platform.vo.JsonVo;
+import com.sp.platform.web.cache.CheckUserCache;
 import com.sp.platform.web.constants.LthjService;
+import com.yangl.common.IpAddressUtil;
 import com.yangl.common.Struts2Utils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -131,7 +134,18 @@ public class LthjAction extends ActionSupport {
 
     @Action("getCard")
     public String getUserCard() {
-        LogEnum.DEFAULT.info("联通华建取卡：" + toString());
+        String ip = IpAddressUtil.getRealIp();
+        LogEnum.DEFAULT.info("联通华建取卡：" + toString() + ", IP: " + ip);
+        CheckUserCache.addIp("lthj_" + ip);
+
+        //判断是否超上限
+        int ipCount = CheckUserCache.checkIp("lthj_" + ip);
+        if (ipCount > 8) {
+            errorMsg = "请勿重复刷新";
+            LogEnum.DEFAULT.info("lthj-IP 超过限制 : " + ip);
+            return "lthj-card-error";
+        }
+
         paytype = paytypeService.get(22);
         if(StringUtils.isBlank(mobile) || StringUtils.isBlank(msgcontent)){
             errorMsg = "参数有误";
@@ -141,6 +155,7 @@ public class LthjAction extends ActionSupport {
             errorMsg = "手机号或验证码有误";
             return "lthj-card-error";
         }
+
         if(billTemp.getFlag() < 3){
             errorMsg = "订单状态有误，请等1分钟后重试";
             return "lthj-card-error";
@@ -149,6 +164,7 @@ public class LthjAction extends ActionSupport {
             errorMsg = "请勿重复刷新";
             return "lthj-card-error";
         }
+
         billTemp.setPaymentcode(msgcontent);
         paychannel = paychannelService.get(billTemp.getChannelid());
         userCardLog = cardLogService.getLthjCard(billTemp, paychannel);
