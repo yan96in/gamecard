@@ -18,6 +18,7 @@ public class ChannelVo {
     private boolean pcflag;
     private Integer channelId;
     private String sid;
+    private String resultCode;
 
     public PhoneVo getPhoneVo() {
         return phoneVo;
@@ -65,5 +66,13 @@ public class ChannelVo {
 
     public void setSid(String sid) {
         this.sid = sid;
+    }
+
+    public String getResultCode() {
+        return resultCode;
+    }
+
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
     }
 }

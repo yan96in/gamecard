@@ -123,6 +123,8 @@ public class PaychannelServiceImpl implements PaychannelService {
                             chanels.setPcflag(true);
                             chanels.setSid(sid);
                             return chanels;
+                        } else {
+                            chanels.setResultCode(resultCode);
                         }
                     }
                 } else if (paytypeId == 20) {
