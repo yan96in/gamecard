@@ -62,6 +62,7 @@ public class LthjAction extends ActionSupport {
     private String linkid;
 
     private String status;
+    private int errorCode;
     private String errorMsg;
     private UserCardLog userCardLog;
     private Card card;
@@ -123,7 +124,7 @@ public class LthjAction extends ActionSupport {
         if (StringUtils.equals("0:0", msgcontent)) {
             status = "DELIVRD";
         } else {
-            status = "0";
+            status = msgcontent;
         }
 
         SmsBillLog billLog = new SmsBillLog(mobile, serviceid, null, linkid, status);
@@ -136,6 +137,31 @@ public class LthjAction extends ActionSupport {
     public String getUserCard() {
         String ip = IpAddressUtil.getRealIp();
         LogEnum.DEFAULT.info("联通华建取卡：" + toString() + ", IP: " + ip);
+
+        paytype = paytypeService.get(22);
+        if(StringUtils.isBlank(mobile) || StringUtils.isBlank(msgcontent)){
+            CheckUserCache.addIp("lthj_" + ip);
+            errorMsg = "参数有误";
+            return "lthj-card-error";
+        }
+        SmsBillTemp billTemp = billTempService.getByCode(mobile, msgcontent);
+        if(billTemp == null){
+            CheckUserCache.addIp("lthj_" + ip);
+            errorMsg = "手机号或验证码有误";
+            return "lthj-card-error";
+        }
+
+        if(billTemp.getFlag() < 3){
+            errorMsg = "订单状态有误，请等3分钟后重试（请勿频繁刷新)";
+            errorCode = 1;
+            return "lthj-card-error";
+        }
+
+        if(!StringUtils.equals("DELIVRD", billTemp.getStatus())){
+            errorMsg = "该订单无效";
+            return "lthj-card-error";
+        }
+
         CheckUserCache.addIp("lthj_" + ip);
 
         //判断是否超上限
@@ -145,22 +171,7 @@ public class LthjAction extends ActionSupport {
             LogEnum.DEFAULT.info("lthj-IP 超过限制 : " + ip);
             return "lthj-card-error";
         }
-
-        paytype = paytypeService.get(22);
-        if(StringUtils.isBlank(mobile) || StringUtils.isBlank(msgcontent)){
-            errorMsg = "参数有误";
-        }
-        SmsBillTemp billTemp = billTempService.getByCode(mobile, msgcontent);
-        if(billTemp == null){
-            errorMsg = "手机号或验证码有误";
-            return "lthj-card-error";
-        }
-
-        if(billTemp.getFlag() < 3){
-            errorMsg = "订单状态有误，请等1分钟后重试";
-            return "lthj-card-error";
-        }
-        if(billTemp.getFlag() > 6){
+        if(billTemp.getFlag() >= 5){
             errorMsg = "请勿重复刷新";
             return "lthj-card-error";
         }
@@ -288,7 +299,7 @@ public class LthjAction extends ActionSupport {
      * @return
      */
     private String randString() {
-        StringBuffer buffer = new StringBuffer("abcdefghijklmnopqrstuvwxyz1234567890");
+        StringBuffer buffer = new StringBuffer("1234567890");
         StringBuffer sb = new StringBuffer("");
         Random r = new Random();
         int range = buffer.length();
@@ -384,6 +395,14 @@ public class LthjAction extends ActionSupport {
 
     public void setPaychannel(Paychannel paychannel) {
         this.paychannel = paychannel;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
     }
 
     @Override

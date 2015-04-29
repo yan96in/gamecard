@@ -118,18 +118,30 @@
     </ol>
     <div class="tab-bd">
         <div class="pannel">
-            <form id="form1" name="form1" method="post" action="javascript:void();">
-                <input id="hdBatchNo" name="hdBatchNo" type="hidden" value="2014082501299910111113793081116">
-                <input id="hdChannelID" name="hdChannelID" type="hidden" value="10102">
-                <fieldset>
-                    <legend>哆啦网支付订单</legend>
-                    <div class="main-con sub-con">
-                        <strong class="tips">
-                            <font color="red"><b>${errorMsg}, 如有问题请联系客服，客服热线：400-0974-884。</b></font>
-                        </strong>
-                    </div>
-                </fieldset>
-            </form>
+            <fieldset>
+                <legend>哆啦网支付订单</legend>
+                <div class="main-con sub-con">
+                    <strong class="tips">
+                        <font color="red"><b>${errorMsg}, 如有问题请联系客服，客服热线：400-0974-884。</b></font>
+                    </strong>
+                    <c:if test="${errorCode == 1}">
+                        <br/>
+                        <form action="${stx}/sp/lthj/getCard.action" id="form1" name="form1" method="post">
+                            <input type="hidden" name="mobile" value="${mobile}"/>
+                            <div class="field">
+                                <label class="lab" style="text-align: left">请输入验证码：</label>
+                                <input type="text" id="msgcontent" name="msgcontent" value="" maxlength="11"
+                                       style="width: 172px; height: 34px; color: rgb(0, 0, 0);" class="input_correct"/>
+                                <div id="txtCodeTip" class="onShow"></div>
+                            </div>
+
+                            <div class="btn-con">
+                                <input class="btn" id="btnOK" type="submit" value="提交验证码" style="margin-left: 30px;">
+                            </div>
+                        </form>
+                    </c:if>
+                </div>
+            </fieldset>
             <div class="point-list">
                 <h3>支付说明</h3>
                 <ol id="olFeeIntro">
@@ -170,6 +182,20 @@
         href="javascript:void();" target="_blank">帮助中心</a>
 
     <p>Copyright © 2012 – 2015 duolawang. All Rights Reserved 北京世坤远大科技有限公司版权所有</p>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#form1").submit(function() {
+                var len = $("#msgcontent").val().length;
+                if (len < 6) {
+                    $("#txtCodeTip").html("验证码有误");
+                    $("#msgcontent").focus();
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        });
+    </script>
 </div>
 
 <div style="display: none; position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; cursor: move; opacity: 0; background-color: rgb(255, 255, 255); background-position: initial initial; background-repeat: initial initial;"></div>
