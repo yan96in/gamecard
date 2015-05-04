@@ -107,7 +107,7 @@
                                     <td>${bean.id}</td>
                                     <td>${bean.mobile}</td>
                                     <td>${bean.province}-${bean.city}</td>
-                                    <td><s:property value="@com.sp.platform.cache.CardCache@getCard(#bean.cardId).name"/>-<s:property value="@com.sp.platform.cache.CardCache@getPrice(#bean.priceId).description"/>  </td>
+                                    <td>${bean.cardShowName}</td>
                                     <td>${bean.cardno}-${bean.cardpwd}</td>
                                     <td>${bean.smsids}</td>
                                     <td>

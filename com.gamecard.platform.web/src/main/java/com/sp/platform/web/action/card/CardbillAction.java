@@ -1,13 +1,16 @@
 package com.sp.platform.web.action.card;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sp.platform.cache.CardCache;
 import com.sp.platform.cache.SpInfoCache;
 import com.sp.platform.common.PageView;
 import com.sp.platform.entity.ServiceNum;
 import com.sp.platform.entity.SmsBillTemp;
+import com.sp.platform.entity.UserCardLog;
 import com.sp.platform.service.BillTempService;
 import com.sp.platform.service.UserCardLogSerivce;
 import com.sp.platform.util.TimeUtils;
+import com.sp.platform.web.constants.Constants;
 import com.yangl.common.Struts2Utils;
 import com.yangl.common.hibernate.PaginationSupport;
 import org.apache.commons.lang.StringUtils;
@@ -82,6 +85,9 @@ public class CardbillAction extends ActionSupport {
             pageView.setEtime(shj);
         }
 
+        String[] sj = TimeUtils.chuli(pageView.getBtime(), pageView.getEtime());
+        pageView.setBtime(sj[0]);
+        pageView.setEtime(sj[1]);
         list = userCardLogSerivce.getCardBill(pageView);
         return "list";
     }
@@ -108,6 +114,11 @@ public class CardbillAction extends ActionSupport {
         pageView.setEtime(sj[1]);
         list = billTempService.getSmsByCaller(pageView);
         list2 = userCardLogSerivce.getListByCaller(pageView);
+        for (int i = 0; i < list2.size(); i++) {
+            UserCardLog pcCardLog = (UserCardLog) list2.get(i);
+            pcCardLog.setCardShowName(CardCache.getCard(pcCardLog.getCardId()).getName() + "-"
+                    + CardCache.getPrice(pcCardLog.getPriceId()).getDescription());
+        }
         return "userbill";
     }
 
@@ -162,6 +173,12 @@ public class CardbillAction extends ActionSupport {
                 + pageView.getBtime() + "&pageView.etime=" + pageView.getEtime());
         pageGoto = PaginationSupport.getClientPageContent(paginationSupport);
         list = paginationSupport.getItems();
+
+        for (int i = 0; i < list.size(); i++) {
+            UserCardLog pcCardLog = (UserCardLog) list.get(i);
+            pcCardLog.setCardShowName(CardCache.getCard(pcCardLog.getCardId()).getName() + "-"
+                    + CardCache.getPrice(pcCardLog.getPriceId()).getDescription());
+        }
         return "usercardlist";
     }
 

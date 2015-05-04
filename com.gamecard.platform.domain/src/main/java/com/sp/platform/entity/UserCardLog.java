@@ -26,6 +26,7 @@ public class UserCardLog {
     private Date etime;
     private int cardId;
     private int priceId;
+    private String cardShowName;
 
     public UserCardLog() {
     }
@@ -176,6 +177,14 @@ public class UserCardLog {
         this.priceId = priceId;
     }
 
+    @Transient
+    public String getCardShowName() {
+        return cardShowName;
+    }
+
+    public void setCardShowName(String cardShowName) {
+        this.cardShowName = cardShowName;
+    }
     @Override
     public String toString() {
         return "UserCardLog{" +
