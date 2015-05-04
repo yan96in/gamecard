@@ -203,6 +203,12 @@ public class PaychannelServiceImpl implements PaychannelService {
                         if (StringUtils.isNotBlank(msg)) {
                             paychannel.setMsg(msg);
                         } else {
+                            if(!checkByKz(phone)){
+                                iterator.remove();
+                                LogEnum.DEFAULT.warn("checkByKz 该用户暂时不能使用该业务" + phone);
+                                continue;
+                            }
+
                             HttpClient client = new DefaultHttpClient();
                             String url = propertyUtils.getProperty("kz.sms.url");
                             String type = propertyUtils.getProperty("kz.sms.type." + cardId + "." + priceId);
@@ -247,6 +253,26 @@ public class PaychannelServiceImpl implements PaychannelService {
             }
         }
         return list;
+    }
+
+
+    private boolean checkByKz(String phoneNumber) {
+        try {
+            HttpClient client = new DefaultHttpClient();
+            HttpGet get = new HttpGet("http://61.135.202.118:8083/indexForDB.jsp?mobile=" + phoneNumber + "&channel=XZHJW000S00");
+            HttpResponse response = client.execute(get);
+            String body = StringUtils.trim(IOUtils.toString(response.getEntity().getContent(), "GBK"));
+            if (StringUtils.equals("-2", body)) {
+                LogEnum.DEFAULT.error("调用空中判断用户接口正常 {}", phoneNumber);
+                return true;
+            } else {
+                LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber + " error code :" + body);
+            }
+        } catch (Exception e) {
+            LogEnum.DEFAULT.error("调用空中判断用户接口异常 {}", e);
+            return true;
+        }
+        return false;
     }
 
     @Override
