@@ -10,9 +10,29 @@ import java.util.Map;
  */
 public class Constants {
     public static final Map<String, Integer> channelMap = new HashMap<String, Integer>();
+    public static final Map<Integer, Integer> sfidMap = new HashMap<Integer, Integer>();
 
     static {
         initKzChannelConfig();
+        sfidMap.put(56, 5);
+        sfidMap.put(59, 5);
+        sfidMap.put(62, 5);
+        sfidMap.put(65, 5);
+        sfidMap.put(68, 5);
+
+        sfidMap.put(55,3);
+        sfidMap.put(57,3);
+        sfidMap.put(58,3);
+        sfidMap.put(60,3);
+        sfidMap.put(61,3);
+        sfidMap.put(63,3);
+        sfidMap.put(64,3);
+        sfidMap.put(66,3);
+        sfidMap.put(67,3);
+        sfidMap.put(69,3);
+        sfidMap.put(70,3);
+        sfidMap.put(71,3);
+
     }
 
     private static void initKzChannelConfig() {
@@ -49,6 +69,14 @@ public class Constants {
             return 0;
         }
         return channelId;
+    }
+
+    public static Integer getSfId(Integer key){
+        Integer sfId = channelMap.get(key);
+        if(sfId == null){
+            return 3;
+        }
+        return sfId;
     }
 
     public static void main(String[] args) {
