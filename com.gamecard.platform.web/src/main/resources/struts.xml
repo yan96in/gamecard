@@ -50,7 +50,16 @@
                 <interceptor-ref name="paramsPrepareParamsStack"/>
                 <interceptor-ref name="fileUploadStack"/>
             </interceptor-stack>
+            <!-- 需要判断用户登陆的拦截器 -->
+            <interceptor-stack name="statusInterceptor">
+                <interceptor-ref name="store">
+                    <param name="operationMode">AUTOMATIC</param>
+                </interceptor-ref>
+                <interceptor-ref name="status-interceptor"/>
+                <interceptor-ref name="paramsPrepareParamsStack"/>
+            </interceptor-stack>
 
+            <interceptor name="status-interceptor" class="com.sp.platform.web.interceptors.StatusInterceptor"/>
             <interceptor name="session-interceptor" class="com.sp.platform.web.interceptors.LoginInterceptor"/>
             <interceptor name="auth-interceptor" class="com.sp.platform.web.interceptors.AuthInterceptor"/>
         </interceptors>
@@ -62,6 +71,7 @@
             <result name="auth_error" type="redirect">/auth_error.jsp</result>
             <result name="404" type="redirect">/common/404.jsp</result>
             <result name="403" type="redirect">/common/403.jsp</result>
+            <result name="close" type="redirect">/close.jsp</result>
         </global-results>
     </package>
 </struts>

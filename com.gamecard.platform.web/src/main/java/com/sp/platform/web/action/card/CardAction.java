@@ -22,15 +22,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.Namespace;
-import org.apache.struts2.convention.annotation.Result;
-import org.apache.struts2.convention.annotation.Results;
-import org.joda.time.DateTime;
+import org.apache.struts2.convention.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +38,7 @@ import java.util.List;
  */
 @Namespace("/card")
 @Scope("prototype")
+@InterceptorRefs({@InterceptorRef("statusInterceptor")})
 @Results({@Result(name = "main", location = "main.jsp"),
         @Result(name = "index", location = "index.jsp"),
         @Result(name = "select", location = "select.jsp"),
