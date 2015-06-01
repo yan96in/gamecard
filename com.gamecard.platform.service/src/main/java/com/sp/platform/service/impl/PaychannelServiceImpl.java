@@ -143,14 +143,14 @@ public class PaychannelServiceImpl implements PaychannelService {
                     if (StringUtils.indexOf(propertyUtils.getProperty("wo.open.provinces"), province) >= 0) {
                         flag = callerLimit(phone, propertyUtils.getInteger("pc.wo.caller.day.limit." + paytypeId, 30),
                                 propertyUtils.getInteger("pc.wo.caller.month.limit." + paytypeId, 100), "WO+");
-                        if(flag){
+                        if (flag) {
                             int provinceMaxFee = propertyUtils.getInteger("pc.wo.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
                             if (provinceMaxFee == 0) {
                                 provinceMaxFee = propertyUtils.getInteger("pc.wo.province.day.limit." + paytypeId);
                             }
                             flag = provinceLimit(phone, province, paytypeId, provinceMaxFee, "WO+");
                         }
-                        if(flag) {
+                        if (flag) {
                             fee = Integer.parseInt(paychannel.getSpnum());
                             result = getWoResult(phone, fee);  // 走联通WO+
                         }
@@ -166,14 +166,14 @@ public class PaychannelServiceImpl implements PaychannelService {
                     if (StringUtils.indexOf(propertyUtils.getProperty("yg.open.provinces"), province) >= 0) {
                         flag = callerLimit(phone, propertyUtils.getInteger("pc.yg.caller.day.limit." + paytypeId, 30),
                                 propertyUtils.getInteger("pc.yg.caller.month.limit." + paytypeId, 100), "翼光");
-                        if(flag){
+                        if (flag) {
                             int provinceMaxFee = propertyUtils.getInteger("pc.yg.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
                             if (provinceMaxFee == 0) {
                                 provinceMaxFee = propertyUtils.getInteger("pc.yg.province.day.limit." + paytypeId);
                             }
                             flag = provinceLimit(phone, province, paytypeId, provinceMaxFee, "翼光");
                         }
-                        if(flag) {
+                        if (flag) {
                             result = getYgResult(phone, fee, httpClient, chanels, paychannel);  // 走翼光
                         }
                     }
@@ -220,13 +220,12 @@ public class PaychannelServiceImpl implements PaychannelService {
     }
 
 
-
     private boolean callerLimit(String phoneNumber, int maxDayFee, int maxMonthFee, String channelType) {
         //----------------------------- 用户日上限 -----------------------
         int type = 0;
-        if(StringUtils.equals("WO+", channelType)){
+        if (StringUtils.equals("WO+", channelType)) {
             type = 1;
-        } else if(StringUtils.equals("翼光", channelType)){
+        } else if (StringUtils.equals("翼光", channelType)) {
             type = 2;
         }
         int tempFee = cacheCheckUser.getCallerDayFee(phoneNumber + Constants.split_str + "pc" + type);
@@ -255,9 +254,9 @@ public class PaychannelServiceImpl implements PaychannelService {
     private boolean provinceLimit(String phoneNumber, String province, int paytypeId, int maxDayFee, String channelType) {
         //----------------------------- 省份日上限 -----------------------
         int type = 0;
-        if(StringUtils.equals("WO+", channelType)){
+        if (StringUtils.equals("WO+", channelType)) {
             type = 1;
-        } else if(StringUtils.equals("翼光", channelType)){
+        } else if (StringUtils.equals("翼光", channelType)) {
             type = 2;
         }
         int tempFee = cacheCheckUser.getCalledProvinceDayFee(province + Constants.split_str + "pc" + paytypeId + type);
@@ -352,7 +351,7 @@ public class PaychannelServiceImpl implements PaychannelService {
         dc.add(Restrictions.eq("cardId", cardId));
         dc.add(Restrictions.eq("priceId", priceId));
         List<Paychannel> list = paychannelDao.findByCriteria(dc);
-        if(CollectionUtils.isNotEmpty(list)){
+        if (CollectionUtils.isNotEmpty(list)) {
             return list.get(0);
         }
         return null;
@@ -381,6 +380,9 @@ public class PaychannelServiceImpl implements PaychannelService {
     private LtPcResult getWoResult(String phone, int fee) throws IOException {
         LtPcResult pcResult = new LtPcResult();
         ChannelVo chanels = new ChannelVo();
+        String appKey = propertyUtils.getProperty("wo.appKey");
+        String appSecret = propertyUtils.getProperty("wo.appSecret");
+        String appToken = propertyUtils.getProperty("wo.appToken");
         try {
             Map<String, Object> map = new HashMap<String, Object>();
             String outTradeNo = IdUtils.idGenerator("gw");
@@ -397,7 +399,7 @@ public class PaychannelServiceImpl implements PaychannelService {
             HttpPost post = new HttpPost("https://open.wo.com.cn/openapi/rpc/paymentcodesms/v2.0");
             StringEntity se = new StringEntity(jsonBody, "UTF-8");
             se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json;charset=UTF-8"));
-            post.addHeader("Authorization", "appKey=\"d8e115b82c4a30eea113cd1c296853d8758553a9\",token=\"c18eb2859f7c40c3bb8b5d9b832e5f8b2182f408\"");
+            post.addHeader("Authorization", "appKey=\"" + appKey + "\",token=\"" + appToken + "\"");
             post.addHeader("Content-Type", "application/json;charset=UTF-8");
             post.addHeader("accept", "application/json;charset=UTF-8");
             post.setEntity(se);

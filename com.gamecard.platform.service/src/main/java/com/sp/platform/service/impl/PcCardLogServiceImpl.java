@@ -224,6 +224,11 @@ public class PcCardLogServiceImpl implements PcCardLogService {
     }
 
     private String commitWoPaymentCode(String phone, String code, String sid, PcCardLog pcCardLog) throws IOException {
+
+        String appKey = propertyUtils.getProperty("wo.appKey");
+        String appSecret = propertyUtils.getProperty("wo.appSecret");
+        String appToken = propertyUtils.getProperty("wo.appToken");
+
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("paymentUser", phone); //13292640301  15564678648 15562092589  13141151451
         map.put("paymentAcount", "001");
@@ -234,7 +239,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
         map.put("timeStamp", dateTime.toString("yyyyMMddHHmmss"));
         map.put("paymentcodesms", Integer.parseInt(code));
 
-        String key = "d8e115b82c4a30eea113cd1c296853d8758553a9&8a8d144c1271987c05b6aa094941ca2ed8da15b0";
+        String key = appKey + "&" + appSecret;
         String signature = Encrypt.encryptHmacSha1(map, key);
 
         map.put("signType", "HMAC-SHA1");
@@ -247,7 +252,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
         HttpPost post = new HttpPost("https://open.wo.com.cn/openapi/rpc/apppayment/v2.0");
         StringEntity se = new StringEntity(jsonBody, "UTF-8");
         se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json;charset=UTF-8"));
-        post.addHeader("Authorization", "appKey=\"d8e115b82c4a30eea113cd1c296853d8758553a9\",token=\"c18eb2859f7c40c3bb8b5d9b832e5f8b2182f408\"");
+        post.addHeader("Authorization", "appKey=\"" + appKey + "\",token=\"" + appToken + "\"");
         post.addHeader("Content-Type", "application/json;charset=UTF-8");
         post.addHeader("accept", "application/json;charset=UTF-8");
         post.setEntity(se);
