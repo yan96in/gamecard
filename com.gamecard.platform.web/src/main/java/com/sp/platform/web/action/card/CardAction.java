@@ -13,7 +13,7 @@ import com.sp.platform.vo.JsonVo;
 import com.sp.platform.vo.PhoneVo;
 import com.sp.platform.web.cache.CheckUserCache;
 import com.sp.platform.web.constants.LthjService;
-import com.sp.platform.web.util.PinyinUtil;
+import com.sp.platform.util.PinyinUtil;
 import com.yangl.common.IpAddressUtil;
 import com.yangl.common.Struts2Utils;
 import org.apache.commons.io.IOUtils;
@@ -38,7 +38,6 @@ import java.util.List;
  */
 @Namespace("/card")
 @Scope("prototype")
-@InterceptorRefs({@InterceptorRef("statusInterceptor")})
 @Results({@Result(name = "main", location = "main.jsp"),
         @Result(name = "index", location = "index.jsp"),
         @Result(name = "select", location = "select.jsp"),
@@ -89,6 +88,7 @@ public class CardAction extends ActionSupport {
     private PcCardLog pcCardLog;
     private String message;
     private String msg;
+    private int type;
 
     @Action("main")
     public String main() {
@@ -409,7 +409,7 @@ public class CardAction extends ActionSupport {
         //取日上限
         int limitFee = propertyUtils.getInteger("pc.caller.day.limit." + paytypeId, 30);
 
-        int tempFee = cacheCheckUser.getCallerDayFee(phoneNumber + Constants.split_str + "pc");
+        int tempFee = cacheCheckUser.getCallerDayFee(phoneNumber + Constants.split_str + "pc0");
 
         if (limitFee > 0 && tempFee >= limitFee) {
             LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
@@ -423,7 +423,7 @@ public class CardAction extends ActionSupport {
         //取月上限
         limitFee = propertyUtils.getInteger("pc.caller.month.limit." + paytypeId, 104);
 
-        tempFee = cacheCheckUser.getCallerMonthFee(phoneNumber + Constants.split_str + "pc");
+        tempFee = cacheCheckUser.getCallerMonthFee(phoneNumber + Constants.split_str + "pc0");
         //如果没有设置上限， 或者费用未达到上限，继续
         if (limitFee > 0 && tempFee >= limitFee) {
             LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
@@ -437,6 +437,19 @@ public class CardAction extends ActionSupport {
     }
 
     private boolean provinceLimit(String province, int paytypeId) {
+
+        int calledMaxFee = propertyUtils.getInteger("pc" + paytypeId);
+        if(calledMaxFee > 0){
+            int t = cacheCheckUser.getCalledDayFee("pc" + paytypeId + "0");
+            if(t >= calledMaxFee){
+                LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
+                        append("---- 超号码日上限 ").append(calledMaxFee)
+                        .append(",日费用：")
+                        .append(t).toString());
+                return false;
+            }
+        }
+
         //----------------------------- 省份日上限 -----------------------
         int provinceMacFee = propertyUtils.getInteger("pc.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
         int limitFee;
@@ -448,7 +461,7 @@ public class CardAction extends ActionSupport {
 
         //取省份日上限
 
-        int tempFee = cacheCheckUser.getCalledProvinceDayFee(province + Constants.split_str + "pc" + paytypeId);
+        int tempFee = cacheCheckUser.getCalledProvinceDayFee(province + Constants.split_str + "pc" + paytypeId + "0");
 
         if (limitFee > 0 && tempFee >= limitFee) {
             LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
@@ -466,7 +479,7 @@ public class CardAction extends ActionSupport {
         //----------------------------- 省份月上限 -----------------------
         limitFee = propertyUtils.getInteger("pc.province.month.limit." + paytypeId, 50000);
 
-        tempFee = cacheCheckUser.getCalledProvinceMonthFee(province + Constants.split_str + "pc");
+        tempFee = cacheCheckUser.getCalledProvinceMonthFee(province + Constants.split_str + "pc0");
 
         if (limitFee > 0 && tempFee >= limitFee) {
             LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
@@ -490,7 +503,7 @@ public class CardAction extends ActionSupport {
             LogEnum.DEFAULT.info("getPcCard, phoneNumber:" + phoneNumber + " , paytypeId:" + paytypeId + " , limitflg:" + limitflg);
 
             if (limitflg) {
-                pcCardLog = pcCardLogService.getPcCard(id, priceId, phoneNumber, identifyingCode, sid, paytypeId);
+                pcCardLog = pcCardLogService.getPcCard(id, priceId, phoneNumber, identifyingCode, sid, paytypeId, type);
                 if (pcCardLog == null) {
                     message = "购买不成功，请确认您的手机是否有足额话费，并认真填写验证码，如有疑问，请联系客服";
                 }
@@ -697,5 +710,13 @@ public class CardAction extends ActionSupport {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

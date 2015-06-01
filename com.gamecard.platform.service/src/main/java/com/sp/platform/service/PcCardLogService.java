@@ -14,7 +14,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface PcCardLogService extends AbstractService<PcCardLog> {
-    public PcCardLog getPcCard(int cardId, int priceId, String phone, String code, String sid, int paytypeId) throws Exception;
+    public PcCardLog getPcCard(int cardId, int priceId, String phone, String code, String sid, int paytypeId, int channelType) throws Exception;
 
     List<PcBillVo> getBillInfo(PageView pageView);
 }

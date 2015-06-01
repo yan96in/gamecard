@@ -19,6 +19,7 @@ public class ChannelVo {
     private Integer channelId;
     private String sid;
     private String resultCode;
+    private int type;
 
     public PhoneVo getPhoneVo() {
         return phoneVo;
@@ -74,5 +75,13 @@ public class ChannelVo {
 
     public void setResultCode(String resultCode) {
         this.resultCode = resultCode;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

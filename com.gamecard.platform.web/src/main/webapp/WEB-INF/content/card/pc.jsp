@@ -134,6 +134,7 @@
                             <input type="hidden" id="priceId" value="${price.id}" name="priceId"/>
                             <input type="hidden" id="paytypeId" value="${paytype.id}" name="paytypeId"/>
                             <input type="hidden" id="channelId" value="0" name="channelId"/>
+                            <input type="hidden" id="type" value="0" name="type"/>
                             <input type="hidden" id="sid" value="0" name="sid"/>
                             <div id="txtPayPhoneTip" class="onShow">
                             </div>
@@ -328,6 +329,7 @@
 				$("#identifyingCode").show();
                 $("#channelId").val(data.result.channelId);
                 $("#sid").val(data.result.sid);
+                $("#type").val(data.result.type);
 				$("#divNoChannelTip").html("<font color='red'><b>请输入收到的验证码，完成支付</b></font>");
 			}else{
 				$("#identifyingCode").hide();

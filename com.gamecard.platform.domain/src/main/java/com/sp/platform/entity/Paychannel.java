@@ -30,6 +30,7 @@ public class Paychannel extends BaseEntity{
     private String note2;
     private int errorFlg;
     private String errorMessage;
+    private int sort;
 
     public Integer getCardId() {
         return cardId;
@@ -143,6 +144,13 @@ public class Paychannel extends BaseEntity{
         this.note2 = note2;
     }
 
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
 
     @Transient
     public int getErrorFlg() {

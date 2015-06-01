@@ -1,4 +1,4 @@
-package com.sp.platform.web.util;
+package com.sp.platform.util;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
