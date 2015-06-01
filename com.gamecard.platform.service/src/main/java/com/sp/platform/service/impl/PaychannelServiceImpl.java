@@ -102,6 +102,7 @@ public class PaychannelServiceImpl implements PaychannelService {
         String resultCode = null;
         String resultMessage = null;
         String sid = null;
+        String ext = "0";
         List<Paychannel> paychannels = find(cardId, priceId, paytypeId, 1, province, phone, null);
         if (!CollectionUtils.isEmpty(paychannels)) {
             try {
@@ -159,6 +160,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                     if (result != null && result.getChanels().isPcflag()) {
                         result.getChanels().setType(1);
                         sid = result.getChanels().getSid();
+                        ext = "1";
                         return result.getChanels();
                     }
 
@@ -181,6 +183,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                     if (result != null && result.getChanels().isPcflag()) {
                         result.getChanels().setType(2);
                         sid = result.getChanels().getSid();
+                        ext = "2";
                         return result.getChanels();
                     }
 
@@ -208,6 +211,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                 pcCardLog.setResultmsg(resultMessage);
                 pcCardLog.setSid(sid);
                 pcCardLog.setStatus(1);
+                pcCardLog.setExt(ext);
                 pcCardLog.setBtime(new Date());
                 pcCardLog.setEtime(new Date());
                 pcCardLogService.save(pcCardLog);
