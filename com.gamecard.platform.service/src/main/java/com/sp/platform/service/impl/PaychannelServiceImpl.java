@@ -276,6 +276,11 @@ public class PaychannelServiceImpl implements PaychannelService {
                     .append(tempFee).toString());
             return false;
         }
+
+        StringBuilder message = new StringBuilder(channelType + "  " + phoneNumber).
+                append("---- 省份").append(province).append("收入正常，")
+                .append("日费用：")
+                .append(tempFee);
         return true;
     }
 
