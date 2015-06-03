@@ -490,7 +490,7 @@ public class PaychannelServiceImpl implements PaychannelService {
         formparams.add(new BasicNameValuePair("sign", Encrypt.md532(str)));
         UrlEncodedFormEntity entity1 = new UrlEncodedFormEntity(formparams, "UTF-8");
 
-        System.out.println(IOUtils.toString(entity1.getContent()));
+        LogEnum.DEFAULT.info(IOUtils.toString(entity1.getContent()));
         //新建Http  post请求
         HttpPost httppost = new HttpPost("http://58.67.196.166/rest/sendsmscode");
         httppost.setEntity(entity1);
