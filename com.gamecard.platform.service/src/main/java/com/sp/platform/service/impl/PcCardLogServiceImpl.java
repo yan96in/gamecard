@@ -217,7 +217,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
         LogEnum.DEFAULT.info(phone + "  提交验证码 " + " LT sid=" + sid + " body " + body);
         JSONObject object = JSON.parseObject(body.replace("\uFEFF\uFEFF", ""));
         String rcode = object.getString("code");
-        if (StringUtils.equals("", rcode)) {
+        if (StringUtils.equals("0000", rcode)) {
             return "0";
         }
         return rcode;
