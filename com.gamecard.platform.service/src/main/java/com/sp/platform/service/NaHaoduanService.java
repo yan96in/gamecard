@@ -34,4 +34,8 @@ public class NaHaoduanService {
     public void delete(Integer id) {
         naHaoduanDao.delete(id);
     }
+
+    public void save(NaHaoduan naHaoduan){
+        naHaoduanDao.save(naHaoduan);
+    }
 }

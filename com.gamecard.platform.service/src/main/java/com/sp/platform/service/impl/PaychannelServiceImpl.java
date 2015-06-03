@@ -6,8 +6,10 @@ import com.sp.platform.cache.HaoduanCache;
 import com.sp.platform.common.Constants;
 import com.sp.platform.common.PageView;
 import com.sp.platform.dao.PaychannelDao;
+import com.sp.platform.entity.NaHaoduan;
 import com.sp.platform.entity.Paychannel;
 import com.sp.platform.entity.PcCardLog;
+import com.sp.platform.service.NaHaoduanService;
 import com.sp.platform.service.PaychannelService;
 import com.sp.platform.service.PcCardLogService;
 import com.sp.platform.util.*;
@@ -61,6 +63,8 @@ public class PaychannelServiceImpl implements PaychannelService {
     private PcCardLogService pcCardLogService;
     @Autowired
     private CacheCheckUser cacheCheckUser;
+    @Autowired
+    private NaHaoduanService naHaoduanService;
 
     @Override
     public Paychannel get(int id) {
@@ -277,6 +281,11 @@ public class PaychannelServiceImpl implements PaychannelService {
 
 
     public List<Paychannel> find(int cardId, int priceId, int paytypeId, int feetype, String province, String phone, String msg) {
+        if(HaoduanCache.NA.equals(province)){
+            NaHaoduan naHaoduan = new NaHaoduan();
+            naHaoduan.setCaller(phone);
+            naHaoduanService.save(naHaoduan);
+        }
         String parameter = cardId + ":" + priceId + ":" + paytypeId + ":" + feetype + ":" + phone;
         DetachedCriteria dc = DetachedCriteria.forClass(Paychannel.class);
         dc.add(Restrictions.eq("cardId", cardId));
@@ -489,7 +498,7 @@ public class PaychannelServiceImpl implements PaychannelService {
         //处理请求，得到响应
         HttpResponse httpResponse = client.execute(httppost);
         String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
-        LogEnum.DEFAULT.info(phone + " 联通申请指令返回1:" + body);
+        LogEnum.DEFAULT.info(phone + " 【翼光】联通申请指令返回1:" + body);
         JSONObject result = JSON.parseObject(body.replace("\uFEFF\uFEFF", ""));
 
         if ("0000".equals(result.getString("code"))) {
