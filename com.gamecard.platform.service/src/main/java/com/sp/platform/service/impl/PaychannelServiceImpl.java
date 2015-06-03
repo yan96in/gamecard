@@ -280,7 +280,7 @@ public class PaychannelServiceImpl implements PaychannelService {
         StringBuilder message = new StringBuilder(channelType + "  " + phoneNumber).
                 append("---- 省份").append(province).append("收入正常，")
                 .append("日费用：")
-                .append(tempFee);
+                .append(tempFee).append("  最高上限:" + maxDayFee);
         return true;
     }
 
