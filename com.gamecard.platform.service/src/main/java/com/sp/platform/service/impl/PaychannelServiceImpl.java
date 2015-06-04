@@ -37,6 +37,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +66,8 @@ public class PaychannelServiceImpl implements PaychannelService {
     private CacheCheckUser cacheCheckUser;
     @Autowired
     private NaHaoduanService naHaoduanService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public Paychannel get(int id) {
@@ -146,8 +149,11 @@ public class PaychannelServiceImpl implements PaychannelService {
                     LtPcResult result = null;
                     boolean flag = true;
                     if (StringUtils.indexOf(propertyUtils.getProperty("wo.open.provinces"), province) >= 0) {
-                        flag = callerLimit(phone, propertyUtils.getInteger("pc.wo.caller.day.limit." + paytypeId, 30),
-                                propertyUtils.getInteger("pc.wo.caller.month.limit." + paytypeId, 100), "WO+");
+                        flag = callerLimit(phone,
+                                propertyUtils.getInteger("pc.wo.caller.day.limit." + paytypeId, 30),
+                                propertyUtils.getInteger("pc.yg.caller.week.limit." + paytypeId, 35),
+                                propertyUtils.getInteger("pc.wo.caller.month.limit." + paytypeId, 100),
+                                "WO+");
                         if (flag) {
                             int provinceMaxFee = propertyUtils.getInteger("pc.wo.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
                             if (provinceMaxFee == 0) {
@@ -170,8 +176,11 @@ public class PaychannelServiceImpl implements PaychannelService {
 
                     // 走翼光支付
                     if (StringUtils.indexOf(propertyUtils.getProperty("yg.open.provinces"), province) >= 0) {
-                        flag = callerLimit(phone, propertyUtils.getInteger("pc.yg.caller.day.limit." + paytypeId, 30),
-                                propertyUtils.getInteger("pc.yg.caller.month.limit." + paytypeId, 100), "翼光");
+                        flag = callerLimit(phone,
+                                propertyUtils.getInteger("pc.yg.caller.day.limit." + paytypeId, 30),
+                                propertyUtils.getInteger("pc.yg.caller.week.limit." + paytypeId, 40),
+                                propertyUtils.getInteger("pc.yg.caller.month.limit." + paytypeId, 100),
+                                "翼光");
                         if (flag) {
                             int provinceMaxFee = propertyUtils.getInteger("pc.yg.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
                             if (provinceMaxFee == 0) {
@@ -228,7 +237,7 @@ public class PaychannelServiceImpl implements PaychannelService {
     }
 
 
-    private boolean callerLimit(String phoneNumber, int maxDayFee, int maxMonthFee, String channelType) {
+    private boolean callerLimit(String phoneNumber, int maxDayFee, int maxWeekFee, int maxMonthFee, String channelType) {
         //----------------------------- 用户日上限 -----------------------
         int type = 0;
         if (StringUtils.equals("WO+", channelType)) {
@@ -256,6 +265,21 @@ public class PaychannelServiceImpl implements PaychannelService {
                     .append(tempFee).toString());
             return false;
         }
+
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.plusDays(-7);
+        String sql = "select sum(fee)/100 from tbl_user_pc_card_log where status=2 and btime>='"
+                + dateTime.toString("yyyy-MM-dd") + "' and mobile='" + phoneNumber + "' and ext=" + type;
+
+        Integer fee = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (fee != null && maxWeekFee > 0 && fee >= maxWeekFee) {
+            LogEnum.DEFAULT.info(channelType + "  " + new StringBuilder(phoneNumber).
+                    append("---- 超用户周上限 ").append(maxWeekFee)
+                    .append(",周费用：")
+                    .append(fee).toString());
+            return false;
+        }
+
         return true;
     }
 
