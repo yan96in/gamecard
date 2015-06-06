@@ -46,6 +46,12 @@
                                    value="${pageView.caller}"/>
                         </td>
                         <td class="left_txt" height="31">
+                            订单号码：
+                            <input type="text"
+                                   name='pageView.called'
+                                   value="${pageView.called}"/>
+                        </td>
+                        <td class="left_txt" height="31">
                             开始：
                             <input type="text"
                                    name='pageView.btime'
@@ -116,7 +122,8 @@
                                 <th width="5%" class="left_bt2">点卡类型</th>
                                 <th width="8%" class="left_bt2">卡号-密码</th>
                                 <th width="12%" class="left_bt2">时间</th>
-                                <th width="12%" class="left_bt2">错误码</th>
+                                <th width="12%" class="left_bt2">订单号</th>
+                                <th width="8%" class="left_bt2">错误码</th>
                                 <th width="3%" class="left_bt2">状态</th>
                             </tr>
                             <s:iterator value="list" id="bean">
@@ -132,6 +139,7 @@
                                         ${bean.btime}<br>
                                         ${bean.btime}
                                     </td>
+                                    <td>${bean.sid}</td>
                                     <td>${bean.resultcode}</td>
                                     <td>${bean.status}</td>
                                 </tr>

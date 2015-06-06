@@ -56,8 +56,8 @@
                                    value="${pageView.etime}" />
                         </td>
                         <td class="left_txt" height="31" width="15%">
-                            运营商类型：
-                            <s:select list="#{0:'全部',19:'移动',20:'联通'}"
+                            运营商类型：：
+                            <s:select list="#{0:'全部',19:'移动',20:'联通', 21:'联通WO+', 22:'翼光联通', 23:'空中联通'}"
                                       name="pageView.spid" label="abc" listKey="key" listValue="value" />
                         </td>
                         <td class="left_txt" height="31" width="15%">

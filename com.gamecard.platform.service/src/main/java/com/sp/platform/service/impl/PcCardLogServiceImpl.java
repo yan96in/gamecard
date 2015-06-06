@@ -92,6 +92,9 @@ public class PcCardLogServiceImpl implements PcCardLogService {
         if (StringUtils.isNotBlank(pageView.getCaller())) {
             dc.add(Restrictions.eq("mobile", pageView.getCaller()));
         }
+        if (StringUtils.isNotBlank(pageView.getCalled())) {
+            dc.add(Restrictions.eq("sid", pageView.getCalled()));
+        }
         if (2 == pageView.getType()) {
             dc.add(Restrictions.eq("status", pageView.getType()));
         }
