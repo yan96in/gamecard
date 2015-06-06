@@ -94,7 +94,18 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
         //  查询字段 --------------------------
         String sql = "select cardid, priceid, sum(case status when 2 then 1 else 0 end) as num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
         if(pageView.getSpid() > 0){
-            sql = sql + "and channelid=" + pageView.getSpid() + " ";
+            if(pageView.getSpid() == 21){
+                sql = sql + "and ext='1' ";
+                sql = sql + "and channelid=20 ";
+            } else if(pageView.getSpid() == 22){
+                sql = sql + "and ext='2' ";
+                sql = sql + "and channelid=20 ";
+            } else if(pageView.getSpid() == 23){
+                sql = sql + "and ext='0' ";
+                sql = sql + "and channelid=20 ";
+            } else {
+                sql = sql + "and channelid=" + pageView.getSpid() + " ";
+            }
         }
         sql = sql + "and status in (2,3) group by cardid, priceid";
 
@@ -142,7 +153,18 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
         //  查询字段 --------------------------
         String sql = "select province, count(*) num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
         if(pageView.getSpid() > 0){
-            sql = sql + "and channelid=" + pageView.getSpid() + " ";
+            if(pageView.getSpid() == 21){
+                sql = sql + "and ext='1' ";
+                sql = sql + "and channelid=20 ";
+            } else if(pageView.getSpid() == 22){
+                sql = sql + "and ext='2' ";
+                sql = sql + "and channelid=20 ";
+            } else if(pageView.getSpid() == 23){
+                sql = sql + "and ext='0' ";
+                sql = sql + "and channelid=20 ";
+            } else {
+                sql = sql + "and channelid=" + pageView.getSpid() + " ";
+            }
         }
         sql = sql + "and status in (2,3) group by province order by 3 desc";
 
