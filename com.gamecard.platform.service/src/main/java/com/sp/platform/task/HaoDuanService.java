@@ -48,6 +48,11 @@ public class HaoDuanService {
     }
 
     private void getHaoduan(NaHaoduan naHaoduan) {
+        if (!HaoduanCache.NA.equals(HaoduanCache.getProvince(naHaoduan.getCaller()))) {
+            LogEnum.DEFAULT.info("已经入库" + StringUtils.left(naHaoduan.getCaller(), 7));
+            naHaoduanService.delete(naHaoduan.getId());
+            return;
+        }
         try {
             HttpGet get = new HttpGet(propertyUtils.getProperty("haoduan_url") + StringUtils.left(naHaoduan.getCaller(), 7));
             HttpResponse response = client.execute(get);
