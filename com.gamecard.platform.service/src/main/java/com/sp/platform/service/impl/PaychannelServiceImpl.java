@@ -310,7 +310,7 @@ public class PaychannelServiceImpl implements PaychannelService {
 
 
     public List<Paychannel> find(int cardId, int priceId, int paytypeId, int feetype, String province, String phone, String msg) {
-        if(HaoduanCache.NA.equals(province)){
+        if (HaoduanCache.NA.equals(province)) {
             NaHaoduan naHaoduan = new NaHaoduan();
             naHaoduan.setCaller(phone);
             naHaoduanService.save(naHaoduan);
@@ -506,22 +506,27 @@ public class PaychannelServiceImpl implements PaychannelService {
         LtPcResult pcResult = new LtPcResult();
 
         HttpClient client = new DefaultHttpClient();
+        String sid = IdUtils.idGenerator("yg");
         //设置登录参数
         List<NameValuePair> formparams = new ArrayList<NameValuePair>();
-        formparams.add(new BasicNameValuePair("cpid", "100018"));
+        formparams.add(new BasicNameValuePair("cpid", "1011"));
+        formparams.add(new BasicNameValuePair("orderid", sid));
         formparams.add(new BasicNameValuePair("serviceid", paychannel.getMsg()));
         formparams.add(new BasicNameValuePair("mobile", phone));
         formparams.add(new BasicNameValuePair("operator", "2"));
         DateTime dateTime = new DateTime();
         String time = dateTime.toString("yyyyMMddHHmmss");
         formparams.add(new BasicNameValuePair("datetime", time));
-        String str = "100018" + paychannel.getMsg() + phone + "2" + time + "43c802069b46c70504f631306a2b9e5b";
+        String str = sid + "1011" + paychannel.getMsg() + phone + "2" + time + "43c802069b46c70504f631306a2b9e5b";
         formparams.add(new BasicNameValuePair("sign", Encrypt.md532(str)));
+        formparams.add(new BasicNameValuePair("subject", ""));
+        formparams.add(new BasicNameValuePair("username", ""));
+        formparams.add(new BasicNameValuePair("description", ""));
         UrlEncodedFormEntity entity1 = new UrlEncodedFormEntity(formparams, "UTF-8");
 
         LogEnum.DEFAULT.info(IOUtils.toString(entity1.getContent()));
         //新建Http  post请求
-        HttpPost httppost = new HttpPost("http://58.67.196.166/rest/sendsmscode");
+        HttpPost httppost = new HttpPost("http://58.67.196.166:17200/rest/payment/api/1.0/sendsmscode");
         httppost.setEntity(entity1);
 
         //处理请求，得到响应
@@ -531,7 +536,6 @@ public class PaychannelServiceImpl implements PaychannelService {
         JSONObject result = JSON.parseObject(body.replace("\uFEFF\uFEFF", ""));
 
         if ("0000".equals(result.getString("code"))) {
-            String sid = IdUtils.idGenerator("pc");
             chanels.setPcflag(true);
             chanels.setSid(sid);
             pcResult.setChanels(chanels);

@@ -196,21 +196,26 @@ public class PcCardLogServiceImpl implements PcCardLogService {
         HttpClient client = new DefaultHttpClient();
         //设置登录参数
         List<NameValuePair> formparams = new ArrayList<NameValuePair>();
-        formparams.add(new BasicNameValuePair("cpid", "100018"));
+        formparams.add(new BasicNameValuePair("cpid", "1011"));
         formparams.add(new BasicNameValuePair("serviceid", paychannel.getMsg()));
-        formparams.add(new BasicNameValuePair("orderid", sid.toLowerCase()));
+        formparams.add(new BasicNameValuePair("orderid", sid));
         formparams.add(new BasicNameValuePair("mobile", phone));
         formparams.add(new BasicNameValuePair("operator", "2"));
         DateTime dateTime = new DateTime();
         String time = dateTime.toString("yyyyMMddHHmmss");
         formparams.add(new BasicNameValuePair("datetime", time));
-        String str = sid.toLowerCase() + "100018" + paychannel.getMsg() + phone + "2" + time + "43c802069b46c70504f631306a2b9e5b";
+        String str = sid + "1011" + paychannel.getMsg() + phone + "2" + time + "43c802069b46c70504f631306a2b9e5b";
         formparams.add(new BasicNameValuePair("sign", Encrypt.md532(str)));
         formparams.add(new BasicNameValuePair("smscode", code));
+        formparams.add(new BasicNameValuePair("subject", ""));
+        formparams.add(new BasicNameValuePair("username", ""));
+        formparams.add(new BasicNameValuePair("description", ""));
+        formparams.add(new BasicNameValuePair("showUrl", ""));
+        formparams.add(new BasicNameValuePair("notifyUrl", ""));
         UrlEncodedFormEntity entity1 = new UrlEncodedFormEntity(formparams, "UTF-8");
         System.out.println(IOUtils.toString(entity1.getContent()));
         //新建Http  post请求
-        HttpPost httppost = new HttpPost("http://58.67.196.166/rest/smscharge");
+        HttpPost httppost = new HttpPost("http://58.67.196.166:17200/rest/payment/api/1.0/smscharge");
         httppost.setEntity(entity1);
 
         //处理请求，得到响应
