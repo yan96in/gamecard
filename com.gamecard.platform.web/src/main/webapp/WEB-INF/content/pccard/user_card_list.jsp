@@ -129,7 +129,18 @@
                             <s:iterator value="list" id="bean">
                                 <tr class='t2'>
                                     <td>${bean.id}</td>
-                                    <td><s:if test="#bean.channelid==19"><font color="red">移动</font></s:if><s:else><font color="green">联通</font></s:else></td>
+                                    <td>
+                                        <s:if test="#bean.channelid==19">
+                                            <font color="red">移动</font>
+                                        </s:if>
+                                        <s:else>
+                                            <font color="green">联通
+                                            <s:if test="#bean.ext==1">WO+</s:if>
+                                            <s:if test="#bean.ext==2">翼光</s:if>
+                                            <s:if test="#bean.ext==0">空中</s:if>
+                                            </font>
+                                        </s:else>
+                                    </td>
                                     <td>${bean.mobile}</td>
                                     <td>${bean.province}-${bean.city}</td>
                                     <td>${bean.fee}</td>
