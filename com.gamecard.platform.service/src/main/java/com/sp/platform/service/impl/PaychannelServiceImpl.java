@@ -283,7 +283,7 @@ public class PaychannelServiceImpl implements PaychannelService {
         dateTime = new DateTime();
         dateTime = dateTime.plusMinutes(-3);
         sql = "select count(*) from tbl_user_pc_card_log where status=2 and btime>='"
-                + dateTime.toString("yyyy-MM-dd HH:mm:ss") + "' and mobile='" + phoneNumber + "' and ext=" + type;
+                + dateTime.toString("yyyy-MM-dd HH:mm:ss") + "' and mobile='" + phoneNumber + "'";
 
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
         if (count >= 1) {
@@ -562,6 +562,7 @@ public class PaychannelServiceImpl implements PaychannelService {
     public PaginationSupport getPage(PaginationSupport page, Order[] orders, PageView pageView) {
         return null;
     }
+
 }
 
 
