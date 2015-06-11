@@ -280,6 +280,18 @@ public class PaychannelServiceImpl implements PaychannelService {
             return false;
         }
 
+        dateTime = new DateTime();
+        dateTime = dateTime.plusMinutes(-3);
+        sql = "select count(*) from tbl_user_pc_card_log where status=2 and btime>='"
+                + dateTime.toString("yyyy-MM-dd HH:mm:ss") + "' and mobile='" + phoneNumber + "' and ext=" + type;
+
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (count >= 1) {
+            LogEnum.DEFAULT.info(channelType + "  " + new StringBuilder(phoneNumber).
+                    append("---- 三分钟内只能成单一次 ").append(count).toString());
+            return false;
+        }
+
         return true;
     }
 
