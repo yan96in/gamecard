@@ -19,6 +19,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +43,60 @@ public class BillTest {
     TimerMain timerMain;
 
     int line = 1;
+
+    @Test
+    public void haoduan() throws IOException, SQLException {
+        String sql = "select code from mobilelocation";
+        List<Map<String, Object>> l = jdbcTemplate.queryForList(sql);
+        Map<String, String> haoduan = new HashMap<String, String>();
+        for (Map<String, Object> map : l) {
+            haoduan.put(map.get("code").toString(), map.get("code").toString());
+        }
+
+        List<String> list = FileUtils.readLines(new File("/Users/yanglei/Downloads/号段.txt"));
+        int i = 0;
+
+        List<String[]> noHao = new ArrayList<String[]>();
+        for (String str : list) {
+            String[] strs = str.split("\t");
+            if (StringUtils.isBlank(haoduan.get(strs[0]))) {
+                noHao.add(strs);
+                i++;
+            }
+        }
+        System.out.println(i);
+        insertBooks(noHao);
+    }
+
+    public void insertBooks(List<String[]> book) throws SQLException, IOException {
+
+        List<String> sqls = new ArrayList<String>();
+        for (String[] strings : book) {
+            String sql = "insert into mobilelocation(code,province,city) values('" + strings[0] + "','" + strings[1] + "','" + strings[2] + "');";
+            sqls.add(sql);
+        }
+        FileUtils.writeLines(new File("/Users/yanglei/Downloads/haoduan.sql"), sqls);
+
+//        final List<String[]> tempBook = book;
+//        String sql = "insert into mobilelocation(code,province,city) values(?,?,?)";
+//        Connection conn = ConnectDB.getConnection("MySql", "139.159.0.226:3301/skyd", "remoteuser", "service@remote");
+//        PreparedStatement st = null;
+//        ResultSet rs = null;
+//        st = conn.prepareStatement(sql);
+//        for (int i = 0; i < tempBook.size(); i++) {
+//
+//            st.setString(1, tempBook.get(i)[0]);
+//            st.setString(2, tempBook.get(i)[1]);
+//            st.setString(3, tempBook.get(i)[2]);
+//            st.addBatch();
+//            if (i % 1000 == 0) {
+//                st.executeBatch();
+//                st.clearBatch();
+//            }
+//        }
+//        st.executeBatch();
+
+    }
 
     @Test
     public void bill_diff() throws IOException {
