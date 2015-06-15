@@ -30,31 +30,23 @@ public class IvrReceiveServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         try {
-            String spId = StringUtils.substringAfter(req.getRequestURI(), req.getServletPath() + "/");
-            spId = StringUtils.substringBefore(spId, "/");
-            LogEnum.SP.info("通道[{}]同步一条话单[{}]", spId, req.getRequestURI() + "?" + req.getQueryString());
-
-            Map<String, String> map = SpInfoCache.getIvrSyncInfo(spId);
-            if (map != null) {
-                IvrTask ivrTask = AppContextHolder.getContext().getBean(IvrTask.class);
-                ivrTask.setCaller(req.getParameter(map.get("caller")));
-                ivrTask.setCalled(req.getParameter(map.get("called")));
-                ivrTask.setBtime(req.getParameter(map.get("btime")));
-                ivrTask.setEtime(req.getParameter(map.get("etime")));
-                String format = map.get("format");
-                if(StringUtils.isBlank(format)){
-                    format = "yyyy-MM-dd HH:mm:ss";
-                }
-                ivrTask.setFormat(format);
-                LogEnum.DEFAULT.info("准备处理SP[{}]的一条数据{}", spId, ivrTask);
-                executor.execute(ivrTask);
-                resp.getWriter().print(map.get("return"));
-                return;
-            }
+            LogEnum.SP.info("电信IVR网关收到一条消息[{}]", req.getRequestURI() + "?" + req.getQueryString());
         } catch (Exception e) {
             LogEnum.DEFAULT.error(e.toString());
         }
-        resp.getWriter().print("error");
+        String operateid = req.getParameter("operateid");
+        if(StringUtils.equals(operateid, "00101")){
+            resp.getWriter().print("0");
+        } else if(StringUtils.equals(operateid, "00002")){
+            resp.getWriter().print("3,3,2,2,1;10,5,3&10,5,3&10,5&10,5&6;10,5,3&10,5,3&10,5&10,5&6");
+        } else if(StringUtils.equals(operateid, "00003")){
+            resp.getWriter().print("1&123&123");
+        } else if(StringUtils.equals(operateid, "00102")){
+            resp.getWriter().print("0");
+        } else if(StringUtils.equals(operateid, "00103")){
+            resp.getWriter().print("0");
+        }
+        resp.getWriter().print("0");
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
