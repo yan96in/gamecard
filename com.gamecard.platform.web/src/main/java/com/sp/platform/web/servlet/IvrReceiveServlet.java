@@ -45,8 +45,9 @@ public class IvrReceiveServlet extends HttpServlet {
             resp.getWriter().print("0");
         } else if(StringUtils.equals(operateid, "00103")){
             resp.getWriter().print("0");
+        } else {
+            resp.getWriter().print("0");
         }
-        resp.getWriter().print("0");
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
