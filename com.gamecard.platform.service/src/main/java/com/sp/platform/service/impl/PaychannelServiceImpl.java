@@ -12,8 +12,12 @@ import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.service.NaHaoduanService;
 import com.sp.platform.service.PaychannelService;
 import com.sp.platform.service.PcCardLogService;
+import com.sp.platform.service.sp.KzYdService;
+import com.sp.platform.service.sp.SpYdService;
+import com.sp.platform.service.sp.YlYdService;
 import com.sp.platform.util.*;
 import com.sp.platform.vo.ChannelVo;
+import com.sp.platform.vo.LtPcResult;
 import com.sp.platform.vo.PcVo1;
 import com.yangl.common.hibernate.PaginationSupport;
 import org.apache.commons.collections.CollectionUtils;
@@ -68,6 +72,12 @@ public class PaychannelServiceImpl implements PaychannelService {
     private NaHaoduanService naHaoduanService;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private SpYdService spYdService;
+    @Autowired
+    private KzYdService kzYdService;
+    @Autowired
+    private YlYdService ylYdService;
 
     @Override
     public Paychannel get(int id) {
@@ -118,32 +128,83 @@ public class PaychannelServiceImpl implements PaychannelService {
                 fee = paychannel.getFee();
                 HttpClient httpClient = new DefaultHttpClient();
                 if (paytypeId == 19) {
-                    String resource = propertyUtils.getProperty("pc.pay.url") +
-                            "?uid=" + phone + "&bid=" + fee + "&ext=test";
-                    if (StringUtils.indexOf(propertyUtils.getProperty("pc.province.qzsj"), province) >= 0) {
-                        resource = propertyUtils.getProperty("pc.province.qzsj.url") +
-                                "?uid=" + phone + "&bid=" + fee + "&ext=test";
-                    } else if (StringUtils.indexOf(propertyUtils.getProperty("pc.province.gfyx"), province) >= 0) {
-                        resource = propertyUtils.getProperty("pc.province.gfyx.url") +
-                                "?uid=" + phone + "&bid=" + fee + "&ext=test";
-                    }
-                    LogEnum.DEFAULT.info(resource);
-                    HttpGet get = new HttpGet(resource);
-                    HttpResponse httpResponse = httpClient.execute(get);
-                    if (HttpStatus.SC_OK == httpResponse.getStatusLine().getStatusCode()) {
-                        String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
-                        LogEnum.DEFAULT.info(phone + " 移动申请指令返回1:" + body);
-                        PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
-                        resultCode = resultVo.getResultCode();
-                        resultMessage = resultVo.getResultMsg();
-                        sid = resultVo.getSid();
-                        if ("0".equals(resultCode)) {
-                            chanels.setPcflag(true);
-                            chanels.setSid(sid);
-                            return chanels;
-                        } else {
-                            chanels.setResultCode(resultCode);
+                    LtPcResult result = null;
+                    boolean flag = true;
+                    if (StringUtils.indexOf(propertyUtils.getProperty("yd.open.provinces"), province) >= 0) {
+                        flag = callerLimit(phone,
+                                propertyUtils.getInteger("pc.yd.caller.day.limit." + paytypeId, 30),
+                                propertyUtils.getInteger("pc.yd.caller.week.limit." + paytypeId, 35),
+                                propertyUtils.getInteger("pc.yd.caller.month.limit." + paytypeId, 100),
+                                "移动游戏");
+                        if (flag) {
+                            int provinceMaxFee = propertyUtils.getInteger("pc.yd.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+                            if (provinceMaxFee == 0) {
+                                provinceMaxFee = propertyUtils.getInteger("pc.yd.province.day.limit." + paytypeId);
+                            }
+                            flag = provinceLimit(phone, province, paytypeId, provinceMaxFee, "移动游戏");
                         }
+                        if (flag) {
+                            result = spYdService.sendYdCode(phone, fee);  // 走移动游戏
+                        }
+                    }
+
+                    if (result != null && result.getChanels().isPcflag()) {
+                        result.getChanels().setType(3);
+                        sid = result.getChanels().getSid();
+                        ext = "3";
+                        return result.getChanels();
+                    }
+
+                    // 走空中移动
+                    if (StringUtils.indexOf(propertyUtils.getProperty("yd.kz.provinces"), province) >= 0) {
+                        flag = callerLimit(phone,
+                                propertyUtils.getInteger("pc.kz.caller.day.limit." + paytypeId, 30),
+                                propertyUtils.getInteger("pc.kz.caller.week.limit." + paytypeId, 40),
+                                propertyUtils.getInteger("pc.kz.caller.month.limit." + paytypeId, 100),
+                                "空中移动");
+                        if (flag) {
+                            int provinceMaxFee = propertyUtils.getInteger("pc.kz.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+                            if (provinceMaxFee == 0) {
+                                provinceMaxFee = propertyUtils.getInteger("pc.kz.province.day.limit." + paytypeId);
+                            }
+                            flag = provinceLimit(phone, province, paytypeId, provinceMaxFee, "空中移动");
+                        }
+                        if (flag) {
+                            result = kzYdService.sendYdCode(phone, fee, province);  // 走空中移动
+                        }
+                    }
+
+                    if (result != null && result.getChanels().isPcflag()) {
+                        result.getChanels().setType(5);
+                        sid = result.getChanels().getSid();
+                        ext = "5";
+                        return result.getChanels();
+                    }
+
+                    // 走翼龙移动
+                    if (StringUtils.indexOf(propertyUtils.getProperty("yd.yl.provinces"), province) >= 0) {
+                        flag = callerLimit(phone,
+                                propertyUtils.getInteger("pc.yl.caller.day.limit." + paytypeId, 30),
+                                propertyUtils.getInteger("pc.yl.caller.week.limit." + paytypeId, 40),
+                                propertyUtils.getInteger("pc.yl.caller.month.limit." + paytypeId, 100),
+                                "翼龙");
+                        if (flag) {
+                            int provinceMaxFee = propertyUtils.getInteger("pc.yl.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+                            if (provinceMaxFee == 0) {
+                                provinceMaxFee = propertyUtils.getInteger("pc.yl.province.day.limit." + paytypeId);
+                            }
+                            flag = provinceLimit(phone, province, paytypeId, provinceMaxFee, "翼龙");
+                        }
+                        if (flag) {
+                            result = ylYdService.sendYdCode(phone, fee, province);  // 走翼龙
+                        }
+                    }
+
+                    if (result != null && result.getChanels().isPcflag()) {
+                        result.getChanels().setType(4);
+                        sid = result.getChanels().getSid();
+                        ext = "4";
+                        return result.getChanels();
                     }
                 } else if (paytypeId == 20) {
                     LtPcResult result = null;
@@ -151,7 +212,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                     if (StringUtils.indexOf(propertyUtils.getProperty("wo.open.provinces"), province) >= 0) {
                         flag = callerLimit(phone,
                                 propertyUtils.getInteger("pc.wo.caller.day.limit." + paytypeId, 30),
-                                propertyUtils.getInteger("pc.yg.caller.week.limit." + paytypeId, 35),
+                                propertyUtils.getInteger("pc.wo.caller.week.limit." + paytypeId, 35),
                                 propertyUtils.getInteger("pc.wo.caller.month.limit." + paytypeId, 100),
                                 "WO+");
                         if (flag) {
@@ -239,12 +300,8 @@ public class PaychannelServiceImpl implements PaychannelService {
 
     private boolean callerLimit(String phoneNumber, int maxDayFee, int maxWeekFee, int maxMonthFee, String channelType) {
         //----------------------------- 用户日上限 -----------------------
-        int type = 0;
-        if (StringUtils.equals("WO+", channelType)) {
-            type = 1;
-        } else if (StringUtils.equals("翼光", channelType)) {
-            type = 2;
-        }
+        int type = getPcSpType(channelType);
+
         int tempFee = cacheCheckUser.getCallerDayFee(phoneNumber + Constants.split_str + "pc" + type);
 
         if (maxDayFee > 0 && tempFee >= maxDayFee) {
@@ -295,14 +352,26 @@ public class PaychannelServiceImpl implements PaychannelService {
         return true;
     }
 
-    private boolean provinceLimit(String phoneNumber, String province, int paytypeId, int maxDayFee, String channelType) {
-        //----------------------------- 省份日上限 -----------------------
+    private int getPcSpType(String channelType) {
         int type = 0;
         if (StringUtils.equals("WO+", channelType)) {
             type = 1;
         } else if (StringUtils.equals("翼光", channelType)) {
             type = 2;
+        } else if (StringUtils.equals("移动游戏", channelType)) {
+            type = 3;
+        } else if (StringUtils.equals("翼龙", channelType)) {
+            type = 4;
+        } else if (StringUtils.equals("空中移动", channelType)) {
+            type = 5;
         }
+        return type;
+    }
+
+    private boolean provinceLimit(String phoneNumber, String province, int paytypeId, int maxDayFee, String channelType) {
+        //----------------------------- 省份日上限 -----------------------
+        int type = getPcSpType(channelType);
+
         int tempFee = cacheCheckUser.getCalledProvinceDayFee(province + Constants.split_str + "pc" + paytypeId + type);
 
         if (maxDayFee > 0 && tempFee >= maxDayFee) {
@@ -563,44 +632,4 @@ public class PaychannelServiceImpl implements PaychannelService {
         return null;
     }
 
-}
-
-
-class LtPcResult {
-    ChannelVo chanels;
-    String resultCode;
-    String resultMessage;
-    String sid;
-
-    public String getResultCode() {
-        return resultCode;
-    }
-
-    public void setResultCode(String resultCode) {
-        this.resultCode = resultCode;
-    }
-
-    public String getResultMessage() {
-        return resultMessage;
-    }
-
-    public void setResultMessage(String resultMessage) {
-        this.resultMessage = resultMessage;
-    }
-
-    public String getSid() {
-        return sid;
-    }
-
-    public void setSid(String sid) {
-        this.sid = sid;
-    }
-
-    public ChannelVo getChanels() {
-        return chanels;
-    }
-
-    public void setChanels(ChannelVo chanels) {
-        this.chanels = chanels;
-    }
 }

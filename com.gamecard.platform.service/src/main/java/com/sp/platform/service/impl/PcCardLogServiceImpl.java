@@ -11,6 +11,9 @@ import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.service.CardPasswordService;
 import com.sp.platform.service.PaychannelService;
 import com.sp.platform.service.PcCardLogService;
+import com.sp.platform.service.sp.KzYdService;
+import com.sp.platform.service.sp.SpYdService;
+import com.sp.platform.service.sp.YlYdService;
 import com.sp.platform.util.*;
 import com.sp.platform.vo.PcBillVo;
 import com.sp.platform.vo.PcVo1;
@@ -62,6 +65,12 @@ public class PcCardLogServiceImpl implements PcCardLogService {
     private CacheCheckUser cacheCheckUser;
     @Autowired
     private PaychannelService paychannelService;
+    @Autowired
+    private SpYdService spYdService;
+    @Autowired
+    private KzYdService kzYdService;
+    @Autowired
+    private YlYdService ylYdService;
 
     @Override
     public PcCardLog get(int id) {
@@ -120,16 +129,13 @@ public class PcCardLogServiceImpl implements PcCardLogService {
             }
             boolean isOK = false;
             if (paytypeId == 19) {
-                HttpClient httpClient = new DefaultHttpClient();
-                String resource = propertyUtils.getProperty("pc.order.url") +
-                        "?sid=" + sid + "&vid=" + code + "&payid=test&amount=" + pcCardLog.getFee();
-                HttpGet get = new HttpGet(resource);
-                HttpResponse httpResponse = httpClient.execute(get);
-                String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
-                LogEnum.DEFAULT.info(phone + "  提交验证码 " + body + " YD sid=" + sid);
-                PcVo1 resultVo = JSON.parseObject(body, PcVo1.class);
-                resultCode = resultVo.getResultCode();
-                sid = resultVo.getSid();
+                if (channeType == 5){
+                    resultCode = kzYdService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
+                } else if (channeType == 4){
+                    resultCode = ylYdService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
+                } else if (channeType == 3) {
+                    resultCode = spYdService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
+                }
                 isOK = (propertyUtils.getProperty("pc.success.result", "200000").equals(resultCode));
             } else if (paytypeId == 20) {
                 resultCode = commitPaymentCode(phone, code, sid, channeType, pcCardLog);
@@ -174,6 +180,12 @@ public class PcCardLogServiceImpl implements PcCardLogService {
         } else if (channeType == 2) {
             return commitYgPaymentCode(phone, code, sid, pcCardLog);
         } else if (channeType == 1) {
+            return commitWoPaymentCode(phone, code, sid, pcCardLog);
+        } else if (channeType == 3) {
+            return commitWoPaymentCode(phone, code, sid, pcCardLog);
+        } else if (channeType == 4) {
+            return commitWoPaymentCode(phone, code, sid, pcCardLog);
+        } else if (channeType == 5) {
             return commitWoPaymentCode(phone, code, sid, pcCardLog);
         }
         return "null";

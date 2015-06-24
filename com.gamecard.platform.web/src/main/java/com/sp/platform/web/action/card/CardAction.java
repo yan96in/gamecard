@@ -304,7 +304,7 @@ public class CardAction extends ActionSupport {
                 .append(" ：").toString());
         JsonVo result = null;
         //判断是否超上限
-        if (paytypeId.equals(20) && !CheckUserCache.checkUser(phoneNumber)) {
+        if ((paytypeId.equals(20) || paytypeId.equals(19)) && !CheckUserCache.checkUser(phoneNumber)) {
             result = new JsonVo(false, "超过限制");
             Struts2Utils.renderJson(result);
             LogEnum.DEFAULT.info("IP 超过限制 : " + IpAddressUtil.getRealIp());

@@ -54,7 +54,8 @@ public class WoTest {
             map.put("paymentAcount", "001");
             map.put("paymentType", 0);
             map.put("subject", "金币");
-            map.put("totalFee", 0.1);
+            map.put("t" +
+                    "talFee", 0.1);
             String jsonBody = JSON.toJSONString(map);
             LogEnum.DEFAULT.info("请求计费2.0: " + jsonBody);
             HttpClient httpClient = HttpUtils.getSecuredHttpClient();
