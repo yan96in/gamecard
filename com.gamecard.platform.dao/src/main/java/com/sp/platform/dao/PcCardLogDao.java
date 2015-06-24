@@ -93,16 +93,25 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
 
         //  查询字段 --------------------------
         String sql = "select cardid, priceid, sum(case status when 2 then 1 else 0 end) as num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
-        if(pageView.getSpid() > 0){
-            if(pageView.getSpid() == 21){
+        if (pageView.getSpid() > 0) {
+            if (pageView.getSpid() == 21) {
                 sql = sql + "and ext='1' ";
                 sql = sql + "and channelid=20 ";
-            } else if(pageView.getSpid() == 22){
+            } else if (pageView.getSpid() == 22) {
                 sql = sql + "and ext='2' ";
                 sql = sql + "and channelid=20 ";
-            } else if(pageView.getSpid() == 23){
+            } else if (pageView.getSpid() == 23) {
                 sql = sql + "and ext='0' ";
                 sql = sql + "and channelid=20 ";
+            } else if (pageView.getSpid() == 13) {
+                sql = sql + "and ext='3' ";
+                sql = sql + "and channelid=19 ";
+            } else if (pageView.getSpid() == 14) {
+                sql = sql + "and ext='4' ";
+                sql = sql + "and channelid=19 ";
+            } else if (pageView.getSpid() == 15) {
+                sql = sql + "and ext='5' ";
+                sql = sql + "and channelid=19 ";
             } else {
                 sql = sql + "and channelid=" + pageView.getSpid() + " ";
             }
@@ -152,16 +161,25 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
 
         //  查询字段 --------------------------
         String sql = "select province, count(*) num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
-        if(pageView.getSpid() > 0){
-            if(pageView.getSpid() == 21){
+        if (pageView.getSpid() > 0) {
+            if (pageView.getSpid() == 21) {
                 sql = sql + "and ext='1' ";
                 sql = sql + "and channelid=20 ";
-            } else if(pageView.getSpid() == 22){
+            } else if (pageView.getSpid() == 22) {
                 sql = sql + "and ext='2' ";
                 sql = sql + "and channelid=20 ";
-            } else if(pageView.getSpid() == 23){
+            } else if (pageView.getSpid() == 23) {
                 sql = sql + "and ext='0' ";
                 sql = sql + "and channelid=20 ";
+            } else if (pageView.getSpid() == 13) {
+                sql = sql + "and ext='3' ";
+                sql = sql + "and channelid=19 ";
+            } else if (pageView.getSpid() == 14) {
+                sql = sql + "and ext='4' ";
+                sql = sql + "and channelid=19 ";
+            } else if (pageView.getSpid() == 15) {
+                sql = sql + "and ext='5' ";
+                sql = sql + "and channelid=19 ";
             } else {
                 sql = sql + "and channelid=" + pageView.getSpid() + " ";
             }

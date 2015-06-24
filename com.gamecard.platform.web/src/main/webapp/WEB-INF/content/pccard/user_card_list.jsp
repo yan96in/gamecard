@@ -132,6 +132,11 @@
                                     <td>
                                         <s:if test="#bean.channelid==19">
                                             <font color="red">移动</font>
+                                            <font color="green">移动
+                                                <s:if test="#bean.ext==3">游戏</s:if>
+                                                <s:if test="#bean.ext==4">翼龙</s:if>
+                                                <s:if test="#bean.ext==5">空中</s:if>
+                                            </font>
                                         </s:if>
                                         <s:else>
                                             <font color="green">联通
