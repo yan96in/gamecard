@@ -85,7 +85,7 @@ public class SpYdService {
                     + "&salechannelid=41937000"
                     + "&sessionkey=" + sessionKey
                     + "&hash=" + Encrypt.md532(body2);
-            System.out.println(url);
+            LogEnum.DEFAULT.info(phone + "  移动基地申请验证码 " + url);
             HttpGet httpGet = new HttpGet(url);
             httpGet.addHeader("Content-Type", "application/json;charset=UTF-8");
             httpGet.addHeader("accept", "application/json;charset=UTF-8");
@@ -135,7 +135,6 @@ public class SpYdService {
                 + "&time=" + epoch
                 + "&sessionkey=" + sessionKey
                 + "&hash=" + Encrypt.md532(body2);
-        System.out.println(url);
         HttpGet httpGet = new HttpGet(url);
         httpGet.addHeader("Content-Type", "application/json;charset=UTF-8");
         httpGet.addHeader("accept", "application/json;charset=UTF-8");
