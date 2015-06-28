@@ -119,10 +119,10 @@
                                 <th width="8%" class="left_bt2">用户号码</th>
                                 <th width="5%" class="left_bt2">省市</th>
                                 <th width="5%" class="left_bt2">信息费(分)</th>
-                                <th width="5%" class="left_bt2">点卡类型</th>
-                                <th width="8%" class="left_bt2">卡号-密码</th>
+                                <th width="7%" class="left_bt2">点卡类型</th>
+                                <th width="10%" class="left_bt2">卡号-密码</th>
                                 <th width="12%" class="left_bt2">时间</th>
-                                <th width="12%" class="left_bt2">订单号</th>
+                                <th width="8%" class="left_bt2">IP</th>
                                 <th width="8%" class="left_bt2">错误码</th>
                                 <th width="3%" class="left_bt2">状态</th>
                             </tr>
@@ -154,7 +154,7 @@
                                         ${bean.btime}<br>
                                         ${bean.btime}
                                     </td>
-                                    <td>${bean.sid}</td>
+                                    <td>${bean.ip}</td>
                                     <td>${bean.resultcode}</td>
                                     <td>${bean.status}</td>
                                 </tr>

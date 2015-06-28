@@ -1,4 +1,4 @@
-package com.sp.platform.web.util;
+package com.sp.platform.util;
 
 /**
  * CryptTool 封装了一些加密工具方法, 包括 3DES, MD5 等.

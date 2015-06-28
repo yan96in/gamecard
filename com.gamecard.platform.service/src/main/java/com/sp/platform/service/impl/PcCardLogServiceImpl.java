@@ -11,6 +11,7 @@ import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.service.CardPasswordService;
 import com.sp.platform.service.PaychannelService;
 import com.sp.platform.service.PcCardLogService;
+import com.sp.platform.service.sp.DxService;
 import com.sp.platform.service.sp.KzYdService;
 import com.sp.platform.service.sp.SpYdService;
 import com.sp.platform.service.sp.YlYdService;
@@ -71,6 +72,8 @@ public class PcCardLogServiceImpl implements PcCardLogService {
     private KzYdService kzYdService;
     @Autowired
     private YlYdService ylYdService;
+    @Autowired
+    private DxService dxService;
 
     @Override
     public PcCardLog get(int id) {
@@ -140,6 +143,11 @@ public class PcCardLogServiceImpl implements PcCardLogService {
             } else if (paytypeId == 20) {
                 resultCode = commitPaymentCode(phone, code, sid, channeType, pcCardLog);
                 isOK = (propertyUtils.getProperty("pc.lt.success.result", "200000").equals(resultCode));
+            } else if (paytypeId == 21) {
+                if (channeType == 6){
+                    resultCode = dxService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
+                }
+                isOK = (propertyUtils.getProperty("pc.dx.success.result", "00").equals(resultCode));
             }
             pcCardLog.setEtime(new Date());
             if (isOK) {

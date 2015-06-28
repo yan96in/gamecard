@@ -1,6 +1,7 @@
 package com.sp.platform.web.action.card;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sp.platform.cache.BlackCache;
 import com.sp.platform.cache.HaoduanCache;
 import com.sp.platform.common.Constants;
 import com.sp.platform.entity.*;
@@ -192,10 +193,19 @@ public class CardAction extends ActionSupport {
 
     @Action("checkPhone")
     public void checkPhone() {
+        String ip = IpAddressUtil.getRealIp();
         LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
-                append("--checkPhone-- 请求IP：").append(IpAddressUtil.getRealIp())
+                append("--checkPhone-- 请求IP：").append(ip)
                 .append(" ：").append(" , paytypeId: ").append(paytypeId).toString());
+
         JsonVo result = null;
+        if (BlackCache.isBlack(ip) || BlackCache.isBlack(phoneNumber)) {
+            result = new JsonVo(false, "无法使用该业务");
+            Struts2Utils.renderJson(result);
+            LogEnum.DEFAULT.info(phoneNumber + " or " + ip + " 屏蔽.");
+            return;
+        }
+
 //        if (!CheckUserCache.checkUser(phoneNumber)) {
 //            result = new JsonVo(false, "超过限制");
 //            Struts2Utils.renderJson(result);
@@ -282,6 +292,10 @@ public class CardAction extends ActionSupport {
                 result = new JsonVo(false, "请输入正确的联通手机号码");
                 Struts2Utils.renderJson(result);
                 return;
+            } else if (paytypeId.equals(21) && !checkChintelecom()) {
+                result = new JsonVo(false, "请输入正确的手机号码");
+                Struts2Utils.renderJson(result);
+                return;
             } else if (paytypeId.equals(22) && !checkChintelecom()) {
                 result = new JsonVo(false, "请输入正确的手机号码");
                 Struts2Utils.renderJson(result);
@@ -299,12 +313,20 @@ public class CardAction extends ActionSupport {
 
     @Action("checkPcPhone")
     public void checkPcPhone() {
+        String ip = IpAddressUtil.getRealIp();
         LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
-                append("--checkPcPhone-- 请求IP：").append(IpAddressUtil.getRealIp())
-                .append(" ：").toString());
+                append("--checkPcPhone-- 请求IP：").append(ip).toString());
         JsonVo result = null;
+
+        if (BlackCache.isBlack(ip) || BlackCache.isBlack(phoneNumber)) {
+            result = new JsonVo(false, "无法使用该业务");
+            Struts2Utils.renderJson(result);
+            LogEnum.DEFAULT.info(phoneNumber + " or " + ip + " 屏蔽.");
+            return;
+        }
         //判断是否超上限
-        if ((paytypeId.equals(20) || paytypeId.equals(19)) && !CheckUserCache.checkUser(phoneNumber)) {
+//        if ((paytypeId.equals(20) || paytypeId.equals(19) || paytypeId.equals(21)) && !CheckUserCache.checkUser(phoneNumber)) {
+        if ((paytypeId >= 19 && paytypeId <= 21) && !CheckUserCache.checkUser(phoneNumber)) {
             result = new JsonVo(false, "超过限制");
             Struts2Utils.renderJson(result);
             LogEnum.DEFAULT.info("IP 超过限制 : " + IpAddressUtil.getRealIp());
@@ -322,6 +344,10 @@ public class CardAction extends ActionSupport {
                 result = new JsonVo(false, "请输入正确的联通手机号码");
                 Struts2Utils.renderJson(result);
                 return;
+            } else if (paytypeId.equals(21) && !checkChintelecom()) {
+                result = new JsonVo(false, "请输入正确的手机号码");
+                Struts2Utils.renderJson(result);
+                return;
             }
 
             PhoneVo phone = new PhoneVo(phoneNumber,
@@ -329,7 +355,9 @@ public class CardAction extends ActionSupport {
 
             channelVo = paychannelService.findPcChannels(id, priceId, paytypeId, phone.getProvince(), phoneNumber);
             channelVo.setPhoneVo(phone);
-            channelVo.setPcflag(checkLimit(phoneNumber, phone.getProvince(), paytypeId));
+            if (channelVo.isPcflag()) {
+                channelVo.setPcflag(checkLimit(phoneNumber, phone.getProvince(), paytypeId));
+            }
             result = new JsonVo(true, channelVo, "");
         }
         Struts2Utils.renderJson(result);
@@ -357,6 +385,15 @@ public class CardAction extends ActionSupport {
     @Action("sendPcCode")
     public void sendPcCode() {
         JsonVo result = null;
+
+        String ip = IpAddressUtil.getRealIp();
+        if (BlackCache.isBlack(ip) || BlackCache.isBlack(phoneNumber)) {
+            result = new JsonVo(false, "无法使用该业务");
+            Struts2Utils.renderJson(result);
+            LogEnum.DEFAULT.info(phoneNumber + " or " + ip + " 屏蔽.");
+            return;
+        }
+
         if (StringUtils.isBlank(phoneNumber)) {
             result = new JsonVo(false, "请输入正确的手机号码");
         } else {
@@ -366,6 +403,10 @@ public class CardAction extends ActionSupport {
                 return;
             } else if (paytypeId.equals(20) && !checkChinaunicom()) {
                 result = new JsonVo(false, "请输入正确的联通手机号码");
+                Struts2Utils.renderJson(result);
+                return;
+            } else if (paytypeId.equals(21) && !checkChintelecom()) {
+                result = new JsonVo(false, "请输入正确的手机号码");
                 Struts2Utils.renderJson(result);
                 return;
             }
@@ -439,9 +480,9 @@ public class CardAction extends ActionSupport {
     private boolean provinceLimit(String province, int paytypeId) {
 
         int calledMaxFee = propertyUtils.getInteger("pc" + paytypeId);
-        if(calledMaxFee > 0){
+        if (calledMaxFee > 0) {
             int t = cacheCheckUser.getCalledDayFee("pc" + paytypeId + "0");
-            if(t >= calledMaxFee){
+            if (t >= calledMaxFee) {
                 LogEnum.DEFAULT.info(new StringBuilder(phoneNumber).
                         append("---- 超号码日上限 ").append(calledMaxFee)
                         .append(",日费用：")
@@ -497,6 +538,15 @@ public class CardAction extends ActionSupport {
 
     @Action("getPcCard")
     public String getPcCard() {
+        String ip = IpAddressUtil.getRealIp();
+        if (BlackCache.isBlack(ip) || BlackCache.isBlack(phoneNumber)) {
+            message = "无法使用该业务";
+            card = cardService.get(id);
+            price = priceService.get(priceId);
+            paytype = paytypeService.get(paytypeId);
+            return "pccard";
+        }
+
         try {
             boolean limitflg = checkLimit(phoneNumber, HaoduanCache.getProvince(phoneNumber), paytypeId);
 
@@ -526,10 +576,12 @@ public class CardAction extends ActionSupport {
         chs.add("130");
         chs.add("131");
         chs.add("132");
+        chs.add("145");
         chs.add("155");
         chs.add("156");
         chs.add("185");
         chs.add("186");
+        chs.add("170");
         if (chs.contains(haoduan)) {
             return true;
         }
@@ -544,6 +596,9 @@ public class CardAction extends ActionSupport {
         chs.add("180");
         chs.add("181");
         chs.add("189");
+        chs.add("173");
+        chs.add("177");
+        chs.add("170");
         if (chs.contains(haoduan)) {
             return true;
         }
@@ -568,8 +623,11 @@ public class CardAction extends ActionSupport {
         chs.add("159");
         chs.add("182");
         chs.add("183");
+        chs.add("184");
         chs.add("187");
         chs.add("188");
+        chs.add("170");
+        chs.add("178");
         if (chs.contains(haoduan)) {
             return true;
         }

@@ -19,6 +19,7 @@ public class PcCardLog {
     private int priceId;
     private int fee;
     private String ext;
+    private String ip;
     private String resultcode;
     private String resultmsg;
     private String sid;
@@ -170,6 +171,14 @@ public class PcCardLog {
         this.status = status;
     }
 
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
     @Transient
     public String getCardShowName() {
         return cardShowName;
@@ -191,6 +200,7 @@ public class PcCardLog {
                 ", priceId=" + priceId +
                 ", fee=" + fee +
                 ", ext='" + ext + '\'' +
+                ", ip='" + ip + '\'' +
                 ", resultcode='" + resultcode + '\'' +
                 ", resultmsg='" + resultmsg + '\'' +
                 ", sid='" + sid + '\'' +

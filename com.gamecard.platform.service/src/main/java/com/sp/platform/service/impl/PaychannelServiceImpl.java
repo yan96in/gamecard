@@ -12,6 +12,7 @@ import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.service.NaHaoduanService;
 import com.sp.platform.service.PaychannelService;
 import com.sp.platform.service.PcCardLogService;
+import com.sp.platform.service.sp.DxService;
 import com.sp.platform.service.sp.KzYdService;
 import com.sp.platform.service.sp.SpYdService;
 import com.sp.platform.service.sp.YlYdService;
@@ -19,6 +20,7 @@ import com.sp.platform.util.*;
 import com.sp.platform.vo.ChannelVo;
 import com.sp.platform.vo.LtPcResult;
 import com.sp.platform.vo.PcVo1;
+import com.yangl.common.IpAddressUtil;
 import com.yangl.common.hibernate.PaginationSupport;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -78,6 +80,8 @@ public class PaychannelServiceImpl implements PaychannelService {
     private KzYdService kzYdService;
     @Autowired
     private YlYdService ylYdService;
+    @Autowired
+    private DxService dxService;
 
     @Override
     public Paychannel get(int id) {
@@ -109,7 +113,8 @@ public class PaychannelServiceImpl implements PaychannelService {
     public ChannelVo findPcChannels(int cardId, int priceId, int paytypeId, String province, String phone) {
         ChannelVo chanels = new ChannelVo();
         List<Paychannel> paychannels = find(cardId, priceId, paytypeId, 1, province, phone, null);
-        chanels.setPcflag(!CollectionUtils.isEmpty(paychannels));
+        boolean flag = !CollectionUtils.isEmpty(paychannels);
+        chanels.setPcflag(flag);
         return chanels;
     }
 
@@ -269,6 +274,33 @@ public class PaychannelServiceImpl implements PaychannelService {
                         sid = result.getChanels().getSid();
                         return result.getChanels();
                     }
+                } else if (paytypeId == 21) {
+                    LtPcResult result = null;
+                    boolean flag = true;
+                    if (StringUtils.indexOf(propertyUtils.getProperty("dx.open.provinces"), province) >= 0) {
+                        flag = callerLimit(phone,
+                                propertyUtils.getInteger("pc.dx.caller.day.limit." + paytypeId, 30),
+                                propertyUtils.getInteger("pc.dx.caller.week.limit." + paytypeId, 35),
+                                propertyUtils.getInteger("pc.dx.caller.month.limit." + paytypeId, 100),
+                                "电信");
+                        if (flag) {
+                            int provinceMaxFee = propertyUtils.getInteger("pc.dx.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+                            if (provinceMaxFee == 0) {
+                                provinceMaxFee = propertyUtils.getInteger("pc.dx.province.day.limit." + paytypeId);
+                            }
+                            flag = provinceLimit(phone, province, paytypeId, provinceMaxFee, "电信");
+                        }
+                        if (flag) {
+                            result = dxService.sendYdCode(phone, fee, province);  // 走电信翼支付
+                        }
+                    }
+
+                    if (result != null && result.getChanels().isPcflag()) {
+                        result.getChanels().setType(6);
+                        sid = result.getChanels().getSid();
+                        ext = "6";
+                        return result.getChanels();
+                    }
                 }
             } catch (Exception e) {
                 LogEnum.TEMP.error("调用空中网PC网游接口Step1 Error：", e);
@@ -286,6 +318,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                 pcCardLog.setSid(sid);
                 pcCardLog.setStatus(1);
                 pcCardLog.setExt(ext);
+                pcCardLog.setIp(IpAddressUtil.getRealIp());
                 pcCardLog.setBtime(new Date());
                 pcCardLog.setEtime(new Date());
                 pcCardLogService.save(pcCardLog);
@@ -364,6 +397,8 @@ public class PaychannelServiceImpl implements PaychannelService {
             type = 4;
         } else if (StringUtils.equals("空中移动", channelType)) {
             type = 5;
+        } else if (StringUtils.equals("电信", channelType)) {
+            type = 6;
         }
         return type;
     }

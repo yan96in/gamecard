@@ -112,6 +112,7 @@
                 <ref bean="provReduceCache" />
                 <ref bean="cardCache" />
                 <ref bean="channelCache" />
+                <ref bean="blackCache" />
             </list>
         </property>
     </bean>

@@ -1,7 +1,7 @@
 package com.sp.platform;
 
 import com.sp.platform.util.IdUtils;
-import com.sp.platform.web.util.CryptTool;
+import com.sp.platform.util.CryptTool;
 import com.sp.platform.web.util.HttpUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -28,7 +28,7 @@ public class TelecomTest {
         //设置登录参数
         List<NameValuePair> formparams = new ArrayList<NameValuePair>();
         String orderid = IdUtils.idGenerator("te");
-        String PHONENUM = "18911484443";
+        String PHONENUM = "189114844432";
         String MERCHANTID = "023101400064000";
         formparams.add(new BasicNameValuePair("MERCHANTID", MERCHANTID));
         formparams.add(new BasicNameValuePair("ORDERSEQ", orderid));
@@ -166,7 +166,37 @@ public class TelecomTest {
         for(String str : strs){
             String[] temp = str.split("=");
             map.put(temp[0], temp[1]);
+            System.out.println(temp[0] + " " + temp[1]);
         }
         String UPTRANSEQ = map.get("UPTRANSEQ");
+    }
+
+
+    @Test
+    public void resultTest() throws Exception {
+        HttpClient client = HttpUtils.getSecuredHttpClient();
+        //设置登录参数
+        List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+        formparams.add(new BasicNameValuePair("ORDERSEQ", "te20150623233055216IFx4401"));
+        formparams.add(new BasicNameValuePair("ORDERREQTRANSEQ", "seq2te20150623233055216IFx4401"));
+        formparams.add(new BasicNameValuePair("UPTRANSEQ", "2015062300000185643498"));
+        formparams.add(new BasicNameValuePair("TRANDATE", "20150623"));
+        formparams.add(new BasicNameValuePair("ORDERAMOUNT", "1"));
+        formparams.add(new BasicNameValuePair("RETNCODE", "0000"));
+        formparams.add(new BasicNameValuePair("RETNINFO", "0000"));
+        formparams.add(new BasicNameValuePair("BANKACCID", "18026375802"));
+        formparams.add(new BasicNameValuePair("MAC", "2DAEAC4B762D57A1CD7E4ED7DA6A356B"));
+
+        UrlEncodedFormEntity entity1 = new UrlEncodedFormEntity(formparams);
+
+        System.out.println(IOUtils.toString(entity1.getContent()));
+        //新建Http  post请求
+        HttpPost httppost = new HttpPost("http://139.159.0.226/test2.jsp");
+        httppost.setEntity(entity1);
+
+        //处理请求，得到响应
+        HttpResponse httpResponse = client.execute(httppost);
+        String body = IOUtils.toString(httpResponse.getEntity().getContent());
+        System.out.println(String.valueOf(httpResponse.getStatusLine().getStatusCode()) + ":" + body);
     }
 }
