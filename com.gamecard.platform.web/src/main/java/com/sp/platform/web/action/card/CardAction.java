@@ -324,14 +324,21 @@ public class CardAction extends ActionSupport {
             LogEnum.DEFAULT.info(phoneNumber + " or " + ip + " 屏蔽.");
             return;
         }
-        //判断是否超上限
-//        if ((paytypeId.equals(20) || paytypeId.equals(19) || paytypeId.equals(21)) && !CheckUserCache.checkUser(phoneNumber)) {
-        if ((paytypeId >= 19 && paytypeId <= 21) && !CheckUserCache.checkUser(phoneNumber)) {
+
+        int uc = CheckUserCache.getUserCount(phoneNumber);
+        if (uc >= propertyUtils.getInteger("pc.caller.day.count", 20)) {
             result = new JsonVo(false, "超过限制");
             Struts2Utils.renderJson(result);
-            LogEnum.DEFAULT.info("IP 超过限制 : " + IpAddressUtil.getRealIp());
+            LogEnum.DEFAULT.info(phoneNumber + " 号码超过日使用次数限制 : " + uc);
             return;
         }
+//        //判断是否超上限
+//        if ((paytypeId >= 19 && paytypeId <= 21) && !CheckUserCache.checkUser(phoneNumber)) {
+//            result = new JsonVo(false, "超过限制");
+//            Struts2Utils.renderJson(result);
+//            LogEnum.DEFAULT.info("IP 超过限制 : " + IpAddressUtil.getRealIp());
+//            return;
+//        }
 
         if (StringUtils.isBlank(phoneNumber)) {
             result = new JsonVo(false, "请输入正确的手机号码");
@@ -393,6 +400,15 @@ public class CardAction extends ActionSupport {
             LogEnum.DEFAULT.info(phoneNumber + " or " + ip + " 屏蔽.");
             return;
         }
+
+        int uc = CheckUserCache.getUserCount(phoneNumber);
+        if (uc >= propertyUtils.getInteger("pc.caller.day.count", 20)) {
+            result = new JsonVo(false, "超过限制");
+            Struts2Utils.renderJson(result);
+            LogEnum.DEFAULT.info(phoneNumber + " 号码超过日使用次数限制 : " + uc);
+            return;
+        }
+        CheckUserCache.addUserCount(phoneNumber);
 
         if (StringUtils.isBlank(phoneNumber)) {
             result = new JsonVo(false, "请输入正确的手机号码");

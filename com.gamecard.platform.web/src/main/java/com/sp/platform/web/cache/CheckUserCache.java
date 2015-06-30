@@ -39,6 +39,33 @@ public class CheckUserCache {
         return false;
     }
 
+    public static int getUserCount(String mobile){
+        if (System.currentTimeMillis() - lastTime > 60000) {
+            DateTime dateTime = new DateTime();
+            String today = dateTime.toString("yyyyMMdd");
+            if (!StringUtils.equals(today, date)) {
+                userCache.clear();
+                date = today;
+                lastTime = System.currentTimeMillis();
+            }
+        }
+        Integer count = userCache.get(mobile);
+        if (count == null) {
+            userCache.put(mobile, 1);
+            return 1;
+        }
+        return count;
+    }
+
+    public static void addUserCount(String mobile){
+        Integer count = userCache.get(mobile);
+        if (count == null) {
+            userCache.put(mobile, 1);
+            return;
+        }
+        userCache.put(mobile, count + 1);
+    }
+
     public static int checkIp(String ip) {
         if (System.currentTimeMillis() - lastTime > 60000) {
             DateTime dateTime = new DateTime();

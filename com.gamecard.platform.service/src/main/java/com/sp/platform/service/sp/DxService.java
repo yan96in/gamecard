@@ -110,7 +110,7 @@ public class DxService {
         formparams.add(new BasicNameValuePair("PHONENUM", phone));
         formparams.add(new BasicNameValuePair("VERIFYCODE", code));
         formparams.add(new BasicNameValuePair("GOODPAYTYPE", "0"));
-        formparams.add(new BasicNameValuePair("GOODSCODE", PinyinUtil.cn2FirstSpell(temp[1])));
+        formparams.add(new BasicNameValuePair("GOODSCODE", temp[0]));
         formparams.add(new BasicNameValuePair("GOODSNAME", temp[1]));
         formparams.add(new BasicNameValuePair("USERIP", USERIP));
         formparams.add(new BasicNameValuePair("GOODSNUM", "1"));
@@ -127,7 +127,7 @@ public class DxService {
         builder.append("&USERIP=").append(USERIP);
         builder.append("&PHONENUM=").append(phone);
         builder.append("&GOODPAYTYPE=").append("0");
-        builder.append("&GOODSCODE=").append(PinyinUtil.cn2FirstSpell(temp[1]));
+        builder.append("&GOODSCODE=").append(temp[0]);
         builder.append("&GOODSNUM=").append("1");
         builder.append("&KEY=").append(propertyUtils.getProperty("dx.merchant.data.key"));
 
@@ -151,16 +151,16 @@ public class DxService {
     private static Map<String, String> feeConfig = new HashMap<String, String>();
 
     static {
-        feeConfig.put("119", "1000101110001119,骏网3元卡");
-        feeConfig.put("121", "1000101110001118,骏网5元卡");
-        feeConfig.put("116", "1000101110001117,骏网9元卡");
-        feeConfig.put("219", "1000101110001116,盛大3元卡");
-        feeConfig.put("221", "1000101110001115,盛大5元卡");
-        feeConfig.put("216", "1000101110001114,盛大9元卡");
-        feeConfig.put("320", "1000101110001113,空中5元卡");
-        feeConfig.put("721", "1000101110001112,天宏5元卡");
-        feeConfig.put("722", "1000101110001111,天宏10元卡");
-        feeConfig.put("821", "1000101110001110,天下通5元卡");
-        feeConfig.put("822", "1000101110001109,天下通10元卡");
+        feeConfig.put("119", "100019,骏网3元卡");
+        feeConfig.put("121", "100018,骏网5元卡");
+        feeConfig.put("116", "100017,骏网9元卡");
+        feeConfig.put("219", "100016,盛大3元卡");
+        feeConfig.put("221", "100015,盛大5元卡");
+        feeConfig.put("216", "100014,盛大9元卡");
+        feeConfig.put("320", "100013,空中5元卡");
+        feeConfig.put("721", "100012,天宏5元卡");
+        feeConfig.put("722", "100011,天宏10元卡");
+        feeConfig.put("821", "100010,天下通5元卡");
+        feeConfig.put("822", "100009,天下通10元卡");
     }
 }
