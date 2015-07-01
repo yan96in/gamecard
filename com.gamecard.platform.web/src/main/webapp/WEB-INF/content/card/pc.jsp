@@ -341,7 +341,8 @@
                 }
 			}
         }else {
-			codeError();
+            $(this).removeClass("input_show").addClass("input_error")
+            $("#txtPayPhoneTip").removeClass("onFocus").removeClass("onCorrect").addClass("onError").html(data.msg);
         }
         },
         onWait: "正在校验手机号码，请稍候..."

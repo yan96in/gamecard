@@ -299,4 +299,21 @@ public class PcCardLogServiceImpl implements PcCardLogService {
             return pcCardLogDao.getBillInfo(pageView);
         }
     }
+
+    @Override
+    public boolean isValidUser(String phone) {
+        DetachedCriteria dc = DetachedCriteria.forClass(PcCardLog.class);
+        dc.add(Restrictions.eq("mobile", phone));
+
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.plusMinutes(propertyUtils.getInteger("pc.caller.day.limit.time"));
+        dc.add(Restrictions.gt("btime", dateTime.toDate()));
+        dc.addOrder(Order.desc("btime"));
+        List<PcCardLog> list = pcCardLogDao.findByCriteria(dc);
+        if(CollectionUtils.isEmpty(list)){
+            return true;
+        }
+        LogEnum.DEFAULT.info(phone + " 申请过快。" + list.get(0).getBtime());
+        return false;
+    }
 }

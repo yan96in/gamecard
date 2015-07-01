@@ -327,7 +327,7 @@ public class CardAction extends ActionSupport {
 
         int uc = CheckUserCache.getUserCount(phoneNumber);
         if (uc >= propertyUtils.getInteger("pc.caller.day.count", 20)) {
-            result = new JsonVo(false, "超过限制");
+            result = new JsonVo(false, "无法使用该业务");
             Struts2Utils.renderJson(result);
             LogEnum.DEFAULT.info(phoneNumber + " 号码超过日使用次数限制 : " + uc);
             return;
@@ -403,11 +403,17 @@ public class CardAction extends ActionSupport {
 
         int uc = CheckUserCache.getUserCount(phoneNumber);
         if (uc >= propertyUtils.getInteger("pc.caller.day.count", 20)) {
-            result = new JsonVo(false, "超过限制");
+            result = new JsonVo(false, "无法使用该业务");
             Struts2Utils.renderJson(result);
             LogEnum.DEFAULT.info(phoneNumber + " 号码超过日使用次数限制 : " + uc);
             return;
         }
+        if(!pcCardLogService.isValidUser(phoneNumber)){
+            result = new JsonVo(false, "申请过快");
+            Struts2Utils.renderJson(result);
+            return;
+        }
+
         CheckUserCache.addUserCount(phoneNumber);
 
         if (StringUtils.isBlank(phoneNumber)) {
