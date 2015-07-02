@@ -255,6 +255,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                             flag = provinceLimit(phone, province, paytypeId, provinceMaxFee, "翼光");
                         }
                         if (flag) {
+                            fee = Integer.parseInt(paychannel.getSpnum());
                             result = getYgResult(phone, fee, httpClient, chanels, paychannel);  // 走翼光
                         }
                     }
