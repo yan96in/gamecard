@@ -325,7 +325,8 @@ public class CardAction extends ActionSupport {
             return;
         }
 
-        int uc = CheckUserCache.getUserCount(phoneNumber);
+//        int uc = CheckUserCache.getUserCount(phoneNumber);
+        int uc = cacheCheckUser.getCallerDayCount(phoneNumber);
         if (uc >= propertyUtils.getInteger("pc.caller.day.count", 20)) {
             result = new JsonVo(false, "无法使用该业务");
             Struts2Utils.renderJson(result);
@@ -401,7 +402,8 @@ public class CardAction extends ActionSupport {
             return;
         }
 
-        int uc = CheckUserCache.getUserCount(phoneNumber);
+//        int uc = CheckUserCache.getUserCount(phoneNumber);
+        int uc = cacheCheckUser.getCallerDayCount(phoneNumber);
         if (uc >= propertyUtils.getInteger("pc.caller.day.count", 20)) {
             result = new JsonVo(false, "无法使用该业务");
             Struts2Utils.renderJson(result);
@@ -414,8 +416,8 @@ public class CardAction extends ActionSupport {
             return;
         }
 
-        CheckUserCache.addUserCount(phoneNumber);
-
+//        CheckUserCache.addUserCount(phoneNumber);
+        cacheCheckUser.addCallerDayCount(phoneNumber);
         if (StringUtils.isBlank(phoneNumber)) {
             result = new JsonVo(false, "请输入正确的手机号码");
         } else {

@@ -78,6 +78,25 @@ public class CacheCheckUser {
     }
 
     /**
+     * 获取手机号码每天拨打次数
+     */
+    public int getCallerDayCount(String key) {
+        String filePath = getLimitPath(CacheFilePath.CALLED_DAY_COUNT);
+        FileMemoryCache rfm = FileMemoryCache.getInstance(
+                CacheFilePath.CALLED_DAY_COUNT.getName(), filePath, sdfDay);
+        return rfm.getNodeCount(key);
+    }
+    /**
+     * 增加手机号码每天拨打次数
+     */
+    public void addCallerDayCount(String key) {
+        String filePath = getLimitPath(CacheFilePath.CALLED_DAY_COUNT);
+        FileMemoryCache rfm = FileMemoryCache.getInstance(CacheFilePath.CALLED_DAY_COUNT.getName(),
+                filePath, sdfDay);
+        rfm.getAndAdd(key);
+    }
+
+    /**
      * 长号码每天拨打次数
      */
     public int getCalledDayCount(String key) {
