@@ -268,6 +268,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                     }
 
                     //最后走空中
+                    fee = paychannel.getFee();
                     result = getKzResult(phone, fee, httpClient, chanels);
 
                     if (result != null) {
