@@ -93,29 +93,7 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
 
         //  查询字段 --------------------------
         String sql = "select cardid, priceid, sum(case status when 2 then 1 else 0 end) as num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
-        if (pageView.getSpid() > 0) {
-            if (pageView.getSpid() == 21) {
-                sql = sql + "and ext='1' ";
-                sql = sql + "and channelid=20 ";
-            } else if (pageView.getSpid() == 22) {
-                sql = sql + "and ext='2' ";
-                sql = sql + "and channelid=20 ";
-            } else if (pageView.getSpid() == 23) {
-                sql = sql + "and ext='0' ";
-                sql = sql + "and channelid=20 ";
-            } else if (pageView.getSpid() == 13) {
-                sql = sql + "and ext='3' ";
-                sql = sql + "and channelid=19 ";
-            } else if (pageView.getSpid() == 14) {
-                sql = sql + "and ext='4' ";
-                sql = sql + "and channelid=19 ";
-            } else if (pageView.getSpid() == 15) {
-                sql = sql + "and ext='5' ";
-                sql = sql + "and channelid=19 ";
-            } else {
-                sql = sql + "and channelid=" + pageView.getSpid() + " ";
-            }
-        }
+        sql = genSql(pageView, sql);
         sql = sql + "and status in (2,3) group by cardid, priceid";
 
         LogEnum.DEFAULT.info(sql);
@@ -149,18 +127,7 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
         return list;
     }
 
-    public List<PcBillVo> getProvinceBillInfo(PageView pageView) {
-        String[] sj;
-        if (StringUtils.isNotBlank(pageView.getDate())) {
-            sj = TimeUtils.chuli(pageView.getDate(), pageView.getDate());
-        } else {
-            sj = TimeUtils.chuli(pageView.getBtime(), pageView.getEtime());
-        }
-        String kssj = sj[0];
-        String jssj = sj[1];
-
-        //  查询字段 --------------------------
-        String sql = "select province, count(*) num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
+    private String genSql(PageView pageView, String sql) {
         if (pageView.getSpid() > 0) {
             if (pageView.getSpid() == 21) {
                 sql = sql + "and ext='1' ";
@@ -180,10 +147,28 @@ public class PcCardLogDao extends HibernateDaoUtil<PcCardLog, Integer> {
             } else if (pageView.getSpid() == 15) {
                 sql = sql + "and ext='5' ";
                 sql = sql + "and channelid=19 ";
+            } else if (pageView.getSpid() == 24) {
+                sql = sql + "and channelid=21 ";
             } else {
                 sql = sql + "and channelid=" + pageView.getSpid() + " ";
             }
         }
+        return sql;
+    }
+
+    public List<PcBillVo> getProvinceBillInfo(PageView pageView) {
+        String[] sj;
+        if (StringUtils.isNotBlank(pageView.getDate())) {
+            sj = TimeUtils.chuli(pageView.getDate(), pageView.getDate());
+        } else {
+            sj = TimeUtils.chuli(pageView.getBtime(), pageView.getEtime());
+        }
+        String kssj = sj[0];
+        String jssj = sj[1];
+
+        //  查询字段 --------------------------
+        String sql = "select province, count(*) num,sum(fee)/100 fee from tbl_user_pc_card_log where btime>'" + kssj + "' and btime<'" + jssj + "' ";
+        sql = genSql(pageView, sql);
         sql = sql + "and status in (2,3) group by province order by 3 desc";
 
         LogEnum.DEFAULT.info(sql);
