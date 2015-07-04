@@ -74,7 +74,7 @@
                         </td>
                         <td class="left_txt" height="31">
                             渠道类型：
-                            <s:select list="#{0:'全部', 19:'移动', 20:'联通'}"
+                            <s:select list="#{0:'全部', 19:'移动', 20:'联通', 21:'电信'}"
                                       name="pageView.spid" label="abc" listKey="key" listValue="value" />
                         </td>
                         <td class="left_txt" align="left" style="color: red; padding-right: 5px;">
