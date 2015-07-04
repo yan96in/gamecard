@@ -137,6 +137,9 @@
                                                 <s:if test="#bean.ext==5">空中</s:if>
                                             </font>
                                         </s:if>
+                                        <s:elseif test="#bean.channelid==21">
+                                            电信
+                                        </s:elseif>
                                         <s:else>
                                             <font color="green">联通
                                             <s:if test="#bean.ext==1">WO+</s:if>
