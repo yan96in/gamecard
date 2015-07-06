@@ -40,10 +40,12 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -74,6 +76,8 @@ public class PcCardLogServiceImpl implements PcCardLogService {
     private YlYdService ylYdService;
     @Autowired
     private DxService dxService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public PcCardLog get(int id) {
@@ -132,9 +136,9 @@ public class PcCardLogServiceImpl implements PcCardLogService {
             }
             boolean isOK = false;
             if (paytypeId == 19) {
-                if (channeType == 5){
+                if (channeType == 5) {
                     resultCode = kzYdService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
-                } else if (channeType == 4){
+                } else if (channeType == 4) {
                     resultCode = ylYdService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
                 } else if (channeType == 3) {
                     resultCode = spYdService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
@@ -144,7 +148,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 resultCode = commitPaymentCode(phone, code, sid, channeType, pcCardLog);
                 isOK = (propertyUtils.getProperty("pc.lt.success.result", "200000").equals(resultCode));
             } else if (paytypeId == 21) {
-                if (channeType == 6){
+                if (channeType == 6) {
                     resultCode = dxService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
                 }
                 isOK = (propertyUtils.getProperty("pc.dx.success.result", "00").equals(resultCode));
@@ -262,7 +266,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
         map.put("paymentAcount", "001");
         map.put("outTradeNo", sid);
         map.put("subject", "金币");
-        map.put("totalFee", pcCardLog.getFee()/100);
+        map.put("totalFee", pcCardLog.getFee() / 100);
         DateTime dateTime = new DateTime();
         map.put("timeStamp", dateTime.toString("yyyyMMddHHmmss"));
         map.put("paymentcodesms", Integer.parseInt(code));
@@ -310,10 +314,28 @@ public class PcCardLogServiceImpl implements PcCardLogService {
         dc.add(Restrictions.gt("btime", dateTime.toDate()));
         dc.addOrder(Order.desc("btime"));
         List<PcCardLog> list = pcCardLogDao.findByCriteria(dc);
-        if(CollectionUtils.isEmpty(list)){
+        if (CollectionUtils.isEmpty(list)) {
             return true;
         }
         LogEnum.DEFAULT.info(phone + " 申请过快。" + list.get(0).getBtime());
         return false;
+    }
+
+    @Override
+    public boolean isValidHour(String ext) throws ParseException {
+        DateTime dateTime = new DateTime();
+        String currentHour = dateTime.toString("yyyy-MM-dd HH:00:00");
+        String sql = "select sum(fee) from tbl_user_pc_card_log where ext='" + ext + "' and btime >='" + currentHour + "' and status in(2,3)";
+        Integer totalFee = jdbcTemplate.queryForObject(sql, Integer.class);
+
+        if (totalFee == null) {
+            return true;
+        }
+        int maxHourFee = propertyUtils.getInteger("pc.yg.hour.limit." + ext, 100000);
+        if (totalFee / 100 >= maxHourFee) {
+            LogEnum.DEFAULT.info(ext + " 单小时申请量过大 " + (totalFee / 100) + "  大于上限: " + maxHourFee);
+            return false;
+        }
+        return true;
     }
 }

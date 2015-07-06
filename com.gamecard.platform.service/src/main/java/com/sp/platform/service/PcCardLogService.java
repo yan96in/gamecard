@@ -4,6 +4,7 @@ import com.sp.platform.common.PageView;
 import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.vo.PcBillVo;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -19,4 +20,6 @@ public interface PcCardLogService extends AbstractService<PcCardLog> {
     List<PcBillVo> getBillInfo(PageView pageView);
 
     public boolean isValidUser(String phone);
+
+    public boolean isValidHour(String ext) throws ParseException;
 }
