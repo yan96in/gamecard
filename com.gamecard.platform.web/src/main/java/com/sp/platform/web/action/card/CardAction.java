@@ -407,7 +407,7 @@ public class CardAction extends ActionSupport {
         if (uc >= propertyUtils.getInteger("pc.caller.day.count", 20)) {
             result = new JsonVo(false, "无法使用该业务");
             Struts2Utils.renderJson(result);
-            LogEnum.DEFAULT.info(phoneNumber + " 号码超过日使用次数限制 : " + uc);
+            LogEnum.DEFAULT.info(phoneNumber+ "  " + ip + " 超过日使用次数限制 : " + uc);
             return;
         }
         if(!pcCardLogService.isValidUser(phoneNumber)){
