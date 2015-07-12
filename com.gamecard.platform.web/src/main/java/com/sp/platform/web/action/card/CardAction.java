@@ -395,6 +395,9 @@ public class CardAction extends ActionSupport {
         JsonVo result = null;
 
         String ip = IpAddressUtil.getRealIp();
+
+        cacheCheckUser.addIpDayCount(ip);
+
         if (BlackCache.isBlack(ip) || BlackCache.isBlack(phoneNumber)) {
             result = new JsonVo(false, "无法使用该业务");
             Struts2Utils.renderJson(result);

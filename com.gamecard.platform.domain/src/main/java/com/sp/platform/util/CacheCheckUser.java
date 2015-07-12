@@ -71,10 +71,24 @@ public class CacheCheckUser {
                 stringBuilder.append("month/").append(timeString).append("/")
                         .append(timeString).append("_caller_fee.txt");
                 break;
+            case IP_DAY_COUNT:
+                timeString = sdfDay.format(new Date());
+                stringBuilder.append("day/").append(timeString).append("/")
+                        .append(timeString).append("_ip_count.txt");
+                break;
             default:
                 return "";
         }
         return stringBuilder.toString();
+    }
+    /**
+     * 增加IP每天拨打次数
+     */
+    public void addIpDayCount(String key) {
+        String filePath = getLimitPath(CacheFilePath.IP_DAY_COUNT);
+        FileMemoryCache rfm = FileMemoryCache.getInstance(CacheFilePath.IP_DAY_COUNT.getName(),
+                filePath, sdfDay);
+        rfm.getAndAdd(key);
     }
 
     /**
