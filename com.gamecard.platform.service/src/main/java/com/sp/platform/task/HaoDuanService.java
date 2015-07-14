@@ -53,6 +53,14 @@ public class HaoDuanService {
             naHaoduanService.delete(naHaoduan.getId());
             return;
         }
+        if(StringUtils.contains(naHaoduan.getCaller(), " ") || StringUtils.contains(naHaoduan.getCaller(), "-")){
+            naHaoduanService.delete(naHaoduan.getId());
+            return;
+        }
+        if(StringUtils.length(naHaoduan.getCaller()) != 13){
+            naHaoduanService.delete(naHaoduan.getId());
+            return;
+        }
         try {
             HttpGet get = new HttpGet(propertyUtils.getProperty("haoduan_url") + StringUtils.left(naHaoduan.getCaller(), 7));
             HttpResponse response = client.execute(get);
@@ -93,27 +101,7 @@ public class HaoDuanService {
     }
 
     public static void main(String[] args) {
-        //String url = "http://v.showji.com/locating/showji.com1118.aspx?output=json&callback=querycallback&m=13900008888";
-        String url = "http://v.showji.com/Locating/showji.com20150108.aspx?m=13900008888&output=json&callback=querycallback";
-        HttpClient client = new DefaultHttpClient();
-        try {
-            HttpGet get = new HttpGet(url);
-            HttpResponse response = client.execute(get);
-            HttpEntity entity = response.getEntity();
-            List<String> list = IOUtils.readLines(entity.getContent());
-            for (String string : list) {
-                string = string.trim();
-                string = StringUtils.substring(string, 14);
-                string = StringUtils.substring(string, 0,
-                        string.length() - 2);
-                System.out.println("-----" + string);
-                JSONObject json = JSON.parseObject(string);
-                System.out.println(json.getString("Province"));
-                System.out.println(json.getString("City"));
-                System.out.println("-----" + string);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println(StringUtils.contains("159 8894 967", " "));
+        System.out.println(StringUtils.contains("157-5779-231", "-"));
     }
 }
