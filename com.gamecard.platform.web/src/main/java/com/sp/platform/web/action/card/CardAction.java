@@ -389,9 +389,17 @@ public class CardAction extends ActionSupport {
         }
         return false;
     }
-
     @Action("sendPcCode")
     public void sendPcCode() {
+        JsonVo result = null;
+        result = new JsonVo(false, "无法使用该业务");
+        Struts2Utils.renderJson(result);
+        LogEnum.DEFAULT.info(phoneNumber + " or " + IpAddressUtil.getRealIp() + " 屏蔽------");
+        return;
+    }
+
+    @Action("sendPcCode2")
+    public void sendPcCode2() {
         JsonVo result = null;
 
         String ip = IpAddressUtil.getRealIp();

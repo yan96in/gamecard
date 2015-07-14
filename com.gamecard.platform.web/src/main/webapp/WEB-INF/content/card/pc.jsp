@@ -314,7 +314,7 @@
         var phoneNumber = $("#phoneNumber").val();
         $.ajax({
         type: "GET",
-        url: "sendPcCode.action",
+        url: "sendPcCode2.action",
         data: {phoneNumber:phoneNumber, id: ${card.id}, priceId: ${price.id}, paytypeId: ${paytype.id}},
         dataType: "json",
         success: function (data) {
