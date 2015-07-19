@@ -135,11 +135,10 @@ public class DxService {
 
         UrlEncodedFormEntity entity1 = new UrlEncodedFormEntity(formparams);
 
-        System.out.println(IOUtils.toString(entity1.getContent()));
         //新建Http  post请求
         HttpPost httppost = new HttpPost("https://webpaywg.bestpay.com.cn/backBillPay.do");
         httppost.setEntity(entity1);
-        LogEnum.DEFAULT.info(phone + "  电信提交验证码 " + builder.toString());
+        LogEnum.DEFAULT.info(phone + "  电信提交验证码 " + IOUtils.toString(entity1.getContent()));
 
         //处理请求，得到响应
         HttpResponse httpResponse = client.execute(httppost);

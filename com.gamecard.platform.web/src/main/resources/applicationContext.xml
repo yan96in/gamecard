@@ -124,6 +124,7 @@
         <property name="basenames">
             <list>
                 <value>classpath:i18n/appConfig</value>
+                <value>classpath:i18n/ivrConfig</value>
             </list>
         </property>
     </bean>

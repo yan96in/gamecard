@@ -1,6 +1,7 @@
 package com.sp.platform.web.servlet;
 
 import com.sp.platform.cache.SpInfoCache;
+import com.sp.platform.service.CtccIvrService;
 import com.sp.platform.util.AppContextHolder;
 import com.sp.platform.util.LogEnum;
 import com.sp.platform.web.task.IvrTask;
@@ -20,10 +21,12 @@ import java.util.Map;
  */
 public class IvrReceiveServlet extends HttpServlet {
     ThreadPoolTaskExecutor executor;
+    CtccIvrService ctccIvrService;
 
     @Override
     public void init() throws ServletException {
         executor = (ThreadPoolTaskExecutor) AppContextHolder.getContext().getBean("threadPoolTaskExecutor");
+        ctccIvrService = AppContextHolder.getContext().getBean("ctccIvrService", CtccIvrService.class);
     }
 
     @Override
@@ -35,19 +38,26 @@ public class IvrReceiveServlet extends HttpServlet {
             LogEnum.DEFAULT.error(e.toString());
         }
         String operateid = req.getParameter("operateid");
-        if(StringUtils.equals(operateid, "00101")){
-            resp.getWriter().print("0");
-        } else if(StringUtils.equals(operateid, "00002")){
-            resp.getWriter().print("3,3,2,2,1;10,5,3&10,5,3&10,5&10,5&6;10,5,3&10,5,3&10,5&10,5&6");
-        } else if(StringUtils.equals(operateid, "00003")){
-            resp.getWriter().print("1&123&123");
-        } else if(StringUtils.equals(operateid, "00102")){
-            resp.getWriter().print("0");
-        } else if(StringUtils.equals(operateid, "00103")){
-            resp.getWriter().print("0");
+        String caller = req.getParameter("caller");
+        String called = req.getParameter("called");
+        String body = req.getParameter("body");
+
+        String result = null;
+        if (StringUtils.equals(operateid, "00101")) {
+            result = ctccIvrService.checkUser(caller, called, body);
+        } else if (StringUtils.equals(operateid, "00002")) {
+            result = ctccIvrService.getCardConfig(caller, called, body);
+        } else if (StringUtils.equals(operateid, "00003")) {
+            result = ctccIvrService.getCard(caller, called, body);
+        } else if (StringUtils.equals(operateid, "00102")) {
+            result = ctccIvrService.saveKeyLog(caller, called, body);
+        } else if (StringUtils.equals(operateid, "00103")) {
+            result = ctccIvrService.saveBillLog(caller, called, body);
         } else {
-            resp.getWriter().print("0");
+            result = "0";
         }
+
+        resp.getWriter().print(result);
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
