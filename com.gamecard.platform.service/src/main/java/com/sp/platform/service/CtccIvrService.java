@@ -1,7 +1,11 @@
 package com.sp.platform.service;
 
 import com.sp.platform.cache.BlackCache;
+import com.sp.platform.common.Constants;
+import com.sp.platform.entity.CardPassword;
+import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
+import com.sp.platform.util.XDEncodeHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CtccIvrService {
     @Autowired
     private PropertyUtils propertyUtils;
+    @Autowired
+    private CardPasswordService cardPasswordService;
 
     public String checkUser(String caller, String called, String body) {
         if (BlackCache.isBlack(caller)) {
@@ -35,9 +41,21 @@ public class CtccIvrService {
      */
     public String getCard(String caller, String called, String body) {
         if (called.startsWith("16836556")) {
-            String card = StringUtils.left(body, 1);
-            String password = StringUtils.right(body, 1);
-            return "1&888" + card + "&999" + password;
+            int cardId = propertyUtils.getInteger("card.convert.cardId." + body);
+            int priceId = propertyUtils.getInteger("card.convert.priceId." + body);
+            if(cardId == 0 || priceId == 0){
+                LogEnum.DEFAULT.warn(caller + "  IVR " + "取卡失败 cardId=" + cardId + " priceId=" + priceId);
+                return "0&000&000";
+            }
+            CardPassword card = cardPasswordService.getUserCard(cardId, priceId);
+            if (card == null) {
+                LogEnum.DEFAULT.warn(caller + "  IVR " + "取卡失败 cardId=" + cardId + " priceId=" + priceId);
+                return "0&000&000";
+            }
+            XDEncodeHelper xdEncodeHelper = new XDEncodeHelper(propertyUtils.getProperty("DESede.key", "tch5VEeZSAJ2VU4lUoqaYddP"));
+            String cardNo = xdEncodeHelper.XDDecode(card.getCardno(), true);
+            String password = xdEncodeHelper.XDDecode(card.getPassword(), true);
+            return "1&" + cardNo + "&" + password;
         }
         return "1&123&123";
     }

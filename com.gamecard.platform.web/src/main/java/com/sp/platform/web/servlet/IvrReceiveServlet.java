@@ -37,26 +37,27 @@ public class IvrReceiveServlet extends HttpServlet {
         } catch (Exception e) {
             LogEnum.DEFAULT.error(e.toString());
         }
-        String operateid = req.getParameter("operateid");
+        String operateId = req.getParameter("operateid");
         String caller = req.getParameter("caller");
         String called = req.getParameter("called");
         String body = req.getParameter("body");
 
         String result = null;
-        if (StringUtils.equals(operateid, "00101")) {
+        if (StringUtils.equals(operateId, "00101")) {
             result = ctccIvrService.checkUser(caller, called, body);
-        } else if (StringUtils.equals(operateid, "00002")) {
+        } else if (StringUtils.equals(operateId, "00002")) {
             result = ctccIvrService.getCardConfig(caller, called, body);
-        } else if (StringUtils.equals(operateid, "00003")) {
+        } else if (StringUtils.equals(operateId, "00003")) {
             result = ctccIvrService.getCard(caller, called, body);
-        } else if (StringUtils.equals(operateid, "00102")) {
+        } else if (StringUtils.equals(operateId, "00102")) {
             result = ctccIvrService.saveKeyLog(caller, called, body);
-        } else if (StringUtils.equals(operateid, "00103")) {
+        } else if (StringUtils.equals(operateId, "00103")) {
             result = ctccIvrService.saveBillLog(caller, called, body);
         } else {
             result = "0";
         }
 
+        LogEnum.SP.info(caller + "返回消息[{}]", result);
         resp.getWriter().print(result);
     }
 
