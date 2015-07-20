@@ -40,7 +40,7 @@ public class CtccIvrService {
      * @return
      */
     public String getCard(String caller, String called, String body) {
-        if (called.startsWith("16836556")) {
+        if (called.startsWith("16836580")) {
             int cardId = propertyUtils.getInteger("card.convert.cardId." + body);
             int priceId = propertyUtils.getInteger("card.convert.priceId." + body);
             if(cardId == 0 || priceId == 0){

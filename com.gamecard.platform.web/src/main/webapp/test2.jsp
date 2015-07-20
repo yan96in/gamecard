@@ -1,16 +1,17 @@
 <%@ page import="java.util.Map" %>
-<%@ page import="java.util.HashMap" %><%
-    System.out.println(request.getRequestURI() + "?" + request.getQueryString());
-    System.out.println(request.getHeaderNames());
+<%@ page import="java.util.HashMap" %>
+<%@ page import="com.sp.platform.util.LogEnum" %><%
+    LogEnum.DEFAULT.info(request.getRequestURI() + "?" + request.getQueryString());
+    LogEnum.DEFAULT.info(request.getHeaderNames().toString());
     java.util.Enumeration headerNames = request.getHeaderNames();
     while (headerNames.hasMoreElements()) {
         String headerName = (String) headerNames.nextElement();
         String headerValue = request.getHeader(headerName);
-        System.out.println(headerName+":"+headerValue);
+        LogEnum.DEFAULT.info(headerName+":"+headerValue);
     }
     String body = org.apache.commons.io.IOUtils.toString(request.getInputStream());
-    System.out.println(body);
-    System.out.println("-----------------------------------------------");
+    LogEnum.DEFAULT.info(body);
+    LogEnum.DEFAULT.info("-----------------------------------------------");
     Map<String, String> map = new HashMap<String, String>();
     String[] strs = body.split("&");
     for(String str : strs){
