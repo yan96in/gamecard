@@ -322,20 +322,50 @@ public class PcCardLogServiceImpl implements PcCardLogService {
     }
 
     @Override
-    public boolean isValidHour(String ext) throws ParseException {
+    public boolean isValidHour(String phone, String ext, String province) throws ParseException {
+        int maxFee = propertyUtils.getInteger("pc.hour.limit." + ext, 0);
         DateTime dateTime = new DateTime();
         String currentHour = dateTime.toString("yyyy-MM-dd HH:00:00");
-        String sql = "select sum(fee) from tbl_user_pc_card_log where ext='" + ext + "' and btime >='" + currentHour + "' and status in(2,3)";
-        Integer totalFee = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (maxFee > 0) {
+            String sql = "select sum(fee) from tbl_user_pc_card_log where ext='" + ext + "' and btime >='" + currentHour + "' and status in(2,3)";
+            Integer totalFee = jdbcTemplate.queryForObject(sql, Integer.class);
+            if (totalFee == null) {
+                return true;
+            }
+            if (totalFee / 100 >= maxFee) {
+                LogEnum.DEFAULT.info(phone + " " + ext + " 单小时申请量过大 " + (totalFee / 100) + "  大于上限: " + maxFee);
+                return false;
+            }
+        }
 
-        if (totalFee == null) {
-            return true;
+        maxFee = propertyUtils.getInteger("pc.province.hour.limit." + ext, 0);
+        if (maxFee > 0) {
+            String sql = "select sum(fee) from tbl_user_pc_card_log where ext='" + ext +
+                    "' and btime >='" + currentHour + "' and status in(2,3) and province='" + province + "'";
+            Integer totalFee = jdbcTemplate.queryForObject(sql, Integer.class);
+            if (totalFee == null) {
+                return true;
+            }
+            if (totalFee / 100 >= maxFee) {
+                LogEnum.DEFAULT.info(phone + " " + ext + " " + province + " 省份单小时申请量过大 " + (totalFee / 100) + "  大于上限: " + maxFee);
+                return false;
+            }
         }
-        int maxHourFee = propertyUtils.getInteger("pc.yg.hour.limit." + ext, 100000);
-        if (totalFee / 100 >= maxHourFee) {
-            LogEnum.DEFAULT.info(ext + " 单小时申请量过大 " + (totalFee / 100) + "  大于上限: " + maxHourFee);
-            return false;
+
+        maxFee = propertyUtils.getInteger("pc.max.day.fee." + ext, 0);
+        if (maxFee > 0) {
+            String sql = "select sum(fee) from tbl_user_pc_card_log where ext='" + ext +
+                    "' and btime >='" + StringUtils.left(currentHour, 10) + "' and status in(2,3)";
+            Integer totalFee = jdbcTemplate.queryForObject(sql, Integer.class);
+            if (totalFee == null) {
+                return true;
+            }
+            if (totalFee / 100 >= maxFee) {
+                LogEnum.DEFAULT.info(phone + " " + ext + " " + province + " 日申请量过大 " + (totalFee / 100) + "  大于上限: " + maxFee);
+                return false;
+            }
         }
+
         return true;
     }
 }

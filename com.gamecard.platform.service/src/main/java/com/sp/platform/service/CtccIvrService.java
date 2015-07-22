@@ -26,6 +26,7 @@ public class CtccIvrService {
         if (BlackCache.isBlack(caller)) {
             return "1";
         }
+
         return "0";
     }
 

@@ -21,5 +21,5 @@ public interface PcCardLogService extends AbstractService<PcCardLog> {
 
     public boolean isValidUser(String phone);
 
-    public boolean isValidHour(String ext) throws ParseException;
+    public boolean isValidHour(String phone, String ext, String province) throws ParseException;
 }
