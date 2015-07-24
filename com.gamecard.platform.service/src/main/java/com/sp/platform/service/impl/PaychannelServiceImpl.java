@@ -454,7 +454,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                 Paychannel paychannel = iterator.next();
 
                 // 空中地网北京
-                if (StringUtils.equals("none", paychannel.getSpnum())) {
+                if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum.bj"), paychannel.getSpnum())) {
                     try{
                         String tempType = "1";
                         if(paychannel.getFee() == 3000){
