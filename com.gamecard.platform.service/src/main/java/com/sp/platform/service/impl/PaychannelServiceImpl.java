@@ -457,7 +457,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                 if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum.bj"), paychannel.getSpnum())) {
                     try{
                         String tempType = "1";
-                        if(paychannel.getFee() == 3000){
+                        if(paychannel.getFee() == 30){
                             tempType = "2";
                         }
                         String url = "http://202.108.24.55:8081/NewmobileNotify.jsp?mobile=" + phone + "&type=" + tempType;
