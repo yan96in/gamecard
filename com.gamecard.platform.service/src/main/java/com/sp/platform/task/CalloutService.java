@@ -24,7 +24,6 @@ public class CalloutService {
     @Autowired
     private UserCardLogSerivce userCardLogSerivce;
 
-
     ThreadPoolExecutor threadPool2 = new ThreadPoolExecutor(10, 20, 30,
             TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(30),
             new ThreadPoolExecutor.CallerRunsPolicy());

@@ -82,7 +82,7 @@ public class UserCardLogServiceImpl implements UserCardLogSerivce {
         DetachedCriteria dc = DetachedCriteria.forClass(UserCardLog.class);
         DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         dc.add(Restrictions.ge("btime", DateTime.parse(pageView.getBtime(), format).toDate()));
-        dc.add(Restrictions.le("etime", DateTime.parse(pageView.getEtime(), format).toDate()));
+        dc.add(Restrictions.le("btime", DateTime.parse(pageView.getEtime(), format).toDate()));
         dc.addOrder(Order.desc("btime"));
         return userCardLogDao.findPageByCriteria(dc, page, orders);
     }
@@ -145,7 +145,7 @@ public class UserCardLogServiceImpl implements UserCardLogSerivce {
         dc.add(Restrictions.eq("mobile", pageView.getCaller()));
         DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         dc.add(Restrictions.ge("btime", DateTime.parse(pageView.getBtime(), format).toDate()));
-        dc.add(Restrictions.le("etime", DateTime.parse(pageView.getEtime(), format).toDate()));
+        dc.add(Restrictions.le("btime", DateTime.parse(pageView.getEtime(), format).toDate()));
         dc.addOrder(Order.desc("btime"));
         return userCardLogDao.findByCriteria(dc);
     }

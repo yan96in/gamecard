@@ -55,29 +55,15 @@ public class SendCardTask implements Callable<String> {
             userCardLog.setEtime(new Date());
             if (StringUtils.isNotBlank(url)) {
                 StringBuilder sendBody = new StringBuilder();
+                String qxt = null;
                 LogEnum.DEFAULT.info(url);
                 LogEnum.DEFAULT.info(propertyUtils.getProperty("hljw.qxt.url"));
                 if (url.equals(propertyUtils.getProperty("hljw.qxt.url"))) {
                     Paychannel paychannel = ChannelCache.get(Integer.parseInt(userCardLog.getChannelid()));
-                    if (paychannel == null) {
-                        userCardLog.setSendnum(userCardLog.getSendnum() + 1);
-                        userCardLogSerivce.save(userCardLog);
-                        LogEnum.DEFAULT.error("下发点卡参数异常{}", userCardLog);
+                    if (getCardNo(paychannel)) {
                         return returnFunc(start);
                     }
-                    if (StringUtils.isBlank(userCardLog.getCardno())) {
-                        card = cardPasswordService.getUserCard(paychannel.getCardId(), paychannel.getPriceId());
-                        if (card == null) {
-                            userCardLog.setSendnum(userCardLog.getSendnum() + 1);
-                            userCardLogSerivce.save(userCardLog);
-                            LogEnum.DEFAULT.error("下发点卡失败，无卡{}", userCardLog);
-                            return returnFunc(start);
-                        }
-                        XDEncodeHelper xdEncodeHelper = new XDEncodeHelper(propertyUtils.getProperty("DESede.key", "tch5VEeZSAJ2VU4lUoqaYddP"));
-
-                        userCardLog.setCardno(xdEncodeHelper.XDDecode(card.getCardno(), true));
-                        userCardLog.setCardpwd(xdEncodeHelper.XDDecode(card.getPassword(), true));
-                    }
+                    qxt = "鸿联九五";
                     message = MessageFormat.format(propertyUtils.getProperty("hljw.card.message"),
                             CardCache.getPrice(paychannel.getPriceId()).getDescription() + CardCache.getCard(paychannel.getCardId()).getName(),
                             userCardLog.getCardno(), userCardLog.getCardpwd());
@@ -85,9 +71,20 @@ public class SendCardTask implements Callable<String> {
                     sendBody.append("&password=").append(propertyUtils.getProperty("hljw.qxt.password"));
                     sendBody.append("&epid=").append(propertyUtils.getProperty("hljw.qxt.epid"));
                     sendBody.append("&phone=").append(userCardLog.getMobile());
-                    sendBody.append("&message=").append(URLEncoder.encode(message,"gb2312"));
+                    sendBody.append("&message=").append(URLEncoder.encode(message, "gb2312"));
                     sendBody.append("&linkid=").append(userCardLog.getId());
                     returnOk = propertyUtils.getProperty("hljw.qxt.return");
+                } else if (url.equals(propertyUtils.getProperty("kz.qxt.url"))) {
+                    Paychannel paychannel = ChannelCache.get(Integer.parseInt(userCardLog.getChannelid()));
+                    if (getCardNo(paychannel)) {
+                        return returnFunc(start);
+                    }
+                    qxt = "空中";
+                    sendBody.append("mobile=" + userCardLog.getMobile());
+                    sendBody.append("&cardname=" + CardCache.getPrice(paychannel.getPriceId()).getDescription());
+                    sendBody.append(CardCache.getCard(paychannel.getCardId()).getName());
+                    sendBody.append("&cardnumber=" + userCardLog.getCardno());
+                    sendBody.append("&password=" + userCardLog.getCardpwd());
                 } else {
                     userCardLog.setSendnum(userCardLog.getSendnum() + 1);
                     userCardLogSerivce.save(userCardLog);
@@ -101,7 +98,7 @@ public class SendCardTask implements Callable<String> {
                 HttpResponse response = client.execute(get);
                 HttpEntity entity = response.getEntity();
                 String returnBody = EntityUtils.toString(entity).trim();
-                LogEnum.DEFAULT.info("点卡下发{}，返回[{}]", sendBody.toString(), returnBody);
+                LogEnum.DEFAULT.info(qxt + " 企信通下发点卡{}，返回[{}]", sendBody.toString(), returnBody);
                 if (returnOk.equals(returnBody)) {
                     userCardLog.setFlag(7);
                     userCardLogSerivce.save(userCardLog);
@@ -119,6 +116,31 @@ public class SendCardTask implements Callable<String> {
 
 
         return returnFunc(start);
+    }
+
+    private boolean getCardNo(Paychannel paychannel) {
+        long start;
+        CardPassword card;
+        if (paychannel == null) {
+            userCardLog.setSendnum(userCardLog.getSendnum() + 1);
+            userCardLogSerivce.save(userCardLog);
+            LogEnum.DEFAULT.error("下发点卡参数异常{}", userCardLog);
+            return true;
+        }
+        if (StringUtils.isBlank(userCardLog.getCardno())) {
+            card = cardPasswordService.getUserCard(paychannel.getCardId(), paychannel.getPriceId());
+            if (card == null) {
+                userCardLog.setSendnum(userCardLog.getSendnum() + 1);
+                userCardLogSerivce.save(userCardLog);
+                LogEnum.DEFAULT.error("下发点卡失败，无卡{}", userCardLog);
+                return true;
+            }
+            XDEncodeHelper xdEncodeHelper = new XDEncodeHelper(propertyUtils.getProperty("DESede.key", "tch5VEeZSAJ2VU4lUoqaYddP"));
+
+            userCardLog.setCardno(xdEncodeHelper.XDDecode(card.getCardno(), true));
+            userCardLog.setCardpwd(xdEncodeHelper.XDDecode(card.getPassword(), true));
+        }
+        return false;
     }
 
     private String returnFunc(long start) {

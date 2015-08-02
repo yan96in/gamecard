@@ -48,20 +48,15 @@ public class KzCardNewAction extends ActionSupport {
 
     @Action("mo")
     public void mo() {
-        LogEnum.DEFAULT.info("空中短信上行：" + toString());
+        LogEnum.DEFAULT.info("空中短信北京地网上行：" + toString());
 
         SmsBillLog billLog = new SmsBillLog(mobile, longcode, content, linkid, status);
-
-        if (StringUtils.isBlank(billLog.getSpnum())) {
-            saveMr(billLog);
-            return;
-        }
 
         billLog.setProvince(HaoduanCache.getProvince(mobile));
         billLog.setCity(HaoduanCache.getCity(mobile));
         billLog.setFee(Integer.parseInt(fee));
         billLog.setCpid(2);
-        billLog.setChannelid(com.sp.platform.constants.Constants.getChannelId(StringUtils.left(content, 5).toUpperCase()));
+        billLog.setChannelid(com.sp.platform.constants.Constants.getChannelId(content));
         billLog.setSfid(com.sp.platform.constants.Constants.getSfId(billLog.getChannelid()));
         billLog.setParentid(billLog.getCpid());
 
@@ -71,14 +66,14 @@ public class KzCardNewAction extends ActionSupport {
 
     @Action("mt")
     public void mt() {
-        LogEnum.DEFAULT.info("空中短信下行：" + toString());
+        LogEnum.DEFAULT.info("空中短信北京地网下行：" + toString());
 
         Struts2Utils.renderText("ok");
     }
 
     @Action("mr")
     public void mr() {
-        LogEnum.DEFAULT.info("空中短信状态报告：" + toString());
+        LogEnum.DEFAULT.info("空中短信北京地网状态报告：" + toString());
 
         SmsBillLog billLog = new SmsBillLog(mobile, longcode, content, linkid, status);
         saveMr(billLog);

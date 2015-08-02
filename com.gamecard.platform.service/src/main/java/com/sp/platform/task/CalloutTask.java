@@ -43,6 +43,13 @@ public class CalloutTask implements Callable<String> {
         long start = System.currentTimeMillis();
 
         try {
+            if (StringUtils.contains(propertyUtils.getProperty("kz.sms.new.paychannel.id"), userCardLog.getChannelid())) {
+                LogEnum.DEFAULT.info("空中新短信略过外呼步骤" + userCardLog);
+                userCardLog.setFlag(6);
+                userCardLog.setSendnum(0);
+                userCardLogSerivce.save(userCardLog);
+                return returnFunc(start);
+            }
 
             if (StringUtils.contains(propertyUtils.getProperty("kz.sms.paychannel.id"), userCardLog.getChannelid())) {
                 sendSmsToUser();
@@ -125,7 +132,7 @@ public class CalloutTask implements Callable<String> {
     }
 
     private String returnFunc(long start) {
-        return userCardLog.getId() + "-" + userCardLog.getMobile() + "-" + userCardLog.getChannelid() + "同步耗时：" + (System.currentTimeMillis() - start);
+        return userCardLog.getId() + "-" + userCardLog.getMobile() + "-" + userCardLog.getChannelid() + "外呼同步耗时：" + (System.currentTimeMillis() - start);
     }
 
     public UserCardLog getUserCardLog() {
