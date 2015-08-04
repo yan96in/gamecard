@@ -20,6 +20,7 @@ public class IvrCardLog {
     private String city;
     private Date ctime;
     private Date utime;
+    private String cardShowName;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -108,5 +109,14 @@ public class IvrCardLog {
 
     public void setUtime(Date utime) {
         this.utime = utime;
+    }
+
+    @Transient
+    public String getCardShowName() {
+        return cardShowName;
+    }
+
+    public void setCardShowName(String cardShowName) {
+        this.cardShowName = cardShowName;
     }
 }

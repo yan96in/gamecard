@@ -31,7 +31,7 @@
         </td>
     </tr>
     <tr>
-        <form action="pccard!userCardList.action" name="snumForm" method="post">
+        <form action="userCardList.action" name="snumForm" method="post">
 
             <td width="17" height="31" valign="top" background="${stx}/images/mail_leftbg.gif">
                 <img src="${stx}/images/left-top-right.gif" width="17" height="29"/>
@@ -46,7 +46,7 @@
                                    value="${pageView.caller}"/>
                         </td>
                         <td class="left_txt" height="31">
-                            订单号码：
+                            被号码：
                             <input type="text"
                                    name='pageView.called'
                                    value="${pageView.called}"/>
@@ -66,16 +66,6 @@
                                    onFocus="WdatePicker({startDate:'${pageView.etime}',
                                            dateFmt:'yyyy-MM-dd',alwaysUseStartDate:true})"
                                    value="${pageView.etime}" />
-                        </td>
-                        <td class="left_txt" height="31">
-                            状态：
-                            <s:select list="#{0:'全部', 2:'取卡成功'}"
-                                      name="pageView.type" label="abc" listKey="key" listValue="value" />
-                        </td>
-                        <td class="left_txt" height="31">
-                            渠道类型：
-                            <s:select list="#{0:'全部', 19:'移动', 20:'联通', 21:'电信'}"
-                                      name="pageView.spid" label="abc" listKey="key" listValue="value" />
                         </td>
                         <td class="left_txt" align="left" style="color: red; padding-right: 5px;">
                             <input type="submit" value="查询" />
@@ -115,51 +105,22 @@
                                ing="0" class="Table1" border="1" cellspacing="0">
                             <tr height="20">
                                 <th width="3%" class="left_bt2">ID</th>
-                                <th width="5%" class="left_bt2">渠道类型</th>
                                 <th width="8%" class="left_bt2">用户号码</th>
+                                <th width="8%" class="left_bt2">被叫号码</th>
                                 <th width="5%" class="left_bt2">省市</th>
-                                <th width="5%" class="left_bt2">信息费(分)</th>
                                 <th width="7%" class="left_bt2">点卡类型</th>
                                 <th width="10%" class="left_bt2">卡号-密码</th>
                                 <th width="12%" class="left_bt2">时间</th>
-                                <th width="8%" class="left_bt2">IP</th>
-                                <th width="8%" class="left_bt2">错误码</th>
-                                <th width="3%" class="left_bt2">状态</th>
                             </tr>
                             <s:iterator value="list" id="bean">
                                 <tr class='t2'>
                                     <td>${bean.id}</td>
-                                    <td>
-                                        <s:if test="#bean.channelid==19">
-                                            <font color="green">移动
-                                                <s:if test="#bean.ext==3">游戏</s:if>
-                                                <s:if test="#bean.ext==4">翼龙</s:if>
-                                                <s:if test="#bean.ext==5">空中</s:if>
-                                            </font>
-                                        </s:if>
-                                        <s:elseif test="#bean.channelid==21">
-                                            电信
-                                        </s:elseif>
-                                        <s:else>
-                                            <font color="green">联通
-                                            <s:if test="#bean.ext==1">WO+</s:if>
-                                            <s:if test="#bean.ext==2">翼光</s:if>
-                                            <s:if test="#bean.ext==0">空中</s:if>
-                                            </font>
-                                        </s:else>
-                                    </td>
-                                    <td>${bean.mobile}</td>
+                                    <td>${bean.caller}</td>
+                                    <td>${bean.called}</td>
                                     <td>${bean.province}-${bean.city}</td>
-                                    <td>${bean.fee}</td>
                                     <td>${bean.cardShowName}</td>
-                                    <td>${bean.cardno}-${bean.cardpwd}</td>
-                                    <td>
-                                        ${bean.btime}<br>
-                                        ${bean.etime}
-                                    </td>
-                                    <td>${bean.ip}</td>
-                                    <td>${bean.resultcode}</td>
-                                    <td>${bean.status}</td>
+                                    <td>${bean.card}-${bean.password}</td>
+                                    <td>${bean.ctime}</td>
                                 </tr>
                             </s:iterator>
                         </table>
@@ -170,14 +131,6 @@
                     <td colspan="15" align="right" ><div class="PageGoTo">${pageGoto}</div></td>
                 </tr>
             </table>
-        </td>
-        <td background="${stx}/images/mail_rightbg.gif">&nbsp;</td>
-    </tr>
-
-    <tr>
-        <td height="20"  valign="middle" background="${stx}/images/mail_leftbg.gif">&nbsp;</td>
-        <td height="20" valign="top" bgcolor="#F7F8F9">
-            <b>状态：（1:申请指令 2:成功获得点卡 3:计费成功取卡失败）</b>
         </td>
         <td background="${stx}/images/mail_rightbg.gif">&nbsp;</td>
     </tr>
