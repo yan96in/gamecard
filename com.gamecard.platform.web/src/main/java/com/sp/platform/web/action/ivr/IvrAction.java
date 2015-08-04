@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Created by yanglei on 15/8/3.
  */
-@Namespace("/ivr")
+@Namespace("/game-ivr")
 @Scope("prototype")
 @InterceptorRefs({@InterceptorRef("loginInterceptor")})
 @Results({
