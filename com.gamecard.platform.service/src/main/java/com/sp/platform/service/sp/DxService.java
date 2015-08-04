@@ -157,9 +157,9 @@ public class DxService {
         feeConfig.put("221", "100015,盛大5元卡");
         feeConfig.put("216", "100014,盛大9元卡");
         feeConfig.put("320", "100013,空中5元卡");
-        feeConfig.put("721", "100012,天宏5元卡");
-        feeConfig.put("722", "100011,天宏10元卡");
-        feeConfig.put("821", "100010,天下通5元卡");
-        feeConfig.put("822", "100009,天下通10元卡");
+        feeConfig.put("721", "100010,天下通5元卡");
+        feeConfig.put("722", "100009,天下通10元卡");
+        feeConfig.put("821", "100012,天宏5元卡");
+        feeConfig.put("822", "100011,天宏10元卡");
     }
 }

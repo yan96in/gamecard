@@ -14,6 +14,7 @@ public class IvrBillLog {
     private String called;
     private String province;
     private String city;
+    private String userKey;
     private int fee;
     private Date ctime;
     private Date utime;
@@ -58,6 +59,14 @@ public class IvrBillLog {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getUserKey() {
+        return userKey;
+    }
+
+    public void setUserKey(String userKey) {
+        this.userKey = userKey;
     }
 
     public int getFee() {
