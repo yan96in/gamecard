@@ -456,10 +456,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                 // 空中地网北京
                 if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum.bj"), paychannel.getSpnum())) {
                     try{
-                        String tempType = "1";
-                        if(paychannel.getFee() == 30){
-                            tempType = "2";
-                        }
+                        String tempType = propertyUtils.getProperty("kz.sms.spnum.bj.type"+paychannel.getFee());
                         String url = "http://202.108.24.55:8081/NewmobileNotify.jsp?mobile=" + phone + "&type=" + tempType;
                         LogEnum.DEFAULT.info("申请空中北京地网短信指令, 参数：" + url);
                         HttpClient client = new DefaultHttpClient();
