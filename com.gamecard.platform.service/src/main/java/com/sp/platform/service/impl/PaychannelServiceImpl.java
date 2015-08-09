@@ -9,9 +9,11 @@ import com.sp.platform.dao.PaychannelDao;
 import com.sp.platform.entity.NaHaoduan;
 import com.sp.platform.entity.Paychannel;
 import com.sp.platform.entity.PcCardLog;
+import com.sp.platform.entity.UserStepLog;
 import com.sp.platform.service.NaHaoduanService;
 import com.sp.platform.service.PaychannelService;
 import com.sp.platform.service.PcCardLogService;
+import com.sp.platform.service.UserStepLogService;
 import com.sp.platform.service.sp.DxService;
 import com.sp.platform.service.sp.KzYdService;
 import com.sp.platform.service.sp.SpYdService;
@@ -82,6 +84,8 @@ public class PaychannelServiceImpl implements PaychannelService {
     private YlYdService ylYdService;
     @Autowired
     private DxService dxService;
+    @Autowired
+    private UserStepLogService userStepLogService;
 
     @Override
     public Paychannel get(int id) {
@@ -467,6 +471,15 @@ public class PaychannelServiceImpl implements PaychannelService {
                         if (StringUtils.startsWith(body, "true") || StringUtils.startsWith(body, "True")) {
                             String[] strs = body.split(":");
                             paychannel.setMsg(strs[6]);
+                            UserStepLog userStepLog = new UserStepLog();
+                            userStepLog.setStep(paychannel.getId().toString());
+                            userStepLog.setMobile(phone);
+                            userStepLog.setMsgContent(paychannel.getMsg());
+                            userStepLog.setBusinessId(paychannel.getSpnum());
+                            Date now = new Date();
+                            userStepLog.setBtime(now);
+                            userStepLog.setEtime(now);
+                            userStepLogService.save(userStepLog);
                         } else if (StringUtils.startsWith(body, "1")) {
                             LogEnum.DEFAULT.error("空中北京地网短信获取通道失败" + parameter + ", 返回结果：" + body);
                             paychannel.setErrorFlg(11);

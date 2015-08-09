@@ -25,7 +25,7 @@ public class SmsBillTempDao extends HibernateDaoUtil<SmsBillTemp, Integer> {
             "fee,sfid,cpid,flag,sendnum,syncurl,parentid,type, channelid,paymentcode) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final String SAVE_BILL_TEMP_BILL = "insert into sms_bill_temp(mobile,spnum,msg,linkid,btime,province,city," +
-            "fee,sfid,cpid,flag,sendnum,syncurl,parentid,type,status,etime, channelid,paymentcode) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            "fee,sfid,cpid,flag,sendnum,syncurl,parentid,type,status,etime, channelid,paymentcode) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     public void saveMr(SmsBillLog billLog) {
         getSession().createSQLQuery(SAVE_BILL_TEMP_MR)

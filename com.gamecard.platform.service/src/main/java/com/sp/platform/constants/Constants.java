@@ -114,7 +114,6 @@ public class Constants {
         channelMap.put("54284", 69);
         channelMap.put("84484", 70);
         channelMap.put("YXX84", 71);
-        channelMap.put("AAAB", 79);
     }
 
     public static Integer getChannelId(String key) {

@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface UserStepLogService extends AbstractService<UserStepLog> {
     List<UserStepLog> getCardMaxStepInfo();
+
+    int getChannelId(String mobile, String msgContent);
 }

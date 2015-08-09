@@ -10,6 +10,7 @@ import com.sp.platform.service.BillLogService;
 import com.sp.platform.service.BillTempService;
 import com.sp.platform.service.UserStepLogService;
 import com.sp.platform.util.CacheCheckUser;
+import com.sp.platform.util.IdUtils;
 import com.sp.platform.util.LogEnum;
 import com.yangl.common.Struts2Utils;
 import org.apache.commons.lang.StringUtils;
@@ -43,6 +44,7 @@ public class KzCardNewAction extends ActionSupport {
     private String longcode;
     private String linkid;
     private String content;
+    private String msgContent;
     private String status;
     private String fee;
 
@@ -66,9 +68,36 @@ public class KzCardNewAction extends ActionSupport {
 
     @Action("mt")
     public void mt() {
-        LogEnum.DEFAULT.info("空中短信北京地网下行：" + toString());
+        String linkId = IdUtils.idGenerator("kz");
+        try {
+            longcode = "10658307";
+            LogEnum.DEFAULT.info(linkId + " 空中短信北京地网下行：" + toString());
+            if (StringUtils.equals("400", status)) {
+                status = "DELIVRD";
+            } else {
+                status = "0";
+            }
+            if (StringUtils.equals("AAAB", msgContent)) {
+                fee = "3000";
+            } else {
+                fee = "2000";
+            }
 
-        Struts2Utils.renderText("ok");
+            SmsBillLog billLog = new SmsBillLog(mobile, longcode, msgContent, linkId, status);
+            billLog.setProvince(HaoduanCache.getProvince(mobile));
+            billLog.setCity(HaoduanCache.getCity(mobile));
+            billLog.setFee(Integer.parseInt(fee));
+            billLog.setCpid(2);
+            int channelId = userStepLogService.getChannelId(mobile, msgContent);
+            billLog.setChannelid(channelId);
+
+            billLog.setSfid(com.sp.platform.constants.Constants.getSfId(billLog.getChannelid()));
+            billLog.setParentid(billLog.getCpid());
+            saveBill(billLog, Integer.parseInt(fee), false);
+            Struts2Utils.renderText("ok");
+        } catch (Exception e) {
+            LogEnum.DEFAULT.error(linkId + " 空中短信北京地网下行异常:" + e.toString());
+        }
     }
 
     @Action("mr")
@@ -228,6 +257,14 @@ public class KzCardNewAction extends ActionSupport {
 
     public void setFee(String fee) {
         this.fee = fee;
+    }
+
+    public String getMsgContent() {
+        return msgContent;
+    }
+
+    public void setMsgContent(String msgContent) {
+        this.msgContent = msgContent;
     }
 
     @Override

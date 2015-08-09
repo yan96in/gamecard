@@ -4,12 +4,15 @@ import com.sp.platform.common.PageView;
 import com.sp.platform.dao.UserStepLogDao;
 import com.sp.platform.entity.UserStepLog;
 import com.sp.platform.service.UserStepLogService;
+import com.sp.platform.util.StringUtil;
 import com.yangl.common.hibernate.PaginationSupport;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,8 @@ import java.util.List;
 public class UserStepLogServiceImpl implements UserStepLogService {
     @Autowired
     private UserStepLogDao userStepLogDao;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public UserStepLog get(int id) {
@@ -57,5 +62,16 @@ public class UserStepLogServiceImpl implements UserStepLogService {
         dc.add(Restrictions.gt("btime", dateTime.toDate()));
         dc.add(Restrictions.in("step", new String[]{"5", "8"}));
         return userStepLogDao.findByCriteria(dc);
+    }
+
+    @Override
+    public int getChannelId(String mobile, String msgContent) {
+        String sql = "select step from tbl_user_step_log where businessId='10658307' and " +
+                "mobile='" + mobile + "' and msgContent='" + msgContent + "' order by id desc limit 1";
+        String channelId = jdbcTemplate.queryForObject(sql, String.class);
+        if (StringUtils.isNotBlank(channelId)) {
+            return Integer.parseInt(channelId);
+        }
+        return 0;
     }
 }
