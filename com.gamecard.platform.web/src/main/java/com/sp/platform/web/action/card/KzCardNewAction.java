@@ -12,6 +12,7 @@ import com.sp.platform.service.UserStepLogService;
 import com.sp.platform.util.CacheCheckUser;
 import com.sp.platform.util.IdUtils;
 import com.sp.platform.util.LogEnum;
+import com.sp.platform.util.PropertyUtils;
 import com.yangl.common.Struts2Utils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.convention.annotation.Action;
@@ -39,6 +40,8 @@ public class KzCardNewAction extends ActionSupport {
     private BillLogService billLogService;
     @Autowired
     private CacheCheckUser cacheCheckUser;
+    @Autowired
+    private PropertyUtils propertyUtils;
 
     private String mobile;
     private String longcode;
@@ -59,7 +62,7 @@ public class KzCardNewAction extends ActionSupport {
         billLog.setFee(Integer.parseInt(fee));
         billLog.setCpid(2);
         billLog.setChannelid(com.sp.platform.constants.Constants.getChannelId(content));
-        billLog.setSfid(com.sp.platform.constants.Constants.getSfId(billLog.getChannelid()));
+        billLog.setSfid(3);
         billLog.setParentid(billLog.getCpid());
 
         saveBill(billLog, Integer.parseInt(fee), false);
@@ -70,8 +73,7 @@ public class KzCardNewAction extends ActionSupport {
     public void mt() {
         String linkId = IdUtils.idGenerator("kz");
         LogEnum.DEFAULT.info(linkId + " 空中短信北京地网下行：" + toString());
-        boolean flag = true;
-        if(flag){
+        if(StringUtils.equals("false", propertyUtils.getProperty("kz.sms.mt.result"))){
             Struts2Utils.renderText("ok");
         }
         try {

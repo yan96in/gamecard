@@ -114,6 +114,17 @@ public class Constants {
         channelMap.put("54284", 69);
         channelMap.put("84484", 70);
         channelMap.put("YXX84", 71);
+
+        channelMap.put("BAAB1", 90);
+        channelMap.put("AAAB1", 91);
+        channelMap.put("BAAB2", 92);
+        channelMap.put("AAAB2", 93);
+        channelMap.put("BAAB3", 94);
+        channelMap.put("BAAB4", 95);
+        channelMap.put("BAAB7", 96);
+        channelMap.put("AAAB7", 97);
+        channelMap.put("BAAB8", 98);
+        channelMap.put("AAAB8", 99);
     }
 
     public static Integer getChannelId(String key) {
@@ -128,7 +139,7 @@ public class Constants {
     }
 
     public static Integer getSfId(Integer key) {
-        Integer sfId = channelMap.get(key);
+        Integer sfId = sfidMap.get(key);
         if (sfId == null) {
             return 3;
         }
