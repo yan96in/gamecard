@@ -460,36 +460,39 @@ public class PaychannelServiceImpl implements PaychannelService {
                 // 空中地网北京
                 if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum.bj"), paychannel.getSpnum())) {
                     try{
-                        String tempType = propertyUtils.getProperty("kz.sms.spnum.bj.type"+paychannel.getFee());
-                        String url = "http://202.108.24.55:8081/NewmobileNotify.jsp?mobile=" + phone + "&type=" + tempType;
-                        LogEnum.DEFAULT.info("申请空中北京地网短信指令, 参数：" + url);
-                        HttpClient client = new DefaultHttpClient();
-                        HttpGet get = new HttpGet(url);
-                        HttpResponse response = client.execute(get);
-                        String body = StringUtils.trim(IOUtils.toString(response.getEntity().getContent(), "GBK"));
-                        LogEnum.DEFAULT.info("申请空中北京地网短信指令, 返回：" + response.getStatusLine().getStatusCode() + "--" + body);
-                        if (StringUtils.startsWith(body, "true") || StringUtils.startsWith(body, "True")) {
-                            String[] strs = body.split(":");
-                            paychannel.setMsg(strs[6]);
-                            UserStepLog userStepLog = new UserStepLog();
-                            userStepLog.setStep(paychannel.getId().toString());
-                            userStepLog.setMobile(phone);
-                            userStepLog.setMsgContent(paychannel.getMsg());
-                            userStepLog.setBusinessId(paychannel.getSpnum());
-                            Date now = new Date();
-                            userStepLog.setBtime(now);
-                            userStepLog.setEtime(now);
-                            userStepLogService.save(userStepLog);
-                        } else if (StringUtils.startsWith(body, "1")) {
-                            LogEnum.DEFAULT.error("空中北京地网短信获取通道失败" + parameter + ", 返回结果：" + body);
-                            paychannel.setErrorFlg(11);
-                            paychannel.setErrorMessage("您当月订购次数已满，请下个月继续使用该业务。");
+                        if (StringUtils.isNotBlank(msg)) {
+                            paychannel.setMsg(msg);
                         } else {
-                            LogEnum.DEFAULT.error("空中北京地网短信获取通道失败" + parameter + ", 返回结果：" + body);
-                            paychannel.setErrorFlg(10);
-                            paychannel.setErrorMessage("该号码所属省份无可用通道，请选择其它方式。");
+                            String tempType = propertyUtils.getProperty("kz.sms.spnum.bj.type" + paychannel.getFee());
+                            String url = "http://202.108.24.55:8081/NewmobileNotify.jsp?mobile=" + phone + "&type=" + tempType;
+                            LogEnum.DEFAULT.info("申请空中北京地网短信指令, 参数：" + url);
+                            HttpClient client = new DefaultHttpClient();
+                            HttpGet get = new HttpGet(url);
+                            HttpResponse response = client.execute(get);
+                            String body = StringUtils.trim(IOUtils.toString(response.getEntity().getContent(), "GBK"));
+                            LogEnum.DEFAULT.info("申请空中北京地网短信指令, 返回：" + response.getStatusLine().getStatusCode() + "--" + body);
+                            if (StringUtils.startsWith(body, "true") || StringUtils.startsWith(body, "True")) {
+                                String[] strs = body.split(":");
+                                paychannel.setMsg(paychannel.getMsg());
+                                UserStepLog userStepLog = new UserStepLog();
+                                userStepLog.setStep(paychannel.getId().toString());
+                                userStepLog.setMobile(phone);
+                                userStepLog.setMsgContent(paychannel.getMsg());
+                                userStepLog.setBusinessId(paychannel.getSpnum());
+                                Date now = new Date();
+                                userStepLog.setBtime(now);
+                                userStepLog.setEtime(now);
+                                userStepLogService.save(userStepLog);
+                            } else if (StringUtils.startsWith(body, "1")) {
+                                LogEnum.DEFAULT.error("空中北京地网短信获取通道失败" + parameter + ", 返回结果：" + body);
+                                paychannel.setErrorFlg(11);
+                                paychannel.setErrorMessage("您当月订购次数已满，请下个月继续使用该业务。");
+                            } else {
+                                LogEnum.DEFAULT.error("空中北京地网短信获取通道失败" + parameter + ", 返回结果：" + body);
+                                paychannel.setErrorFlg(10);
+                                paychannel.setErrorMessage("该号码所属省份无可用通道，请选择其它方式。");
+                            }
                         }
-
                     }catch (Exception e){
                         LogEnum.DEFAULT.error("空中北京地网短信获取通道异常：" + parameter + "，异常信息： " + e);
                         iterator.remove();
