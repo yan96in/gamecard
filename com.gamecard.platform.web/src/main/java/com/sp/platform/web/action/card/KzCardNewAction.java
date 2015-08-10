@@ -69,9 +69,13 @@ public class KzCardNewAction extends ActionSupport {
     @Action("mt")
     public void mt() {
         String linkId = IdUtils.idGenerator("kz");
+        LogEnum.DEFAULT.info(linkId + " 空中短信北京地网下行：" + toString());
+        boolean flag = true;
+        if(flag){
+            Struts2Utils.renderText("ok");
+        }
         try {
             longcode = "10658307";
-            LogEnum.DEFAULT.info(linkId + " 空中短信北京地网下行：" + toString());
             if (StringUtils.equals("400", status)) {
                 status = "DELIVRD";
             } else {
@@ -97,6 +101,7 @@ public class KzCardNewAction extends ActionSupport {
             Struts2Utils.renderText("ok");
         } catch (Exception e) {
             LogEnum.DEFAULT.error(linkId + " 空中短信北京地网下行异常:" + e.toString());
+            Struts2Utils.renderText("error");
         }
     }
 
