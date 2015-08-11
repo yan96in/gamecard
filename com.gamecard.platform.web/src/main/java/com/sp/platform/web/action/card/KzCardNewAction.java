@@ -75,6 +75,7 @@ public class KzCardNewAction extends ActionSupport {
         LogEnum.DEFAULT.info(linkId + " 空中短信北京地网下行：" + toString());
         if(StringUtils.equals("false", propertyUtils.getProperty("kz.sms.mt.result"))){
             Struts2Utils.renderText("ok");
+            return;
         }
         try {
             longcode = "10658307";
