@@ -164,32 +164,6 @@ public class PaychannelServiceImpl implements PaychannelService {
                         return result.getChanels();
                     }
 
-                    // 走空中移动
-                    if (StringUtils.indexOf(propertyUtils.getProperty("yd.kz.provinces"), province) >= 0) {
-                        flag = callerLimit(phone,
-                                propertyUtils.getInteger("pc.kz.caller.day.limit." + paytypeId, 30),
-                                propertyUtils.getInteger("pc.kz.caller.week.limit." + paytypeId, 40),
-                                propertyUtils.getInteger("pc.kz.caller.month.limit." + paytypeId, 100),
-                                "空中移动");
-                        if (flag) {
-                            int provinceMaxFee = propertyUtils.getInteger("pc.kz.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
-                            if (provinceMaxFee == 0) {
-                                provinceMaxFee = propertyUtils.getInteger("pc.kz.province.day.limit." + paytypeId);
-                            }
-                            flag = provinceLimit(phone, province, paytypeId, provinceMaxFee, "空中移动");
-                        }
-                        if (flag) {
-                            result = kzYdService.sendYdCode(phone, fee, province);  // 走空中移动
-                        }
-                    }
-
-                    if (result != null && result.getChanels().isPcflag()) {
-                        result.getChanels().setType(5);
-                        sid = result.getChanels().getSid();
-                        ext = "5";
-                        return result.getChanels();
-                    }
-
                     // 走翼龙移动
                     if (StringUtils.indexOf(propertyUtils.getProperty("yd.yl.provinces"), province) >= 0) {
                         flag = callerLimit(phone,
@@ -213,6 +187,32 @@ public class PaychannelServiceImpl implements PaychannelService {
                         result.getChanels().setType(4);
                         sid = result.getChanels().getSid();
                         ext = "4";
+                        return result.getChanels();
+                    }
+
+                    // 走空中移动
+                    if (StringUtils.indexOf(propertyUtils.getProperty("yd.kz.provinces"), province) >= 0) {
+                        flag = callerLimit(phone,
+                                propertyUtils.getInteger("pc.kz.caller.day.limit." + paytypeId, 30),
+                                propertyUtils.getInteger("pc.kz.caller.week.limit." + paytypeId, 40),
+                                propertyUtils.getInteger("pc.kz.caller.month.limit." + paytypeId, 100),
+                                "空中移动");
+                        if (flag) {
+                            int provinceMaxFee = propertyUtils.getInteger("pc.kz.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+                            if (provinceMaxFee == 0) {
+                                provinceMaxFee = propertyUtils.getInteger("pc.kz.province.day.limit." + paytypeId);
+                            }
+                            flag = provinceLimit(phone, province, paytypeId, provinceMaxFee, "空中移动");
+                        }
+                        if (flag) {
+                            result = kzYdService.sendYdCode(phone, fee, province);  // 走空中移动
+                        }
+                    }
+
+                    if (result != null && result.getChanels().isPcflag()) {
+                        result.getChanels().setType(5);
+                        sid = result.getChanels().getSid();
+                        ext = "5";
                         return result.getChanels();
                     }
                 } else if (paytypeId == 20) {
