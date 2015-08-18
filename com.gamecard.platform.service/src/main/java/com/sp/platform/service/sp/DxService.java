@@ -103,7 +103,7 @@ public class DxService {
         formparams.add(new BasicNameValuePair("MERCHANTPWD", MERCHANTPWD));
         formparams.add(new BasicNameValuePair("MERCHANTPHONE", MERCHANTPHONE));
         formparams.add(new BasicNameValuePair("ORDERSEQ", sid));
-        formparams.add(new BasicNameValuePair("ORDERREQTRANSEQ", "seq2" + sid));
+        formparams.add(new BasicNameValuePair("ORDERREQTRANSEQ", "seq" + sid));
         formparams.add(new BasicNameValuePair("ORDERAMOUNT", ORDERAMOUNT));
         formparams.add(new BasicNameValuePair("ORDERREQTIME", ORDERREQTIME));
         formparams.add(new BasicNameValuePair("USERACCOUNT", phone));
