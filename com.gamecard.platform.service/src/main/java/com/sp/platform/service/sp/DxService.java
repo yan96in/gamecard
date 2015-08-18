@@ -120,7 +120,7 @@ public class DxService {
         builder.append("MERCHANTID=").append(MERCHANTID);
         builder.append("&MERCHANTPWD=").append(MERCHANTPWD);
         builder.append("&ORDERSEQ=").append(sid);
-        builder.append("&ORDERREQTRANSEQ=seq2").append(sid);
+        builder.append("&ORDERREQTRANSEQ=seq").append(sid);
         builder.append("&ORDERREQTIME=").append(ORDERREQTIME);
         builder.append("&ORDERAMOUNT=").append(ORDERAMOUNT);
         builder.append("&USERACCOUNT=").append(phone);
