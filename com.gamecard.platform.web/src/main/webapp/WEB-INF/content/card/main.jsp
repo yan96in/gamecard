@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="Description" content="哆啦网小额支付平台是北京世坤远大信息科技有限公司专门为互联网数字产品充值而开发的小额支付平台，平台聚合三大电信运营商的通信帐户支付通道（涵盖手机、固话、宽带等支付工具，使用短信、声讯、宽带等支付方式）及市场流行卡类支付通道，为用户购买数字产品提供方便、快捷、统一的小额支付服务">
+    <meta name="Description" content="哆啦网小额支付平台是为互联网数字产品充值而开发的小额支付平台，平台聚合三大电信运营商的通信帐户支付通道（涵盖手机、固话、宽带等支付工具，使用短信、声讯、宽带等支付方式）及市场流行卡类支付通道，为用户购买数字产品提供方便、快捷、统一的小额支付服务">
     <meta name="Keywords" content="哆啦网,哆啦网官网,手机买点卡,固话买点卡,宽带买点卡，短信买点卡，声讯买点卡，话费买点卡，手机买盛大卡，手机买骏卡，手机买Q币">
     <title>哆啦网官网-小额支付平台首页</title>
     <link rel="stylesheet" type="text/css" href="${stx}/card-resources/main/global.css">

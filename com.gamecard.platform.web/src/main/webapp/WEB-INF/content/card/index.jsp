@@ -154,7 +154,7 @@
     </div>
 
     <div id="foot">
-        <div style="margin-top: 30px; font-size: 14px; text-align: center;">北京世坤远大信息科技有限公司·哆啦网</div>
+        <div style="margin-top: 30px; font-size: 14px; text-align: center;">哆啦网</div>
     </div>
 </div>
 

@@ -194,7 +194,7 @@
         href="javascript:void();" target="_blank">联系我们</a>|<a
         href="javascript:void();" target="_blank">帮助中心</a>
 
-    <p>Copyright © 2012 – 2015 duolawang. All Rights Reserved 北京世坤远大科技有限公司版权所有</p>
+    <p>Copyright © 2012 – 2015 duolawang. All Rights Reserved</p>
     <script type="text/javascript">
         function channeldetail(id){
             $(".pannel-type a").removeClass("current");
