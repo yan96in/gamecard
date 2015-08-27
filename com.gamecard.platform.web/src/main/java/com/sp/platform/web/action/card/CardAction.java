@@ -17,6 +17,7 @@ import com.sp.platform.web.constants.LthjService;
 import com.sp.platform.util.PinyinUtil;
 import com.yangl.common.IpAddressUtil;
 import com.yangl.common.Struts2Utils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -46,6 +47,7 @@ import java.util.List;
         @Result(name = "pc", location = "pc.jsp"),
         @Result(name = "pccard", location = "pccard.jsp"),
         @Result(name = "channel", location = "channel.jsp"),
+        @Result(name = "pcChannel", location = "pcChannel.jsp"),
         @Result(name = "channel-lthj", location = "channel-lthj.jsp")})
 public class CardAction extends ActionSupport {
     @Autowired
@@ -124,14 +126,25 @@ public class CardAction extends ActionSupport {
         if (price == null) {
             return "403";
         }
-        paytype = paytypeService.get(paytypeId);
-
-        if (StringUtils.indexOf(propertyUtils.getProperty("ivr.paytype"), paytypeId.toString()) >= 0) {
+        if (StringUtils.equals(propertyUtils.getProperty("ivr.paytype"), paytypeId.toString())) {
+            paytype = paytypeService.get(paytypeId);
             list = ivrChannelService.find(id, priceId, paytypeId);
             return "ivr";
-        } else if (StringUtils.indexOf(propertyUtils.getProperty("pc.paytype"), paytypeId.toString()) >= 0) {
-            return "pc";
         }
+
+        list = paytypeService.findByOi(paytypeId);
+        if(CollectionUtils.isNotEmpty(list)){
+            paytype = (Paytype) list.get(0);
+        }
+//
+//        paytype = paytypeService.get(paytypeId);
+//
+//        if (StringUtils.indexOf(propertyUtils.getProperty("ivr.paytype"), paytypeId.toString()) >= 0) {
+//            list = ivrChannelService.find(id, priceId, paytypeId);
+//            return "ivr";
+//        } else if (StringUtils.indexOf(propertyUtils.getProperty("pc.paytype"), paytypeId.toString()) >= 0) {
+//            return "pc";
+//        }
 
         return "select";
     }
@@ -167,6 +180,28 @@ public class CardAction extends ActionSupport {
             return "channel-lthj";
         }
         return "channel";
+    }
+
+
+    @Action("pcChannel")
+    public String pcChannel() {
+        if (channelId == null || channelId < 1 || StringUtils.isBlank(phoneNumber)) {
+            return "403";
+        }
+
+        phoneVo = new PhoneVo(phoneNumber,
+                HaoduanCache.getProvince(phoneNumber), HaoduanCache.getCity(phoneNumber));
+        paychannel = paychannelService.get(channelId);
+        if (paychannel == null) {
+            return "403";
+        }
+
+        CheckUserCache.addIp(paychannel.getPaytypeId() + "_" + IpAddressUtil.getRealIp());
+
+        card = cardService.get(paychannel.getCardId());
+        price = priceService.getDetail(paychannel.getPriceId(), paychannel.getCardId());
+        paytype = paytypeService.get(paychannel.getPaytypeId());
+        return "pcChannel";
     }
 
     //向联通华建提交订单信息（
@@ -206,12 +241,13 @@ public class CardAction extends ActionSupport {
             return;
         }
 
-//        if (!CheckUserCache.checkUser(phoneNumber)) {
-//            result = new JsonVo(false, "超过限制");
-//            Struts2Utils.renderJson(result);
-//            LogEnum.DEFAULT.info("号码 超过限制 : " + phoneNumber);
-//            return;
-//        }
+        int uc = cacheCheckUser.getCallerDayCount(phoneNumber);
+        if (uc >= propertyUtils.getInteger("pc.caller.day.count", 20)) {
+            result = new JsonVo(false, "号码超过使用限制");
+            Struts2Utils.renderJson(result);
+            LogEnum.DEFAULT.info(phoneNumber + " 号码超过日使用次数限制 : " + uc);
+            return;
+        }
 
         if (paytypeId.equals(22) || paytypeId.equals(23)) {
             // 检查普通短信IP
@@ -223,7 +259,7 @@ public class CardAction extends ActionSupport {
                 maxCount = 8;
             }
             if (ipCount >= maxCount) {
-                result = new JsonVo(false, "访问数超过限制");
+                result = new JsonVo(false, "使用超过限制");
                 Struts2Utils.renderJson(result);
                 LogEnum.DEFAULT.info(phoneNumber + " IP 超过限制 : " + IpAddressUtil.getRealIp());
                 return;
@@ -238,7 +274,7 @@ public class CardAction extends ActionSupport {
                 maxCount = 2;
             }
             if (dayCardCount >= maxCount) {
-                result = new JsonVo(false, "取卡数超过限制");
+                result = new JsonVo(false, "使用超过限制");
                 Struts2Utils.renderJson(result);
                 LogEnum.DEFAULT.info(phoneNumber + " 日取卡数超过限制 : " + dayCardCount);
                 return;
@@ -252,7 +288,7 @@ public class CardAction extends ActionSupport {
                 maxCount = 6;
             }
             if (monthCardCount >= maxCount) {
-                result = new JsonVo(false, "取卡数超过限制");
+                result = new JsonVo(false, "使用超过限制");
                 Struts2Utils.renderJson(result);
                 LogEnum.DEFAULT.info(phoneNumber + " 月取卡数超过限制 : " + monthCardCount);
                 return;
@@ -267,16 +303,9 @@ public class CardAction extends ActionSupport {
                 maxCount = 3000;
             }
             if (provinceFee >= maxCount) {
-                result = new JsonVo(false, "收入超过限制");
+                result = new JsonVo(false, "超过限制");
                 Struts2Utils.renderJson(result);
                 LogEnum.DEFAULT.info(phoneNumber + " : " + HaoduanCache.getProvince(phoneNumber) + " 省份收超过限制 : " + monthCardCount);
-                return;
-            }
-
-            if (StringUtils.indexOf(propertyUtils.getProperty("kz.validator.paytype.ids"), paytypeId.toString()) >= 0
-                    && !checkByKz()) {
-                result = new JsonVo(false, "该用户暂时不能使用该业务");
-                Struts2Utils.renderJson(result);
                 return;
             }
         }
@@ -325,21 +354,13 @@ public class CardAction extends ActionSupport {
             return;
         }
 
-//        int uc = CheckUserCache.getUserCount(phoneNumber);
         int uc = cacheCheckUser.getCallerDayCount(phoneNumber);
         if (uc >= propertyUtils.getInteger("pc.caller.day.count", 20)) {
-            result = new JsonVo(false, "无法使用该业务");
+            result = new JsonVo(false, "号码超过使用限制");
             Struts2Utils.renderJson(result);
             LogEnum.DEFAULT.info(phoneNumber + " 号码超过日使用次数限制 : " + uc);
             return;
         }
-//        //判断是否超上限
-//        if ((paytypeId >= 19 && paytypeId <= 21) && !CheckUserCache.checkUser(phoneNumber)) {
-//            result = new JsonVo(false, "超过限制");
-//            Struts2Utils.renderJson(result);
-//            LogEnum.DEFAULT.info("IP 超过限制 : " + IpAddressUtil.getRealIp());
-//            return;
-//        }
 
         if (StringUtils.isBlank(phoneNumber)) {
             result = new JsonVo(false, "请输入正确的手机号码");
@@ -371,24 +392,6 @@ public class CardAction extends ActionSupport {
         Struts2Utils.renderJson(result);
     }
 
-    private boolean checkByKz() {
-        try {
-            HttpClient client = new DefaultHttpClient();
-            HttpGet get = new HttpGet("http://61.135.202.118:8083/indexForDB.jsp?mobile=" + phoneNumber + "&channel=XZHJW000S00");
-            HttpResponse response = client.execute(get);
-            String body = StringUtils.trim(IOUtils.toString(response.getEntity().getContent(), "GBK"));
-            if (StringUtils.equals("-2", body)) {
-                LogEnum.DEFAULT.error("调用空中判断用户接口正常 {}", phoneNumber);
-                return true;
-            } else {
-                LogEnum.DEFAULT.warn("blackUser of kz : " + phoneNumber + " error code :" + body);
-            }
-        } catch (Exception e) {
-            LogEnum.DEFAULT.error("调用空中判断用户接口异常 {}", e);
-            return true;
-        }
-        return false;
-    }
     @Action("sendPcCode")
     public void sendPcCode() {
         JsonVo result = null;

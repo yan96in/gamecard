@@ -107,7 +107,7 @@
     <ol class="steps clearfix">
         <li>1、提交订单</li>
         <li>2、选择支付通道</li>
-        <li class="on">3、获取点卡</li>
+        <li class="on">3、通道详情</li>
     </ol>
     <ul class="order-info">
         <li>
@@ -117,11 +117,13 @@
         </li>
     </ul>
     <ol class="tab-hd clearfix">
-        <li id="chc_${paytype.id}" ref="${paytype.id}">
-            <a class="current" href="javascript:void();">
-                <img src="${stx}/card-resources/resources/${paytype.img}" width="16" height="16">${paytype.name}
-            </a>
-        </li>
+        <c:forEach var="paytype2" items="${price.paytypes}">
+            <li id="chc_${paytype2.id}" ref="${paytype2.id}">
+                <a <c:if test="${ paytype2.oi == paytype.oi }"> class="current" </c:if> href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype2.oi}">
+                    <img src="${stx}/card-resources/resources/${paytype2.img}" width="16" height="16">${paytype2.op}
+                </a>
+            </li>
+        </c:forEach>
     </ol>
     <div class="tab-bd">
         <div class="pannel">
@@ -131,26 +133,49 @@
                 <fieldset>
                     <legend>哆啦网支付订单</legend>
                     <div class="main-con sub-con">
-                        <strong class="tips">您提交的支付号码为：
-                            <span class="c-f">${phoneNumber}</span>
-                            &nbsp;&nbsp;
-                            <span style="color: red">${message}</span>
-                            &nbsp;&nbsp;
-                            <a href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype.oi}">返回</a>
-                        </strong>
+                        <strong class="tips">您提交的支付号码为：<span class="c-f">${phoneVo.number}</span>，请使用此号码根据以下通道提示完成支付!</strong>
 
                         <div class="sub-tab-hd clearfix">
-                            <c:if test="${pcCardLog!=null}">
-                                <p>
-                                    恭喜你获取${card.name}_${price.description} 一张， 请仔细记录卡号和密码：
-                                </p>
-                                <p>
-                                    卡号：${pcCardLog.cardno}
-                                </p>
-                                <p>
-                                    密码：${pcCardLog.cardpwd}
-                                </p>
+                            <ul class="fl clearfix" id="ulChannelList">
+                                <c:set var="index" value='1'/>
+                                <li id="ch_${channel.id}" ref="${channel.id}" class="pannel-type">
+                                    <a <c:if test="${paychannel.id == channel.id}"> class="current"</c:if> href="javascript:channeldetail(${channel.id});">验证码支付${index}</a>
+                                </li>
+                                <c:set var="index" value="${index + 1}"/>
+                            </ul>
+                            <c:if test="${index > 2}">
+                                <strong>可切换任一通道支付！</strong>
                             </c:if>
+                        </div>
+                        <div class="sub-tab-bd">
+                            <div class="pannel-con" id="divFeeTip">
+                                <p>
+                                    您将支付<span class="c-f">${paychannel.fee/100}</span>元话费（${paychannel.fee/100}元/次，共扣${paychannel.feecount}次）；
+                                </p>
+                                <p>
+                                    本次支付将通过手机验证码完成扣费，请填入您手机收到的验证码并提交验证
+                                    <span style="color:#E53333;">（5分钟内提交有效，一个验证码只能提交一次）</span>
+                                    ，确认成功后点击“支付完成”获取服务。
+                                </p>
+                                <p>
+                                    请输入验证码：
+                                    <input id="identifyingCode" class="ipt" type="text" maxlength="6" style="height: 35px; margin-right: 15px; width: 122px;" name="identifyingCode">
+                                    <input id="btnSubmitCode" onclick="javascript:getCard();" type="button" style="width:80px;height:35px;" value="提交验证">
+                                </p>
+                                <span class="tips-con">${paychannel.note2}</span>
+                            </div>
+                            <div class="btn-con">
+                                <input type="hidden" id="phoneNumber" name="phoneNumber" value="${phoneNumber}">
+                                <input type="hidden" id="id" value="${card.id}" name="id"/>
+                                <input type="hidden" id="priceId" value="${price.id}" name="priceId"/>
+                                <input type="hidden" id="paytypeId" value="${paytype.id}" name="paytypeId"/>
+                                <input type="hidden" id="channelId" value="0" name="channelId"/>
+                                <input type="hidden" id="type" name="type" value="${type}" />
+                                <input type="hidden" id="sid" name="sid" value="${sid}">
+
+                                <input class="btn" id="btnOK" type="button" onclick="javascript:getCard();" value="支付完成" style="margin-left: 30px;">
+                                <a href="select.action?id=${paychannel.cardId}&priceId=${paychannel.priceId}&paytypeId=${paytype.oi}">选择其它支付方式</a>
+                            </div>
                         </div>
                     </div>
                 </fieldset>
@@ -196,11 +221,26 @@
 
     <p>Copyright © 2012 – 2015 duolawang. All Rights Reserved 北京世坤远大科技有限公司版权所有</p>
     <script type="text/javascript">
+        var isSubmit = false;
         function channeldetail(id){
             $(".pannel-type a").removeClass("current");
             $("#ch_"+id + " a").addClass("current");
             $(".pannel-con").hide();
             $("#divFeeTip"+id).show();
+        }
+
+        function getCard(){
+            if(isSubmit){
+                alert("请勿重复点击...");
+                return;
+            }
+            if($("#identifyingCode").val().length <4){
+                alert("请输入正确的验证码!");
+                return;
+            }
+            $("#form1").attr("action", "getPcCard.action");
+            isSubmit = true;
+            $("#form1").submit();
         }
     </script>
 </div>

@@ -9,12 +9,16 @@ import com.sp.platform.entity.Paytype;
 import com.sp.platform.entity.Price;
 import com.sp.platform.service.CardService;
 import com.yangl.common.hibernate.PaginationSupport;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -47,7 +51,16 @@ public class CardServiceImpl implements CardService {
             if(card != null){
                 List<Price> prices = priceDao.getPriceByCardId(card.getId());
                 for(Price price : prices){
-                    List<Paytype> paytypes = paytypeDao.getPaytypeByPriceId(card.getId(), price.getId());
+                    List<Paytype> temp = paytypeDao.getPaytypeByPriceId(card.getId(), price.getId());
+                    List<Paytype> paytypes = new ArrayList<Paytype>();
+                    Map<String, String> map = new HashMap<String, String>();
+                    for(Paytype paytype : temp){
+                        if(StringUtils.isNotBlank(map.get(paytype.getOp()))){
+                            continue;
+                        }
+                        map.put(paytype.getOp(), paytype.getOp());
+                        paytypes.add(paytype);
+                    }
                     price.setPaytypes(paytypes);
                 }
                 card.setPrices(prices);

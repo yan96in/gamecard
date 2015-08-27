@@ -16,6 +16,8 @@ public class Paytype extends BaseEntity{
     private String name;
     private String img;
     private String description;
+    private String op;
+    private Integer oi;
     private int sort;
 
     public int getSort() {
@@ -48,6 +50,22 @@ public class Paytype extends BaseEntity{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getOp() {
+        return op;
+    }
+
+    public void setOp(String op) {
+        this.op = op;
+    }
+
+    public Integer getOi() {
+        return oi;
+    }
+
+    public void setOi(Integer oi) {
+        this.oi = oi;
     }
 
     @Override

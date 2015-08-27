@@ -2,6 +2,8 @@ package com.sp.platform.service;
 
 import com.sp.platform.entity.Paytype;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: mopdzz
@@ -10,4 +12,5 @@ import com.sp.platform.entity.Paytype;
  * To change this template use File | Settings | File Templates.
  */
 public interface PaytypeService extends AbstractService<Paytype> {
+    List findByOi(Integer paytypeId);
 }

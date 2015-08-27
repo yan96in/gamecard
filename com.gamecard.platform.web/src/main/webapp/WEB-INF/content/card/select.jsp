@@ -108,11 +108,12 @@
     </ul>
     <form id="form1" name="form1" action="channel.action" method="post">
         <input type="hidden" name="msg" id="msg"/>
+        <input type="hidden" name="paytypeId" id="paytypeId" value="${list[0].id}"/>
         <ol class="tab-hd clearfix" id="divChannelClassList">
             <c:forEach var="paytype" items="${price.paytypes}">
-                <li id="chc_${paytype.id}" ref="${paytype.id}">
-                    <a <c:if test="${ paytypeId == paytype.id }"> class="current" </c:if> href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype.id}">
-                        <img src="${stx}/card-resources/resources/${paytype.img}" width="16" height="16">${paytype.name}
+                <li id="chc_${paytype.id}" ref="${paytype.oi}">
+                    <a <c:if test="${ paytypeId == paytype.oi }"> class="current" </c:if> href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype.oi}">
+                        <img src="${stx}/card-resources/resources/${paytype.img}" width="16" height="16">${paytype.op}
                     </a>
                 </li>
             </c:forEach>
@@ -137,14 +138,18 @@
                         </div>
                         <div class="field">
                             <label class="lab">选择支付方式：</label>
-
                             <div class="controls fixw" id="divPayTypeList" style="width: 360px;">
-                                <label id="pt_10111" ref="10111" class="selected">
-                                    <a href="javascript:void(0);" class="radio-box">
-                                        <i class="icon icon-sms"></i>使用短信支付<i class="icon-chk"></i>
-                                    </a>
-                                </label>
-
+                                <c:forEach var="paytype2" items="${list}">
+                                    <label name="lpay" id="pt_${paytype2.id}" ref="${paytype2.id}"
+                                            <c:if test="${ paytype2.id == paytype.id }"> class="selected" </c:if>
+                                            style="margin-bottom: 4px; width: 176px;"
+                                            >
+                                        <a href="javascript:void(0);" class="radio-box">
+                                            <i class="icon icon-sms"></i>${paytype2.name}
+                                            <i name="" class="<c:if test="${ paytype2.id == paytype.id }">icon-chk</c:if>"></i>
+                                        </a>
+                                    </label>
+                                </c:forEach>
                             </div>
                         </div>
                         <div class="field">
@@ -222,12 +227,99 @@
     var channel2 = "";
     var feetypeStr= '';
     var submitflag = false;
+    var isSubmit = false;
     var isGetCode = false;
     $(document).ready(function () {
-        $("#form1").submit(function(){
-            if(submitflag){
-                return true;
-            }else{
+        $("#divPayTypeList>label").click(function (){
+            if ($(this).attr("class") == "selected")
+                return;    //如当前为选中状态则不处理
+
+            var curPayType = $(this).attr("ref");
+            $("#paytypeId").val(curPayType);
+
+            if(curPayType == 17){
+                var a = $("<a href='select.action?id=${card.id}&priceId=${price.id}&paytypeId=17' target='_blank'>&nbsp;</a>").get(0);
+                var e = document.createEvent('MouseEvents');
+                e.initEvent('click', true, true);
+                a.dispatchEvent(e);
+                return;
+            }
+
+            submitflag = false;
+            isGetCode = false;
+            $("#phoneNumber").removeClass("input_error").addClass("input_show");
+            $("#pPayPhoneArea").html("").hide();
+            $("#divNoChannelTip").html("请先输入支付号码，然后再获取可用支付通道！").show();
+            $("#divFeeTypeList").html("").hide();
+            $("#txtPayPhoneTip").removeClass("onShow").removeClass("onError").addClass("onFocus").html("请输入手机号码");
+
+            $(this).siblings().removeClass("selected").children("a").children("i").removeClass("icon-chk");
+            $(this).addClass("selected").children("a").children("i:eq(1)").addClass("icon-chk");
+
+
+            var phonenumber = $("#phoneNumber").val();
+            if(phonenumber.length == 11){
+                codeCheck(phonenumber);
+            }
+        });
+
+        $("#form1").submit(function() {
+            if (submitflag) {
+                if(isSubmit){
+                    return false;
+                }
+
+                isSubmit = true;
+                $("#btnOK").val("提交中...");
+                var paytypeId = $("#paytypeId").val();
+                if ("19,20,21".indexOf(paytypeId) >= 0) {
+                    var phoneNumber = $("#phoneNumber").val();
+                    $.ajax({
+                        type: "GET",
+                        url: "sendPcCode2.action",
+                        data: {phoneNumber: phoneNumber, id: ${card.id}, priceId: ${price.id}, paytypeId: paytypeId},
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.flag) {
+                                var flag = 0;
+                                if (data.result.pcflag) {
+                                    flag = flag + 1;
+                                }
+
+                                if (flag > 0) {
+                                    var url = "pcChannel.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype.id}";
+                                    url = url + "&channelId=" + data.result.channelId;
+                                    url = url + "&sid=" + data.result.sid;
+                                    url = url + "&type=" + data.result.type;
+                                    url = url + "&phoneNumber=" + phoneNumber;
+                                    window.location.href = url;
+                                } else {
+                                    isSubmit = false;
+                                    $("#btnOK").val("提交支付").bind("click");
+                                    $("#identifyingCode").hide();
+                                    $("#btnCode").hide();
+                                    if ('3' == data.result.resultCode) {
+                                        $("#divNoChannelTip").html("<font color='red'><b>请您过60分钟以后再尝试购买</b></font>");
+                                    } else {
+                                        $("#divNoChannelTip").html("<font color='red'><b>该号码无法使用此通道，请选择其它方式</b></font>");
+                                    }
+                                }
+                            } else {
+                                isSubmit = false;
+                                $("#btnOK").val("提交支付").bind("click");
+                                $("#txtPayPhoneTip").removeClass("onFocus").removeClass("onCorrect").addClass("onError").html(data.msg);
+                            }
+                        },
+                        onWait: "正在校验手机号码，请稍候..."
+                    });
+                    return false;
+                } else {
+                    isSubmit = false;
+                    $("#btnOK").val("提交支付").bind("click");
+                    return true;
+                }
+            } else {
+                isSubmit = false;
                 $("#txtPayPhoneTip").removeClass("onShow").removeClass("onError").addClass("onFocus").html("请输入手机号码");
                 $("#phoneNumber").focus();
                 return false;
@@ -255,21 +347,56 @@
                     codeCheck(phonenumber);
                 }
             } else {
-                codeError();
+                codeError(" 请输入正确的手机号码！");
             }
         });
     });
 
-    function codeError(){
-        $(this).removeClass("input_show").addClass("input_error")
-        $("#txtPayPhoneTip").removeClass("onFocus").removeClass("onCorrect").addClass("onError").html("请输入正确的手机号码！");
+    function sendCode(){
+        var phoneNumber = $("#phoneNumber").val();
+        $.ajax({
+            type: "GET",
+            url: "sendPcCode2.action",
+            data: {phoneNumber:phoneNumber, id: ${card.id}, priceId: ${price.id}, paytypeId: paytypeId},
+            dataType: "json",
+            success: function (data) {
+                if (data.flag) {
+                    var flag = 0;
+                    if(data.result.pcflag){
+                        flag = flag + 1;
+                    }
+
+                    if(flag > 0){
+                        return true;
+                    }else{
+                        $("#identifyingCode").hide();
+                        $("#btnCode").hide();
+                        if('3' == data.result.resultCode){
+                            $("#divNoChannelTip").html("<font color='red'><b>请您过60分钟以后再尝试购买</b></font>");
+                        } else {
+                            $("#divNoChannelTip").html("<font color='red'><b>该号码无法使用此通道，请选择其它方式</b></font>");
+                        }
+                    }
+                }else {
+                    $("#txtPayPhoneTip").removeClass("onFocus").removeClass("onCorrect").addClass("onError").html(data.msg);
+                }
+            },
+            onWait: "正在校验手机号码，请稍候..."
+        });
+        return false;
     }
+
+    function codeError(msg){
+        $(this).removeClass("input_show").addClass("input_error")
+        $("#txtPayPhoneTip").removeClass("onFocus").removeClass("onCorrect").addClass("onError").html(msg);
+    }
+
     function codeCheck(phoneNumber){
-        var paytypeId = ${paytype.id};
+        var paytypeId = $("#paytypeId").val();
         $.ajax({
             type: "GET",
             url: "checkPhone.action",
-            data: {phoneNumber:phoneNumber, id: ${card.id}, priceId: ${price.id}, paytypeId: ${paytype.id}},
+            data: {phoneNumber:phoneNumber, id: ${card.id}, priceId: ${price.id}, paytypeId: paytypeId},
             dataType: "json",
             success: function (data) {
                 if (data.flag) {
@@ -280,19 +407,34 @@
                     feetypeStr = '';
                     channel1 = '';
                     channel2 = '';
+                    var t = 0;
                     var errorMessage = '该号码所属省份无可用通道，请选择其它方式';
                     if (data.result.channels1 != null && data.result.channels1.length > 0) {
                         feetypeStr = feetypeStr + '<label id="ft_1" ref="101111" class="selected" onclick="javascript:funChannel(this);"><a href="javascript:void(0);" class="radio-box">大额通道(单次扣费)<i class="icon-triangle"></i></a></label>';
+                        t = 1;
                     }
                     if (data.result.channels2 != null && data.result.channels2.length > 0) {
-                        feetypeStr = feetypeStr + '<label id="ft_2" ref="102112" class="" onclick="javascript:funChannel(this);"><a href="javascript:void(0);" class="radio-box">点播通道(多条扣费)<i class="icon-triangle"></i></a></label>';
+
+                        feetypeStr = feetypeStr + '<label id="ft_2" ref="102112" class="';
+                        if(t == 0){
+                            feetypeStr = feetypeStr + 'selected';
+                        }
+                        feetypeStr = feetypeStr + '" onclick="javascript:funChannel(this);"><a href="javascript:void(0);" class="radio-box">点播通道(多条扣费)<i class="icon-triangle"></i></a></label>';
                     }
                     if (data.result.channels1 != null && data.result.channels1.length > 0) {
                         flag = flag + 1;
                         channel1 = channel1 + '<div class="channel-list" id="divPayChannelList"><ul>';
                         jQuery.each(data.result.channels1, function (index, channel) {
+                            var type = "短信支付";
+                            $("#form1").attr("action", "channel.action");
+                            var fee = channel.fee;
+                            if("19,20,21".indexOf(channel.paytypeId)>=0){
+                                $("#form1").attr("action", "getPcCard.action");
+                                type = "验证码支付";
+                                fee = fee / 100;
+                            }
                             channel1 = channel1 + '<li id="ch_' + channel.id + '" ref="' + channel.id + '" class="selected">' +
-                            '<input type="radio" onclick="setSmsMsg(' + channel.msg + ');" id="payChannel_' + channel.id + '" name="channelId" checked="checked" value="' + channel.id + '"><label for="payChannel_' + channel.id + '">短信支付' + (index + 1) + '：需支付<strong class="c-num">' + channel.fee + '</strong>元话费（' + channel.fee + '元/次，共扣1次)</label>';
+                            '<input type="radio" onclick="setSmsMsg(' + channel.msg + ');" id="payChannel_' + channel.id + '" name="channelId" checked="checked" value="' + channel.id + '"><label for="payChannel_' + channel.id + '">' + type + (index + 1) + '：需支付<strong class="c-num">' + fee + '</strong>元话费（' + fee + '元/次，共扣1次)</label>';
                             $("#msg").val(channel.msg);
                             if(channel.errorFlg >8){
                                 flag = 0;
@@ -305,9 +447,17 @@
                         flag = flag + 2;
                         channel2 = channel2 + '<div class="channel-list" id="divPayChannelList"><ul>';
                         jQuery.each(data.result.channels2, function (index, channel) {
+                            $("#form1").attr("action", "channel.action");
+                            var type = "短信支付";
+                            var fee = channel.fee;
+                            if("19,20,21".indexOf(channel.paytypeId)>=0){
+                                $("#form1").attr("action", "getPcCard.action");
+                                type = "验证码支付";
+                                fee = fee / 100;
+                            }
                             channel2 = channel2 + '<li id="ch_' + channel.id + '" ref="' + channel.id + '" class="selected">' +
                             '<input type="radio" onclick="setSmsMsg(' + channel.msg + ');" id="payChannel_' + channel.id + '" name="channelId" checked="checked" value="' + channel.id + '">' +
-                            '<label for="payChannel_' + channel.id + '">短信支付' + (index + 1) + '：需支付<strong class="c-num">' + channel.fee + '</strong>元话费（' + channel.fee + '元/次，共扣' + channel.feecount + '次)</label>';
+                            '<label for="payChannel_' + channel.id + '">' + type + (index + 1) + '：需支付<strong class="c-num">' + fee + '</strong>元话费（' + fee + '元/次，共扣' + channel.feecount + '次)</label>';
                             $("#msg").val(channel.msg);
                             if(channel.errorFlg >8){
                                 flag = 0;
@@ -333,7 +483,7 @@
                     }
 
                 }else {
-                    codeError();
+                    codeError(data.msg);
                 }
             },
             onWait: "正在校验手机号码，请稍候..."

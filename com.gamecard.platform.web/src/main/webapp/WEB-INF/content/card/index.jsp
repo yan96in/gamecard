@@ -96,10 +96,10 @@
                                     <label class="radio-box selected" id="chc_${paytype.id}"
                                            style="display: inline-block;">
                                         <input type="radio" id="rchc_${paytype.id}" name="paytypeId"
-                                               value="${paytype.id}"
+                                               value="${paytype.oi}"
                                                <c:if test="${ 'true' == frist }">checked="checked"</c:if>>
                                         <img src="${stx}/card-resources/resources/${paytype.img}" width="16"
-                                             height="16">${paytype.name}
+                                             height="16">${paytype.op}
                                         <c:if test="${ 'true' == frist }"><i class="icon-chk"></i></c:if>
                                         <c:if test="${ 'true' != frist }"><i></i></c:if>
                                     </label>

@@ -161,6 +161,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                         result.getChanels().setType(3);
                         sid = result.getChanels().getSid();
                         ext = "3";
+                        result.getChanels().setChannelId(chanels.getChannelId());
                         return result.getChanels();
                     }
 
@@ -187,6 +188,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                         result.getChanels().setType(4);
                         sid = result.getChanels().getSid();
                         ext = "4";
+                        result.getChanels().setChannelId(chanels.getChannelId());
                         return result.getChanels();
                     }
 
@@ -213,6 +215,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                         result.getChanels().setType(5);
                         sid = result.getChanels().getSid();
                         ext = "5";
+                        result.getChanels().setChannelId(chanels.getChannelId());
                         return result.getChanels();
                     }
                 } else if (paytypeId == 20) {
@@ -244,6 +247,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                         result.getChanels().setType(1);
                         sid = result.getChanels().getSid();
                         ext = "1";
+                        result.getChanels().setChannelId(chanels.getChannelId());
                         return result.getChanels();
                     }
 
@@ -274,6 +278,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                         result.getChanels().setType(2);
                         sid = result.getChanels().getSid();
                         ext = "2";
+                        result.getChanels().setChannelId(chanels.getChannelId());
                         return result.getChanels();
                     }
 
@@ -284,6 +289,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                     if (result != null) {
                         result.getChanels().setType(0);
                         sid = result.getChanels().getSid();
+                        result.getChanels().setChannelId(chanels.getChannelId());
                         return result.getChanels();
                     }
                 } else if (paytypeId == 21) {
@@ -311,6 +317,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                         result.getChanels().setType(6);
                         sid = result.getChanels().getSid();
                         ext = "6";
+                        result.getChanels().setChannelId(chanels.getChannelId());
                         return result.getChanels();
                     }
                 }
@@ -660,7 +667,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                 int i = 2;
                 String body = reader.readLine();
                 while (StringUtils.isNotBlank(body)) {
-                    LogEnum.DEFAULT.info(phone + " 【翼光】联通申请指令返回" + i++ + ":" + body);
+                    LogEnum.DEFAULT.info(phone + " 【空中】联通申请指令返回" + i++ + ":" + body);
                     body = reader.readLine();
                 }
             }

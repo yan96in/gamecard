@@ -117,10 +117,10 @@
         </li>
     </ul>
     <ol class="tab-hd clearfix">
-        <c:forEach var="paytype" items="${price.paytypes}">
-            <li id="chc_${paytype.id}" ref="${paytype.id}">
-                <a <c:if test="${ paychannel.paytypeId == paytype.id }"> class="current" </c:if> href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype.id}">
-                    <img src="${stx}/card-resources/resources/${paytype.img}" width="16" height="16">${paytype.name}
+        <c:forEach var="paytype2" items="${price.paytypes}">
+            <li id="chc_${paytype2.id}" ref="${paytype2.id}">
+                <a <c:if test="${ paytype2.oi == paytype.oi }"> class="current" </c:if> href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype2.oi}">
+                    <img src="${stx}/card-resources/resources/${paytype2.img}" width="16" height="16">${paytype2.op}
                 </a>
             </li>
         </c:forEach>
@@ -173,7 +173,7 @@
                             </c:forEach>
                             <div class="btn-con">
                                 <input class="btn" id="btnOK" type="button" value="支付完成" style="margin-left: 30px;"><a
-                                    href="select.action?id=${paychannel.cardId}&priceId=${paychannel.priceId}&paytypeId=${paychannel.paytypeId}">选择其它支付方式</a>
+                                    href="select.action?id=${paychannel.cardId}&priceId=${paychannel.priceId}&paytypeId=${paytype.oi}">选择其它支付方式</a>
                             </div>
                         </div>
                     </div>
