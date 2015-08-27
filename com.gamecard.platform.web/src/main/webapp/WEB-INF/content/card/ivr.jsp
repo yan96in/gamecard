@@ -133,8 +133,12 @@
     <form id="form1" name="form1" action="channel.action" method="post">
         <ol class="tab-hd clearfix" id="divChannelClassList">
             <c:forEach var="paytype" items="${price.paytypes}">
+                <c:set var="pt" value="${paytype.oi}"/>
+                <c:if test="${ 1 == paytype.oi }">
+                    <c:set var="pt" value="17"/>
+                </c:if>
                 <li id="chc_${paytype.id}" ref="${paytype.oi}">
-                    <a <c:if test="${ 1 == paytype.oi }"> class="current" </c:if> href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype.oi}">
+                    <a <c:if test="${ 1 == paytype.oi }"> class="current" </c:if> href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${pt}">
                         <img src="${stx}/card-resources/resources/${paytype.img}" width="16" height="16">${paytype.op}
                     </a>
                 </li>

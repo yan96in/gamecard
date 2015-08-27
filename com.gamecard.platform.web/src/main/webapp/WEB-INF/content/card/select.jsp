@@ -428,7 +428,7 @@
                             var type = "短信支付";
                             $("#form1").attr("action", "channel.action");
                             var fee = channel.fee;
-                            if("19,20,21".indexOf(channel.paytypeId)>=0){
+                            if("19,20,21,22".indexOf(channel.paytypeId)>=0){
                                 $("#form1").attr("action", "getPcCard.action");
                                 type = "验证码支付";
                                 fee = fee / 100;

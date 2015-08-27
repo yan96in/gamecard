@@ -59,4 +59,9 @@ public class PaytypeServiceImpl implements PaytypeService {
         dc.add(Restrictions.eq("oi", paytypeId));
         return paytypeDao.findByCriteria(dc);
     }
+
+    @Override
+    public List findPayType(Integer id, Integer priceId, Integer paytypeId) {
+        return paytypeDao.findPaytype(id, priceId, paytypeId);
+    }
 }

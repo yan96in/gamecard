@@ -132,19 +132,10 @@ public class CardAction extends ActionSupport {
             return "ivr";
         }
 
-        list = paytypeService.findByOi(paytypeId);
+        list = paytypeService.findPayType(id, priceId, paytypeId);
         if(CollectionUtils.isNotEmpty(list)){
             paytype = (Paytype) list.get(0);
         }
-//
-//        paytype = paytypeService.get(paytypeId);
-//
-//        if (StringUtils.indexOf(propertyUtils.getProperty("ivr.paytype"), paytypeId.toString()) >= 0) {
-//            list = ivrChannelService.find(id, priceId, paytypeId);
-//            return "ivr";
-//        } else if (StringUtils.indexOf(propertyUtils.getProperty("pc.paytype"), paytypeId.toString()) >= 0) {
-//            return "pc";
-//        }
 
         return "select";
     }
@@ -387,7 +378,7 @@ public class CardAction extends ActionSupport {
             if (channelVo.isPcflag()) {
                 channelVo.setPcflag(checkLimit(phoneNumber, phone.getProvince(), paytypeId));
             }
-            result = new JsonVo(true, channelVo, "");
+            result = new JsonVo(true, channelVo, "通道暂停");
         }
         Struts2Utils.renderJson(result);
     }

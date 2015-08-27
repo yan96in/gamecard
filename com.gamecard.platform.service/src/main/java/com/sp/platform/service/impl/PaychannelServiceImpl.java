@@ -282,16 +282,16 @@ public class PaychannelServiceImpl implements PaychannelService {
                         return result.getChanels();
                     }
 
-                    //最后走空中
-                    fee = paychannel.getFee();
-                    result = getKzResult(phone, fee, httpClient, chanels);
-
-                    if (result != null) {
-                        result.getChanels().setType(0);
-                        sid = result.getChanels().getSid();
-                        result.getChanels().setChannelId(chanels.getChannelId());
-                        return result.getChanels();
-                    }
+//                    //最后走空中
+//                    fee = paychannel.getFee();
+//                    result = getKzResult(phone, fee, httpClient, chanels);
+//
+//                    if (result != null) {
+//                        result.getChanels().setType(0);
+//                        sid = result.getChanels().getSid();
+//                        result.getChanels().setChannelId(chanels.getChannelId());
+//                        return result.getChanels();
+//                    }
                 } else if (paytypeId == 21) {
                     LtPcResult result = null;
                     boolean flag = true;

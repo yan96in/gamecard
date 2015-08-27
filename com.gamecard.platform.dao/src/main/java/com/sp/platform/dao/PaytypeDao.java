@@ -29,4 +29,14 @@ public class PaytypeDao extends HibernateDaoUtil<Paytype, Integer> {
                         "b.cardId=" + cardId + " and b.priceId = " +
                         priceId + " order by a.sort").addEntity(Paytype.class).list();
     }
+
+    public List<Paytype> findPaytype(int cardId, int priceId, int oi) {
+        return getSessionFactory().getCurrentSession().createSQLQuery
+                ("select a.* from gc_paytype a, gc_card_price b, gc_price_paytype c " +
+                        "where a.id=c.paytypeid and b.id=c.priceid and " +
+                        "b.cardId=" + cardId +
+                        " and b.priceId = " + priceId +
+                        " and a.oi = " + oi +
+                        " order by a.sort").addEntity(Paytype.class).list();
+    }
 }

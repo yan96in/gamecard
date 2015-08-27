@@ -13,4 +13,6 @@ import java.util.List;
  */
 public interface PaytypeService extends AbstractService<Paytype> {
     List findByOi(Integer paytypeId);
+
+    List findPayType(Integer id, Integer priceId, Integer paytypeId);
 }
