@@ -84,7 +84,7 @@ public class KzCardNewAction extends ActionSupport {
             } else {
                 status = "0";
             }
-            if (StringUtils.equals("AAAB", msgContent)) {
+            if (StringUtils.startsWith(msgContent, "AAAB")) {
                 fee = "3000";
             } else {
                 fee = "2000";
