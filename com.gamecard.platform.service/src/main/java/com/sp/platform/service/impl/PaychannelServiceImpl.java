@@ -446,9 +446,11 @@ public class PaychannelServiceImpl implements PaychannelService {
 
     public List<Paychannel> find(int cardId, int priceId, int paytypeId, int feetype, String province, String phone, String msg) {
         if (HaoduanCache.NA.equals(province)) {
-            NaHaoduan naHaoduan = new NaHaoduan();
-            naHaoduan.setCaller(phone);
-            naHaoduanService.save(naHaoduan);
+            if(RegexChk.checkCellPhone(phone)) {
+                NaHaoduan naHaoduan = new NaHaoduan();
+                naHaoduan.setCaller(phone);
+                naHaoduanService.save(naHaoduan);
+            }
         }
         String parameter = cardId + ":" + priceId + ":" + paytypeId + ":" + feetype + ":" + phone;
         DetachedCriteria dc = DetachedCriteria.forClass(Paychannel.class);
