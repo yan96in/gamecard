@@ -65,7 +65,7 @@ public class IvrAction extends ActionSupport {
 
         StringBuilder url = new StringBuilder();
         url.append(Struts2Utils.getRequest().getContextPath());
-        url.append("/ivr/userCardList.action?pageView.btime=");
+        url.append("/game-ivr/userCardList.action?pageView.btime=");
         url.append(pageView.getBtime());
         url.append("&pageView.etime=");
         url.append(pageView.getEtime());
