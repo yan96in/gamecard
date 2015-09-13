@@ -299,9 +299,9 @@
                                     $("#identifyingCode").hide();
                                     $("#btnCode").hide();
                                     if ('3' == data.result.resultCode) {
-                                        $("#divNoChannelTip").html("<font color='red'><b>请您过60分钟以后再尝试购买</b></font>");
+                                        $("#txtPayPhoneTip").html("<font color='red'><b>请您过60分钟以后再尝试购买</b></font>");
                                     } else {
-                                        $("#divNoChannelTip").html("<font color='red'><b>该号码无法使用此通道，请选择其它方式</b></font>");
+                                        $("#txtPayPhoneTip").html("<font color='red'><b>该号码无法使用此通道，请选择其它方式</b></font>");
                                     }
                                 }
                             } else {

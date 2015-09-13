@@ -416,7 +416,7 @@ public class CardAction extends ActionSupport {
             return;
         }
         if(!pcCardLogService.isValidUser(phoneNumber)){
-            result = new JsonVo(false, "申请过快");
+            result = new JsonVo(false, "请您过60分钟以后再尝试购买");
             Struts2Utils.renderJson(result);
             return;
         }
@@ -448,7 +448,7 @@ public class CardAction extends ActionSupport {
             if (!limitflg) {
                 channelVo = new ChannelVo();
                 channelVo.setPcflag(false);
-                result = new JsonVo(true, channelVo, "");
+                result = new JsonVo(true, channelVo, "通道关闭");
                 Struts2Utils.renderJson(result);
                 return;
             }
