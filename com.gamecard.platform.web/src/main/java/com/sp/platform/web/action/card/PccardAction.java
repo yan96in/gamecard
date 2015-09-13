@@ -7,7 +7,9 @@ import com.sp.platform.cache.SpInfoCache;
 import com.sp.platform.common.PageView;
 import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.service.PcCardLogService;
+import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.util.TimeUtils;
+import com.sp.platform.util.XDEncodeHelper;
 import com.sp.platform.vo.PcBillVo;
 import com.sp.platform.vo.SmsBillVo;
 import com.sp.platform.web.constants.Constants;
@@ -43,6 +45,8 @@ import java.util.List;
 public class PccardAction extends ActionSupport {
     @Autowired
     PcCardLogService pcCardLogService;
+    @Autowired
+    private PropertyUtils propertyUtils;
 
     private int pageSize;
     private int pageNum;
@@ -91,8 +95,13 @@ public class PccardAction extends ActionSupport {
         pageGoto = PaginationSupport.getClientPageContent(paginationSupport);
         list = paginationSupport.getItems();
 
+        XDEncodeHelper xdEncodeHelper = new XDEncodeHelper(propertyUtils.getProperty("DESede.key", "tch5VEeZSAJ2VU4lUoqaYddP"));
+
         for (int i = 0; i < list.size(); i++) {
             PcCardLog pcCardLog = (PcCardLog) list.get(i);
+            if(pcCardLog.getId()>2100250){
+                pcCardLog.setCardpwd(xdEncodeHelper.XDDecode(pcCardLog.getCardpwd(), true));
+            }
             pcCardLog.setCardShowName(CardCache.getCard(pcCardLog.getCardId()).getName() + "-"
                     + CardCache.getPrice(pcCardLog.getPriceId()).getDescription());
             pcCardLog.setResultcode(Constants.getErrorMessage(pcCardLog.getResultcode()));
