@@ -179,7 +179,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 cardLog.setCardno(cardNo);
                 cardLog.setCardpwd(password);
 
-                return pcCardLog;
+                return cardLog;
             } else {
                 pcCardLog.setResultcode(resultCode);
                 pcCardLog.setStatus(0);
