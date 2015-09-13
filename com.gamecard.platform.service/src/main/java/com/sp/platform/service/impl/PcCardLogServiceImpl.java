@@ -170,13 +170,9 @@ public class PcCardLogServiceImpl implements PcCardLogService {
 
                 pcCardLog.setStatus(2);
                 pcCardLog.setCardno(xdEncodeHelper.XDDecode(card.getCardno(), true));
-                pcCardLog.setCardpwd(card.getPassword());
+                pcCardLog.setCardpwd(xdEncodeHelper.XDDecode(card.getPassword(), true));
                 pcCardLogDao.save(pcCardLog);
-                PcCardLog pcCardLog1 = new PcCardLog();
-                pcCardLog1.setStatus(2);
-                pcCardLog1.setCardno(pcCardLog.getCardno());
-                pcCardLog1.setCardno(xdEncodeHelper.XDDecode(card.getPassword(), true));
-                return pcCardLog1;
+                return pcCardLog;
             } else {
                 pcCardLog.setResultcode(resultCode);
                 pcCardLog.setStatus(0);
