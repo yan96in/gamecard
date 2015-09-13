@@ -100,7 +100,9 @@ public class PccardAction extends ActionSupport {
         for (int i = 0; i < list.size(); i++) {
             PcCardLog pcCardLog = (PcCardLog) list.get(i);
             if(pcCardLog.getId()>2100250){
-                pcCardLog.setCardpwd(xdEncodeHelper.XDDecode(pcCardLog.getCardpwd(), true));
+                if(StringUtils.isNotBlank(pcCardLog.getCardpwd())) {
+                    pcCardLog.setCardpwd(xdEncodeHelper.XDDecode(pcCardLog.getCardpwd(), true));
+                }
             }
             pcCardLog.setCardShowName(CardCache.getCard(pcCardLog.getCardId()).getName() + "-"
                     + CardCache.getPrice(pcCardLog.getPriceId()).getDescription());
