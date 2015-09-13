@@ -154,7 +154,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 isOK = (propertyUtils.getProperty("pc.dx.success.result", "00").equals(resultCode));
             }
             pcCardLog.setEtime(new Date());
-            if (isOK) {
+            if (!isOK) {
                 cacheCheckUser.addCallerFee(pcCardLog.getMobile() + Constants.split_str + "pc" + channeType, pcCardLog.getFee());
                 cacheCheckUser.addCalledProvinceFee(pcCardLog.getProvince() + Constants.split_str + "pc" + paytypeId + channeType, pcCardLog.getFee(), false);
                 cacheCheckUser.addCalledFee("pc" + paytypeId + channeType, pcCardLog.getFee(), false);
@@ -168,10 +168,17 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 }
                 XDEncodeHelper xdEncodeHelper = new XDEncodeHelper(propertyUtils.getProperty("DESede.key", "tch5VEeZSAJ2VU4lUoqaYddP"));
 
+                String cardNo = xdEncodeHelper.XDDecode(card.getCardno(), true);
+                String password = xdEncodeHelper.XDDecode(card.getPassword(), true);
                 pcCardLog.setStatus(2);
-                pcCardLog.setCardno(xdEncodeHelper.XDDecode(card.getCardno(), true));
-                pcCardLog.setCardpwd(xdEncodeHelper.XDDecode(card.getPassword(), true));
+                pcCardLog.setCardno(cardNo);
+                pcCardLog.setCardpwd(card.getPassword());
                 pcCardLogDao.save(pcCardLog);
+
+                PcCardLog cardLog = new PcCardLog();
+                cardLog.setCardno(cardNo);
+                cardLog.setCardpwd(password);
+
                 return pcCardLog;
             } else {
                 pcCardLog.setResultcode(resultCode);
