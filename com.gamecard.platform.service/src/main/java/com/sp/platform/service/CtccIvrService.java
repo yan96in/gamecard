@@ -9,6 +9,7 @@ import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.util.XDEncodeHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +31,16 @@ public class CtccIvrService {
     private IvrCardLogService ivrCardLogService;
     @Autowired
     private IvrBillLogService ivrBillLogService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public String checkUser(String caller, String called, String body) {
+        String sql = "select sum(fee) from ivr_bill_log where caller='" + caller + "'";
+        Integer fee = jdbcTemplate.queryForObject(sql, Integer.class);
+        if(fee != null && fee > 20){
+            return "1";
+        }
+
         if (BlackCache.isBlack(caller)) {
             return "1";
         }
