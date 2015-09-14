@@ -45,7 +45,7 @@ public class CtccIvrService {
         //日上限（20）
         String sql = "select sum(fee) from ivr_bill_log where caller='" + caller + "' and ctime>left(now(),10)";
         Integer fee = jdbcTemplate.queryForObject(sql, Integer.class);
-        if (fee != null && fee > propertyUtils.getInteger("ivr.max.day.fee", 20)) {
+        if (fee != null && fee > propertyUtils.getInteger("ivr.max.day.fee", 40)) {
             LogEnum.DEFAULT.info("超用户日上限:" + caller + "-" + called + body + ", 日:" + fee);
             return "1";
         }
@@ -53,7 +53,7 @@ public class CtccIvrService {
         //月上限（50）
         sql = "select sum(fee) from ivr_bill_log where caller='" + caller + "' and ctime>left(now(),7)";
         fee = jdbcTemplate.queryForObject(sql, Integer.class);
-        if (fee != null && fee > propertyUtils.getInteger("ivr.max.month.fee", 20)) {
+        if (fee != null && fee > propertyUtils.getInteger("ivr.max.month.fee", 120)) {
             LogEnum.DEFAULT.info("超用户月上限:" + caller + "-" + called + "-" + body + ", 月:" + fee);
             return "1";
         }
@@ -65,6 +65,12 @@ public class CtccIvrService {
             return "1";
         }
 
+        sql = "select sum(fee) from ivr_bill_log where province='" + province + "' and ctime>left(now(),10)";
+        fee = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (fee != null && fee > propertyUtils.getInteger("ivr.province.max.day.fee", 5000)) {
+            LogEnum.DEFAULT.info("超省份日上限:" + caller + "-" + called + body + ", 日:" + fee);
+            return "1";
+        }
 
         return "0";
     }
