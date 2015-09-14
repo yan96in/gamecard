@@ -8,6 +8,7 @@ import com.sp.platform.entity.IvrCardLog;
 import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.util.XDEncodeHelper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -35,15 +36,35 @@ public class CtccIvrService {
     private JdbcTemplate jdbcTemplate;
 
     public String checkUser(String caller, String called, String body) {
-        String sql = "select sum(fee) from ivr_bill_log where caller='" + caller + "'";
-        Integer fee = jdbcTemplate.queryForObject(sql, Integer.class);
-        if(fee != null && fee > 20){
+        //黑名单
+        if (BlackCache.isBlack(caller)) {
+            LogEnum.DEFAULT.info("黑名单用户:" + caller + "-" + called + body);
             return "1";
         }
 
-        if (BlackCache.isBlack(caller)) {
+        //日上限（20）
+        String sql = "select sum(fee) from ivr_bill_log where caller='" + caller + "' and ctime>left(now(),10)";
+        Integer fee = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (fee != null && fee > propertyUtils.getInteger("ivr.max.day.fee", 20)) {
+            LogEnum.DEFAULT.info("超用户日上限:" + caller + "-" + called + body + ", 日:" + fee);
             return "1";
         }
+
+        //月上限（50）
+        sql = "select sum(fee) from ivr_bill_log where caller='" + caller + "' and ctime>left(now(),7)";
+        fee = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (fee != null && fee > propertyUtils.getInteger("ivr.max.month.fee", 20)) {
+            LogEnum.DEFAULT.info("超用户月上限:" + caller + "-" + called + "-" + body + ", 月:" + fee);
+            return "1";
+        }
+
+        //省份屏蔽
+        String province = HaoduanCache.getProvince(caller);
+        if (StringUtils.indexOf(propertyUtils.getProperty("ivr.black.province.list"), province) >= 0) {
+            LogEnum.DEFAULT.info("省份屏蔽:" + caller + "-" + called + "-" + body);
+            return "1";
+        }
+
 
         return "0";
     }
