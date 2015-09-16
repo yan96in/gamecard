@@ -237,8 +237,8 @@
             var curPayType = $(this).attr("ref");
             $("#paytypeId").val(curPayType);
 
-            if(curPayType == 17){
-                var a = $("<a href='select.action?id=${card.id}&priceId=${price.id}&paytypeId=17' target='_blank'>&nbsp;</a>").get(0);
+            if(curPayType == 17 || curPayType == 24) {
+                var a = $("<a href='select.action?id=${card.id}&priceId=${price.id}&paytypeId=" + curPayType + "' target='_blank'>&nbsp;</a>").get(0);
                 var e = document.createEvent('MouseEvents');
                 e.initEvent('click', true, true);
                 a.dispatchEvent(e);

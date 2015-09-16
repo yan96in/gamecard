@@ -137,8 +137,11 @@
                 <c:if test="${ 1 == paytype.oi }">
                     <c:set var="pt" value="17"/>
                 </c:if>
+                <c:if test="${ 3 == paytype.oi }">
+                    <c:set var="pt" value="24"/>
+                </c:if>
                 <li id="chc_${paytype.id}" ref="${paytype.oi}">
-                    <a <c:if test="${ 1 == paytype.oi }"> class="current" </c:if> href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${pt}">
+                    <a <c:if test="${ paytypeId == pt }"> class="current" </c:if> href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${pt}">
                         <img src="${stx}/card-resources/resources/${paytype.img}" width="16" height="16">${paytype.op}
                     </a>
                 </li>

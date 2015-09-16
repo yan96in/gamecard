@@ -126,14 +126,14 @@ public class CardAction extends ActionSupport {
         if (price == null) {
             return "403";
         }
-        if (StringUtils.equals(propertyUtils.getProperty("ivr.paytype"), paytypeId.toString())) {
+        if (StringUtils.indexOf(propertyUtils.getProperty("ivr.paytype"), paytypeId+",") >= 0) {
             paytype = paytypeService.get(paytypeId);
             list = ivrChannelService.find(id, priceId, paytypeId);
             return "ivr";
         }
 
         list = paytypeService.findPayType(id, priceId, paytypeId);
-        if(CollectionUtils.isNotEmpty(list)){
+        if (CollectionUtils.isNotEmpty(list)) {
             paytype = (Paytype) list.get(0);
         }
 
@@ -412,10 +412,10 @@ public class CardAction extends ActionSupport {
         if (uc >= propertyUtils.getInteger("pc.caller.day.count", 20)) {
             result = new JsonVo(false, "无法使用该业务");
             Struts2Utils.renderJson(result);
-            LogEnum.DEFAULT.info(phoneNumber+ "  " + ip + " 超过日使用次数限制 : " + uc);
+            LogEnum.DEFAULT.info(phoneNumber + "  " + ip + " 超过日使用次数限制 : " + uc);
             return;
         }
-        if(!pcCardLogService.isValidUser(phoneNumber)){
+        if (!pcCardLogService.isValidUser(phoneNumber)) {
             result = new JsonVo(false, "请您过60分钟以后再尝试购买");
             Struts2Utils.renderJson(result);
             return;
