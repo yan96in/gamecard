@@ -135,6 +135,9 @@ public class PaychannelServiceImpl implements PaychannelService {
                 Paychannel paychannel = paychannels.get(0);
                 chanels.setChannelId(paychannel.getId());
                 fee = paychannel.getFee();
+                if(PinyinUtil.cn2Spell(province).equals("hunan")){
+                    fee = Integer.parseInt(paychannel.getSpnum());
+                }
                 HttpClient httpClient = new DefaultHttpClient();
                 if (paytypeId == 19) {
                     LtPcResult result = null;
@@ -465,6 +468,9 @@ public class PaychannelServiceImpl implements PaychannelService {
             Iterator<Paychannel> iterator = list.iterator();
             while (iterator.hasNext()) {
                 Paychannel paychannel = iterator.next();
+                if(paychannel.getPaytypeId() == 19 && PinyinUtil.cn2Spell(province).equals("hunan")){
+                    paychannel.setFee(Integer.parseInt(paychannel.getSpnum()));
+                }
 
                 // 空中地网北京
                 if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum.bj"), paychannel.getSpnum())) {
