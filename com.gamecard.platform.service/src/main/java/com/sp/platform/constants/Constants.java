@@ -40,6 +40,7 @@ public class Constants {
         feeConfig.put(100, "006077839001"); //1元
         feeConfig.put(200, "006077138002"); //2元
         feeConfig.put(1000, "006077839010"); //10元
+        feeConfig.put(1200, "006077839012"); //12元
         feeConfig.put(1500, "006077839015"); //15元
         feeConfig.put(2000, "006077138020"); //20元
         feeConfig.put(3000, "006077839027"); //30元
