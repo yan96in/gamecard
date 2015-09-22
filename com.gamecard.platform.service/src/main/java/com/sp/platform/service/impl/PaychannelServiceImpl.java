@@ -135,11 +135,11 @@ public class PaychannelServiceImpl implements PaychannelService {
                 Paychannel paychannel = paychannels.get(0);
                 chanels.setChannelId(paychannel.getId());
                 fee = paychannel.getFee();
-                if(PinyinUtil.cn2Spell(province).equals("hunan")){
-                    fee = Integer.parseInt(paychannel.getSpnum());
-                }
                 HttpClient httpClient = new DefaultHttpClient();
                 if (paytypeId == 19) {
+                    if(PinyinUtil.cn2Spell(province).equals("hunan")){
+                        fee = Integer.parseInt(paychannel.getSpnum());
+                    }
                     LtPcResult result = null;
                     boolean flag = true;
                     if (StringUtils.indexOf(propertyUtils.getProperty("yd.open.provinces"), province) >= 0) {
