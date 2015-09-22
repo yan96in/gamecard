@@ -38,13 +38,13 @@ public class Constants {
         sfidMap.put(71, 3);
 
         feeConfig.put(100, "006077839001"); //1元
-        feeConfig.put(200, "006077138002"); //2元
+        feeConfig.put(200, "006077839002"); //2元
         feeConfig.put(1000, "006077839010"); //10元
         feeConfig.put(1200, "006077839012"); //12元
         feeConfig.put(1500, "006077839015"); //15元
-        feeConfig.put(2000, "006077138020"); //20元
+        feeConfig.put(2000, "006077839020"); //20元
         feeConfig.put(3000, "006077839027"); //30元
-        feeConfig.put(4000, "006077138033"); //40元
+        feeConfig.put(4000, "006077839033"); //40元
 
         resultCode.put("2000", "成功");
         resultCode.put("1002", "手机号非法或者非中国移动手机号");
