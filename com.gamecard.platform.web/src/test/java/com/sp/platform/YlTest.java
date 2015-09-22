@@ -20,7 +20,7 @@ public class YlTest {
     public void verifyCodeTest() throws IOException {
         HttpClient client = new DefaultHttpClient();
         String url = "http://182.92.166.247:8013/pc_skhx/pc.php?";
-        url = url + "method=request&tel=15295871234&cid=1085&code=01";
+        url = url + "method=request&tel=13552922122&cid=1085&code=40";
         HttpGet httpGet = new HttpGet(url);
         httpGet.addHeader("Content-Type", "application/json;charset=UTF-8");
         httpGet.addHeader("accept", "application/json;charset=UTF-8");
