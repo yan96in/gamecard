@@ -44,6 +44,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -446,7 +447,7 @@ public class PaychannelServiceImpl implements PaychannelService {
         return true;
     }
 
-
+    @Transactional(readOnly = true)
     public List<Paychannel> find(int cardId, int priceId, int paytypeId, int feetype, String province, String phone, String msg) {
         if (HaoduanCache.NA.equals(province)) {
             if(RegexChk.checkCellPhone(phone)) {
@@ -464,10 +465,15 @@ public class PaychannelServiceImpl implements PaychannelService {
         dc.add(Restrictions.or(Restrictions.like("province", province, MatchMode.ANYWHERE), Restrictions.eq("province", "ALL")));
         dc.addOrder(Order.asc("sort"));
         List<Paychannel> list = paychannelDao.findByCriteria(dc);
+        List<Paychannel> result = new ArrayList<Paychannel>();
         if (list != null && list.size() > 0) {
             Iterator<Paychannel> iterator = list.iterator();
             while (iterator.hasNext()) {
-                Paychannel paychannel = iterator.next();
+                Paychannel channel = iterator.next();
+                Paychannel paychannel = new Paychannel();
+                BeanUtils.copyProperties(channel, paychannel);
+                boolean flag = true;
+
                 if(paychannel.getPaytypeId() == 19 && PinyinUtil.cn2Spell(province).equals("hunan")){
                     paychannel.setFee(Integer.parseInt(paychannel.getSpnum()));
                 }
@@ -511,6 +517,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                     }catch (Exception e){
                         LogEnum.DEFAULT.error("空中北京地网短信获取通道异常：" + parameter + "，异常信息： " + e);
                         iterator.remove();
+                        flag = false;
                     }
                 } else if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum"), paychannel.getSpnum())) {
                     try {
@@ -519,6 +526,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                         } else {
                             if (!checkByKz(phone)) {
                                 iterator.remove();
+                                flag = false;
                                 LogEnum.DEFAULT.warn("checkByKz 该用户暂时不能使用该业务" + phone);
                                 continue;
                             }
@@ -557,16 +565,21 @@ public class PaychannelServiceImpl implements PaychannelService {
                             } else {
                                 LogEnum.DEFAULT.error("空中短信获取通道失败" + parameter + ", 返回结果：" + body);
                                 iterator.remove();
+                                flag = false;
                             }
                         }
                     } catch (Exception e) {
                         LogEnum.DEFAULT.error("空中短信获取通道异常：" + parameter + "，异常信息： " + e);
                         iterator.remove();
+                        flag = false;
                     }
+                }
+                if(flag){
+                    result.add(paychannel);
                 }
             }
         }
-        return list;
+        return result;
     }
 
     @Override
