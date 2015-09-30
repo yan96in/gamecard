@@ -138,9 +138,6 @@ public class PaychannelServiceImpl implements PaychannelService {
                 fee = paychannel.getFee();
                 HttpClient httpClient = new DefaultHttpClient();
                 if (paytypeId == 19) {
-                    if(PinyinUtil.cn2Spell(province).equals("hunan")){
-                        fee = Integer.parseInt(paychannel.getSpnum());
-                    }
                     LtPcResult result = null;
                     boolean flag = true;
                     if (StringUtils.indexOf(propertyUtils.getProperty("yd.open.provinces"), province) >= 0) {
@@ -171,6 +168,9 @@ public class PaychannelServiceImpl implements PaychannelService {
 
                     // 走翼龙移动
                     if (StringUtils.indexOf(propertyUtils.getProperty("yd.yl.provinces"), province) >= 0) {
+                    	if(PinyinUtil.cn2Spell(province).equals("hunan")){
+                        	fee = Integer.parseInt(paychannel.getSpnum());
+                    	}
                         flag = callerLimit(phone,
                                 propertyUtils.getInteger("pc.yl.caller.day.limit." + paytypeId, 30),
                                 propertyUtils.getInteger("pc.yl.caller.week.limit." + paytypeId, 40),
@@ -474,9 +474,9 @@ public class PaychannelServiceImpl implements PaychannelService {
                 BeanUtils.copyProperties(channel, paychannel);
                 boolean flag = true;
 
-                if(paychannel.getPaytypeId() == 19 && PinyinUtil.cn2Spell(province).equals("hunan")){
-                    paychannel.setFee(Integer.parseInt(paychannel.getSpnum()));
-                }
+//                if(paychannel.getPaytypeId() == 19 && PinyinUtil.cn2Spell(province).equals("hunan")){
+//                    paychannel.setFee(Integer.parseInt(paychannel.getSpnum()));
+//                }
 
                 // 空中地网北京
                 if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum.bj"), paychannel.getSpnum())) {
