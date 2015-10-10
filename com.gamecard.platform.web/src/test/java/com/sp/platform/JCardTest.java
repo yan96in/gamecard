@@ -3,6 +3,7 @@ package com.sp.platform;
 import com.sp.platform.util.Encrypt;
 import com.yangl.common.Struts2Utils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -37,6 +38,17 @@ public class JCardTest {
         System.out.println("检查帐号: " + url);
         String body = IOUtils.toString(response.getEntity().getContent(), "GBK");
         System.out.println(response.getStatusLine().getStatusCode() + " : " + body);
+
+        body = "ret_code=0&ret_msg=非法来源IP:113.123.187.217&agent_id=2000106&user_account=&sign=368551047dda2ce8e6fea01872aedcdf";
+        String[] t = body.split("&");
+        if (t != null && t.length >= 1) {
+            t = t[0].split("=");
+            if (StringUtils.equals("0", t[1])) {
+                System.out.println(true);
+            } else {
+                System.out.println(false);
+            }
+        }
     }
 
     @Test

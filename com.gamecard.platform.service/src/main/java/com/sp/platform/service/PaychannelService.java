@@ -15,7 +15,7 @@ import java.util.List;
 public interface PaychannelService extends AbstractService<Paychannel> {
     public ChannelVo findChannels(int cardId, int priceId, int paytypeId, String province, String phone);
     public ChannelVo findPcChannels(int cardId, int priceId, int paytypeId, String province, String phone);
-    public ChannelVo sendPcCode(int cardId, int priceId, int paytypeId, String province, String phone);
+    public ChannelVo sendPcCode(int cardId, int priceId, int paytypeId, String province, String phone, String account);
     public List<Paychannel> find(int cardId, int priceId, int paytypeId, int feetype, String province, String phone, String msg);
 
     Paychannel getPayChannel(int channelid, int cardId, int priceId);

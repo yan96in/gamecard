@@ -123,7 +123,7 @@ public class PaychannelServiceImpl implements PaychannelService {
         return chanels;
     }
 
-    public ChannelVo sendPcCode(int cardId, int priceId, int paytypeId, String province, String phone) {
+    public ChannelVo sendPcCode(int cardId, int priceId, int paytypeId, String province, String phone, String account) {
         ChannelVo chanels = new ChannelVo();
         int fee = 0;
         String resultCode = null;
@@ -340,6 +340,9 @@ public class PaychannelServiceImpl implements PaychannelService {
                 pcCardLog.setResultmsg(resultMessage);
                 pcCardLog.setSid(sid);
                 pcCardLog.setStatus(1);
+                if (StringUtils.isNotBlank(account)) {
+                    pcCardLog.setCardno(account);
+                }
                 pcCardLog.setExt(ext);
                 pcCardLog.setIp(IpAddressUtil.getRealIp());
                 pcCardLog.setBtime(new Date());
@@ -450,7 +453,7 @@ public class PaychannelServiceImpl implements PaychannelService {
     @Transactional(readOnly = true)
     public List<Paychannel> find(int cardId, int priceId, int paytypeId, int feetype, String province, String phone, String msg) {
         if (HaoduanCache.NA.equals(province)) {
-            if(RegexChk.checkCellPhone(phone)) {
+            if (RegexChk.checkCellPhone(phone)) {
                 NaHaoduan naHaoduan = new NaHaoduan();
                 naHaoduan.setCaller(phone);
                 naHaoduanService.save(naHaoduan);
@@ -479,8 +482,8 @@ public class PaychannelServiceImpl implements PaychannelService {
 //                }
 
                 // 空中地网北京
-                if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum.bj"), paychannel.getSpnum())) {
-                    try{
+                if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum.bj"), paychannel.getSpnum() + ",")) {
+                    try {
                         if (StringUtils.isNotBlank(msg)) {
                             paychannel.setMsg(msg);
                         } else {
@@ -514,12 +517,12 @@ public class PaychannelServiceImpl implements PaychannelService {
                                 paychannel.setErrorMessage("该号码所属省份无可用通道，请选择其它方式。");
                             }
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         LogEnum.DEFAULT.error("空中北京地网短信获取通道异常：" + parameter + "，异常信息： " + e);
                         iterator.remove();
                         flag = false;
                     }
-                } else if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum"), paychannel.getSpnum())) {
+                } else if (StringUtils.contains(propertyUtils.getProperty("kz.sms.spnum"), paychannel.getSpnum() + ",")) {
                     try {
                         if (StringUtils.isNotBlank(msg)) {
                             paychannel.setMsg(msg);
@@ -574,7 +577,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                         flag = false;
                     }
                 }
-                if(flag){
+                if (flag) {
                     result.add(paychannel);
                 }
             }

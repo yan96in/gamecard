@@ -58,7 +58,7 @@ public class IdUtils {
      * 生成最后4 位随机数
      * @return
      */
-    private static String randNumber(){
+    public static String randNumber(){
         Random random = new Random();
         StringBuffer sb = new StringBuffer("");
         sb.append(random.nextInt(10));

@@ -1,13 +1,12 @@
-package com.sp.platform.web.action.card;
+package com.sp.platform.web.action.pay;
 
 import com.sp.platform.cache.BlackCache;
 import com.sp.platform.cache.HaoduanCache;
+import com.sp.platform.service.pay.PayService;
+import com.sp.platform.service.pay.PayServiceFactory;
 import com.sp.platform.util.LogEnum;
-import com.sp.platform.vo.ChannelVo;
 import com.sp.platform.vo.JsonVo;
-import com.sp.platform.vo.PhoneVo;
 import com.sp.platform.web.action.ChargeBaseAction;
-import com.sp.platform.web.cache.CheckUserCache;
 import com.yangl.common.IpAddressUtil;
 import com.yangl.common.Struts2Utils;
 import org.apache.commons.lang.StringUtils;
@@ -15,16 +14,13 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mopdzz
- * Date: 14-8-18
- * Time: 下午9:20
- * To change this template use File | Settings | File Templates.
+ * Created by yanglei on 15/9/26.
  */
-@Namespace("/card")
+@Namespace("/pay")
 @Scope("prototype")
 @Results({@Result(name = "main", location = "main.jsp"),
         @Result(name = "index", location = "index.jsp"),
@@ -35,13 +31,18 @@ import org.springframework.context.annotation.Scope;
         @Result(name = "channel", location = "channel.jsp"),
         @Result(name = "pcChannel", location = "pcChannel.jsp"),
         @Result(name = "channel-lthj", location = "channel-lthj.jsp")})
-public class CardAction extends ChargeBaseAction {
+public class PayAction extends ChargeBaseAction {
+    private int chargeResult;
 
-    @Action("main")
-    public String main() {
-        list = cardService.getAll();
-        return "main";
+    public int getChargeResult() {
+        return chargeResult;
     }
+
+    public void setChargeResult(int chargeResult) {
+        this.chargeResult = chargeResult;
+    }
+    @Autowired
+    private PayServiceFactory payServiceFactory;
 
     @Action("index")
     public String index() {
@@ -73,22 +74,34 @@ public class CardAction extends ChargeBaseAction {
         super.checkPcPhone();
     }
 
-    @Action("sendPcCode")
-    public void sendPcCode() {
-        JsonVo result = null;
-        result = new JsonVo(false, "无法使用该业务");
-        Struts2Utils.renderJson(result);
-        LogEnum.DEFAULT.info(phoneNumber + " or " + IpAddressUtil.getRealIp() + " 屏蔽------");
-        return;
-    }
-
     @Action("sendPcCode2")
     public void sendPcCode2() {
         super.sendPcCode2();
     }
 
-    @Action("getPcCard")
-    public String getPcCard() {
+    @Action("checkAccount")
+    public void checkAccount() {
+        JsonVo result;
+        if (StringUtils.isBlank(account)) {
+            result = new JsonVo(false, "请确认帐号信息无误！");
+            Struts2Utils.renderJson(result);
+        }
+
+        PayService payService = payServiceFactory.getPayService(id);
+        if (payService != null) {
+            Boolean flag = payService.checkAccount(account);
+            if(!flag){
+                result = new JsonVo(false, "请确认帐号信息无误！");
+                Struts2Utils.renderJson(result);
+                return;
+            }
+        }
+        result = new JsonVo(true, "");
+        Struts2Utils.renderJson(result);
+    }
+
+    @Action("charge")
+    public String charge() {
         String ip = IpAddressUtil.getRealIp();
         if (BlackCache.isBlack(ip) || BlackCache.isBlack(phoneNumber)) {
             message = "无法使用该业务";
@@ -101,15 +114,15 @@ public class CardAction extends ChargeBaseAction {
         try {
             boolean limitflg = checkLimit(phoneNumber, HaoduanCache.getProvince(phoneNumber), paytypeId);
 
-            LogEnum.DEFAULT.info("getPcCard, phoneNumber:" + phoneNumber + " , paytypeId:" + paytypeId + " , limitflg:" + limitflg);
+            LogEnum.DEFAULT.info("charge, phoneNumber:" + phoneNumber + " , paytypeId:" + paytypeId + " , limitflg:" + limitflg);
 
             if (limitflg) {
-                pcCardLog = pcCardLogService.getPcCard(id, priceId, phoneNumber, identifyingCode, sid, paytypeId, type);
-                if (pcCardLog == null) {
-                    message = "购买不成功，请确认您的手机是否有足额话费，并认真填写验证码，如有疑问，请联系客服";
+                chargeResult = pcCardLogService.charge(id, priceId, phoneNumber, identifyingCode, sid, paytypeId, type);
+                if (chargeResult != 2) {
+                    message = "充值不成功，请确认您的手机是否有足额话费，并认真填写验证码，如有疑问，请联系客服";
                 }
             } else {
-                message = "购买不成功，请确认您的手机是否有足额话费，并认真填写验证码，如有疑问，请联系客服";
+                message = "充值不成功，请确认您的手机是否有足额话费，并认真填写验证码，如有疑问，请联系客服";
             }
         } catch (Exception e) {
             LogEnum.DEFAULT.error(e.toString());

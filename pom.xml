@@ -24,6 +24,8 @@
                 <sp.platform.log.level>info</sp.platform.log.level>
                 <sp.platform.log.path>/mnt/user/skyd/logs</sp.platform.log.path>
 
+                <jCard.checkAccount.url>http://Service.800j.com/Personal/CheckAccount.aspx</jCard.checkAccount.url>
+
                 <sp.platform.db.type>mysql</sp.platform.db.type>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
                 <jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3301/skyd?useUnicode=true&amp;autoReconnect=true&amp;characterEncoding=utf-8]]></jdbc.url>
@@ -44,6 +46,8 @@
 
                 <sp.platform.log.level>info</sp.platform.log.level>
                 <sp.platform.log.path>/mnt/user/skyd/logs</sp.platform.log.path>
+
+                <jCard.checkAccount.url>http://Service.800j.com/Personal/CheckAccount.aspx</jCard.checkAccount.url>
 
                 <sp.platform.db.type>mysql</sp.platform.db.type>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
@@ -66,6 +70,8 @@
                 <sp.platform.log.level>info</sp.platform.log.level>
                 <sp.platform.log.path>d:/sp_platform/logs</sp.platform.log.path>
 
+                <jCard.checkAccount.url>http://Service.800j.com/Personal/CheckAccount.aspx</jCard.checkAccount.url>
+
                 <sp.platform.db.type>mysql</sp.platform.db.type>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
                 <jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3306/skyd?useUnicode=true&amp;autoReconnect=true&amp;characterEncoding=utf-8]]></jdbc.url>
@@ -86,6 +92,8 @@
 
                 <sp.platform.log.level>info</sp.platform.log.level>
                 <sp.platform.log.path>/Users/yanglei/sp/sp_platform/logs</sp.platform.log.path>
+
+                <jCard.checkAccount.url>http://localhost:8080/testJCardAccount.jsp</jCard.checkAccount.url>
 
                 <sp.platform.db.type>mysql</sp.platform.db.type>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>

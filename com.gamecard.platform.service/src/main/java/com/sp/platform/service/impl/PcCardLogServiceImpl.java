@@ -11,6 +11,7 @@ import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.service.CardPasswordService;
 import com.sp.platform.service.PaychannelService;
 import com.sp.platform.service.PcCardLogService;
+import com.sp.platform.service.pay.PayServiceFactory;
 import com.sp.platform.service.sp.DxService;
 import com.sp.platform.service.sp.KzYdService;
 import com.sp.platform.service.sp.SpYdService;
@@ -78,6 +79,8 @@ public class PcCardLogServiceImpl implements PcCardLogService {
     private DxService dxService;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private PayServiceFactory payServiceFactory;
 
     @Override
     public PcCardLog get(int id) {
@@ -190,6 +193,81 @@ public class PcCardLogServiceImpl implements PcCardLogService {
         } else {
             LogEnum.DEFAULT.error(phone + "  提交验证码 " + "参数有误 sid=" + sid + " cardId=" + cardId + " phone=" + phone);
             return null;
+        }
+    }
+
+    /**
+     * 2：充值成功
+     * 1：参数异常（缺少参数、帐号为空等）
+     * 3：调用充值接口异常
+     * 0：计费失败
+     *
+     * 0: 计费失败， 1：申请验证码成功， 2：下发点卡成功， 3：计费成功，取卡失败
+     */
+    @Override
+    public int charge(int cardId, int priceId, String phone, String code, String sid, int paytypeId, int channeType) throws Exception {
+        DetachedCriteria dc = DetachedCriteria.forClass(PcCardLog.class);
+        dc.add(Restrictions.eq("sid", sid));
+        dc.add(Restrictions.eq("cardId", cardId));
+        dc.add(Restrictions.eq("mobile", phone));
+        List<PcCardLog> list = pcCardLogDao.findByCriteria(dc);
+        String resultCode = null;
+        if (CollectionUtils.isNotEmpty(list)) {
+            PcCardLog pcCardLog = list.get(0);
+            if (StringUtils.isBlank(pcCardLog.getCardno())) {
+                return 1;
+            }
+            boolean isOK = false;
+            if (paytypeId == 19) {
+                if (channeType == 5) {
+                    resultCode = kzYdService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
+                } else if (channeType == 4) {
+                    resultCode = ylYdService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
+                } else if (channeType == 3) {
+                    resultCode = spYdService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
+                }
+                isOK = (propertyUtils.getProperty("pc.success.result", "200000").equals(resultCode));
+            } else if (paytypeId == 20) {
+                resultCode = commitPaymentCode(phone, code, sid, channeType, pcCardLog);
+                isOK = (propertyUtils.getProperty("pc.lt.success.result", "200000").equals(resultCode));
+            } else if (paytypeId == 21) {
+                if (channeType == 6) {
+                    resultCode = dxService.commitPaymentCode(phone, code, sid, channeType, pcCardLog);
+                }
+                isOK = (propertyUtils.getProperty("pc.dx.success.result", "00").equals(resultCode));
+            }
+            pcCardLog.setEtime(new Date());
+            if (isOK) {
+                cacheCheckUser.addCallerFee(pcCardLog.getMobile() + Constants.split_str + "pc" + channeType, pcCardLog.getFee());
+                cacheCheckUser.addCalledProvinceFee(pcCardLog.getProvince() + Constants.split_str + "pc" + paytypeId + channeType, pcCardLog.getFee(), false);
+                cacheCheckUser.addCalledFee("pc" + paytypeId + channeType, pcCardLog.getFee(), false);
+
+                String result = null;
+                //TODO : 调用充值接口
+                if(cardId == 51){
+                    result = payServiceFactory.getPayService(cardId).pay(pcCardLog);
+                }
+                if (StringUtils.isBlank(result)) {
+                    pcCardLog.setStatus(3);
+                    pcCardLogDao.save(pcCardLog);
+                    LogEnum.DEFAULT.warn(phone + "  提交验证码 " + "充值失败 sid=" + sid + " cardId=" + cardId + " priceId=" + priceId);
+                    return 3;
+                }
+
+                pcCardLog.setStatus(2);
+                pcCardLogDao.save(pcCardLog);
+
+                return 2;
+            } else {
+                pcCardLog.setResultcode(resultCode);
+                pcCardLog.setStatus(0);
+                pcCardLogDao.save(pcCardLog);
+                LogEnum.DEFAULT.warn(phone + "  提交验证码 " + "计费失败 sid=" + sid + " resultCode=" + resultCode);
+                return 0;
+            }
+        } else {
+            LogEnum.DEFAULT.error(phone + "  提交验证码 " + "参数有误 sid=" + sid + " cardId=" + cardId + " phone=" + phone);
+            return 1;
         }
     }
 
