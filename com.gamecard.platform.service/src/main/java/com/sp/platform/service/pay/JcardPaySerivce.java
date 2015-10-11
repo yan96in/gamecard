@@ -28,13 +28,15 @@ public class JcardPaySerivce implements PayService {
     public boolean checkAccount(String account) {
         try {
             DateTime dateTime = new DateTime();
+            String timeStamp = dateTime.toString("yyyyMMddHHmmss");
             String temp = "agent_id=" + agentId + "&user_account=" + account + "&time_stamp="
-                    + dateTime.toString("yyyyMMddHHmmss") + "|||yy5690002015";
+                    + timeStamp + "|||yy5690002015";
 
             String sign = Encrypt.md532(temp).toLowerCase();
             String url = propertyUtils.getProperty("jCard.checkAccount.url") +
                     "?agent_id=" + agentId +
                     "&user_account=" + account +
+                    "&time_stamp=" + timeStamp +
                     "&sign=" + sign;
 
             HttpGet get = new HttpGet(url);
