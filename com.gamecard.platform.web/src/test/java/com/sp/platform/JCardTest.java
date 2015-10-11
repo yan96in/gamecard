@@ -12,6 +12,8 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by yanglei on 15/9/8.
@@ -82,5 +84,19 @@ public class JCardTest {
         System.out.println("帐号充值: " + url);
         String body = IOUtils.toString(httpResponse.getEntity().getContent(), "GBK");
         System.out.println(httpResponse.getStatusLine().getStatusCode() + " : " + body);
+    }
+
+    @Test
+    public void testResult(){
+        String result = "ret_code=4&ret_msg=MD5验证错误&agent_id=2000106&bill_id=jc20151011135728786Kje6299&jnet_bill_no=&user_account=&purchase_amt=&real_jpoint=&ext_param=&sign=9f6d10ee16310c29ad79bff249021220";
+        String[] s = result.split("&");
+        Map<String, String> m = new HashMap<String, String>();
+        for (String s1 : s) {
+            String[] s2 = s1.split("=");
+            if(s2.length >=2 ) {
+                m.put(s2[0], s2[1]);
+            }
+        }
+        System.out.println(m);
     }
 }

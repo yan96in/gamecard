@@ -262,7 +262,9 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                     Map<String, String> m = new HashMap<String, String>();
                     for (String s1 : s) {
                         String[] s2 = s1.split("=");
-                        m.put(s2[0], s2[1]);
+                        if(s2.length >=2 ) {
+                            m.put(s2[0], s2[1]);
+                        }
                     }
 
                     if(StringUtils.equals(m.get("ret_code"),"0")) {

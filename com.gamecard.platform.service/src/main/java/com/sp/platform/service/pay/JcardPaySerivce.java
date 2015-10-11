@@ -83,7 +83,7 @@ public class JcardPaySerivce implements PayService {
             temp = temp +
                     "&phone=" + account +
                     "&client_ip=" + pcCardLog.getIp() +
-                    "sign=" + sign;
+                    "&sign=" + sign;
 
             String url = "http://Service.800j.com/Personal/Submit.aspx?" + temp;
 
