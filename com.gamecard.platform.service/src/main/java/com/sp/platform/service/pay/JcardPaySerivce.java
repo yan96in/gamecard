@@ -44,7 +44,7 @@ public class JcardPaySerivce implements PayService {
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = client.execute(get);
             LogEnum.DEFAULT.info("骏网直充检查帐号: " + url);
-            String body = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+            String body = IOUtils.toString(response.getEntity().getContent(), "GBK");
             int code = response.getStatusLine().getStatusCode();
             LogEnum.DEFAULT.info(account + " : " + code + " : " + body);
             if (code == 200) {
@@ -92,7 +92,7 @@ public class JcardPaySerivce implements PayService {
             HttpClient client = new DefaultHttpClient();
             HttpResponse httpResponse = client.execute(get);
             LogEnum.DEFAULT.info(pcCardLog.getMobile() + "帐号充值: " + url);
-            String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
+            String body = IOUtils.toString(httpResponse.getEntity().getContent(), "GBK");
             LogEnum.DEFAULT.info((httpResponse.getStatusLine().getStatusCode() + " : " + body));
             return null;
         } catch (Exception e) {
