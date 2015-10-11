@@ -2,16 +2,14 @@ package com.sp.platform.web.action.card;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sp.platform.cache.CardCache;
-import com.sp.platform.cache.CpSyncCache;
-import com.sp.platform.cache.SpInfoCache;
 import com.sp.platform.common.PageView;
+import com.sp.platform.entity.Card;
 import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.service.PcCardLogService;
 import com.sp.platform.util.PropertyUtils;
 import com.sp.platform.util.TimeUtils;
 import com.sp.platform.util.XDEncodeHelper;
 import com.sp.platform.vo.PcBillVo;
-import com.sp.platform.vo.SmsBillVo;
 import com.sp.platform.web.constants.Constants;
 import com.yangl.common.Struts2Utils;
 import com.yangl.common.hibernate.PaginationSupport;
@@ -99,13 +97,18 @@ public class PccardAction extends ActionSupport {
 
         for (int i = 0; i < list.size(); i++) {
             PcCardLog pcCardLog = (PcCardLog) list.get(i);
-            if(pcCardLog.getId()>2100250){
-                if(StringUtils.isNotBlank(pcCardLog.getCardpwd())) {
+            if (pcCardLog.getId() > 2100250) {
+                if (StringUtils.isNotBlank(pcCardLog.getCardpwd()) && pcCardLog.getCardId() < 50) {
                     pcCardLog.setCardpwd(xdEncodeHelper.XDDecode(pcCardLog.getCardpwd(), true));
                 }
             }
-            pcCardLog.setCardShowName(CardCache.getCard(pcCardLog.getCardId()).getName() + "-"
-                    + CardCache.getPrice(pcCardLog.getPriceId()).getDescription());
+            Card card = CardCache.getCard(pcCardLog.getCardId());
+            String showName = card.getName() + "-";
+            if (card.getId() > 50) {
+                showName = showName + card.getDescription() + "-";
+            }
+            showName = showName + CardCache.getPrice(pcCardLog.getPriceId()).getDescription();
+            pcCardLog.setCardShowName(showName);
             pcCardLog.setResultcode(Constants.getErrorMessage(pcCardLog.getResultcode()));
         }
 
@@ -141,7 +144,12 @@ public class PccardAction extends ActionSupport {
                     pcBillVo.setCardid("总计");
                     pcBillVo.setPriceid("");
                 } else {
-                    pcBillVo.setCardid(CardCache.getCard(Integer.parseInt(pcBillVo.getCardid())).getName());
+                    Card card = CardCache.getCard(Integer.parseInt(pcBillVo.getCardid()));
+                    String showName = card.getName();
+                    if (card.getId() > 50) {
+                        showName = showName + "-" + card.getDescription();
+                    }
+                    pcBillVo.setCardid(showName);
                     pcBillVo.setPriceid(CardCache.getPrice(Integer.parseInt(pcBillVo.getPriceid())).getDescription());
                 }
             }

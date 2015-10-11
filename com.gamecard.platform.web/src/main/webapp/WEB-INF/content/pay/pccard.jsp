@@ -136,11 +136,11 @@
                             &nbsp;&nbsp;
                             <span style="color: red">${message}</span>
                             &nbsp;&nbsp;
-                            <a href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype.oi}">返回</a>
+                            <a href="index.action?id=${card.id}">返回</a>
                         </strong>
 
                         <div class="sub-tab-hd clearfix">
-                            <c:if test="${chargeResult==2}">
+                            <c:if test="${pcCardLog.status==2}">
                                 <p>
                                     恭喜你充值成功！
                                 </p>
