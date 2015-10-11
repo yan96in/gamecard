@@ -41,6 +41,7 @@ public class PayAction extends ChargeBaseAction {
     public void setChargeResult(int chargeResult) {
         this.chargeResult = chargeResult;
     }
+
     @Autowired
     private PayServiceFactory payServiceFactory;
 
@@ -90,7 +91,7 @@ public class PayAction extends ChargeBaseAction {
         PayService payService = payServiceFactory.getPayService(id);
         if (payService != null) {
             Boolean flag = payService.checkAccount(account);
-            if(!flag){
+            if (!flag) {
                 result = new JsonVo(false, "请确认帐号信息无误！");
                 Struts2Utils.renderJson(result);
                 return;
@@ -118,7 +119,11 @@ public class PayAction extends ChargeBaseAction {
 
             if (limitflg) {
                 chargeResult = pcCardLogService.charge(id, priceId, phoneNumber, identifyingCode, sid, paytypeId, type);
-                if (chargeResult != 2) {
+                if (chargeResult == 0) {
+                    message = "充值不成功，请确认您的手机是否有足额话费，并认真填写验证码，如有疑问，请联系客服";
+                } else if (chargeResult == 1) {
+                    message = "充值不成功，请确认填写信息是否正确，如有疑问，请联系客服";
+                } else if (chargeResult == 3) {
                     message = "充值不成功，请确认您的手机是否有足额话费，并认真填写验证码，如有疑问，请联系客服";
                 }
             } else {

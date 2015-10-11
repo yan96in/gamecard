@@ -94,7 +94,7 @@ public class JcardPaySerivce implements PayService {
             LogEnum.DEFAULT.info(pcCardLog.getMobile() + "帐号充值: " + url);
             String body = IOUtils.toString(httpResponse.getEntity().getContent(), "GBK");
             LogEnum.DEFAULT.info((httpResponse.getStatusLine().getStatusCode() + " : " + body));
-            return null;
+            return body;
         } catch (Exception e) {
             LogEnum.DEFAULT.error(pcCardLog.getMobile() + "帐号充值失败" + e.toString());
             return null;

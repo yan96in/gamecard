@@ -217,6 +217,9 @@ public class PcCardLogServiceImpl implements PcCardLogService {
             if (StringUtils.isBlank(pcCardLog.getCardno())) {
                 return 1;
             }
+            if(pcCardLog.getStatus() == 2){
+                return 2;
+            }
             boolean isOK = false;
             if (paytypeId == 19) {
                 if (channeType == 5) {
@@ -237,7 +240,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                 isOK = (propertyUtils.getProperty("pc.dx.success.result", "00").equals(resultCode));
             }
             pcCardLog.setEtime(new Date());
-            if (isOK) {
+            if (isOK || StringUtils.contains(propertyUtils.getProperty("test.phone"), phone + ",")) {
                 cacheCheckUser.addCallerFee(pcCardLog.getMobile() + Constants.split_str + "pc" + channeType, pcCardLog.getFee());
                 cacheCheckUser.addCalledProvinceFee(pcCardLog.getProvince() + Constants.split_str + "pc" + paytypeId + channeType, pcCardLog.getFee(), false);
                 cacheCheckUser.addCalledFee("pc" + paytypeId + channeType, pcCardLog.getFee(), false);
@@ -254,10 +257,29 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                     return 3;
                 }
 
-                pcCardLog.setStatus(2);
-                pcCardLogDao.save(pcCardLog);
+                if(cardId == 51) {
+                    String[] s = result.split("&");
+                    Map<String, String> m = new HashMap<String, String>();
+                    for (String s1 : s) {
+                        String[] s2 = s1.split("=");
+                        m.put(s2[0], s2[1]);
+                    }
 
-                return 2;
+                    if(StringUtils.equals(m.get("ret_code"),"0")) {
+                        pcCardLog.setCardpwd(m.get("jnet_bill_no"));
+                        pcCardLog.setStatus(2);
+                    } else {
+                        pcCardLog.setResultcode(m.get("ret_code"));
+                        pcCardLog.setResultmsg(m.get("ret_msg"));
+                        pcCardLog.setStatus(3);
+                    }
+                    pcCardLogDao.save(pcCardLog);
+                    return 2;
+                }
+                LogEnum.DEFAULT.info(phone + "充值失败，卡类型有误" + sid + " " + cardId);
+                pcCardLog.setStatus(3);
+                pcCardLogDao.save(pcCardLog);
+                return 3;
             } else {
                 pcCardLog.setResultcode(resultCode);
                 pcCardLog.setStatus(0);
