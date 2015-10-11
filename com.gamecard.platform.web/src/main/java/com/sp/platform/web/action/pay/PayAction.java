@@ -131,7 +131,7 @@ public class PayAction extends ChargeBaseAction {
             }
         } catch (Exception e) {
             LogEnum.DEFAULT.error(e.toString());
-            message = e.getMessage() + " 请联系客服";
+            message = "充值出现异常, 请联系客服";
         }
         card = cardService.get(id);
         price = priceService.get(priceId);
