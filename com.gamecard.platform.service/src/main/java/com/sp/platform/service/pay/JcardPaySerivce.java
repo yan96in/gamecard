@@ -1,5 +1,6 @@
 package com.sp.platform.service.pay;
 
+import com.sp.platform.constants.Constants;
 import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.util.Encrypt;
 import com.sp.platform.util.IdUtils;
@@ -70,11 +71,13 @@ public class JcardPaySerivce implements PayService {
             String account = pcCardLog.getCardno();
             String timeStamp = new DateTime().toString("yyyyMMddHHmmss");
             String bill_id = IdUtils.idGenerator("jc");
+
+            Double amt = Constants.jcardFee.get(pcCardLog.getCardId() + pcCardLog.getPriceId());
             String temp = "agent_id=" + agentId +
                     "&bill_id=" + bill_id +
                     "&bill_time=" + timeStamp +
                     "&user_account=" + account +
-                    "&charge_amt=" + pcCardLog.getFee()/100 +
+                    "&charge_amt=" + amt +
                     "&time_stamp=" + timeStamp;
 
 

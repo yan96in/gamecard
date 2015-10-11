@@ -15,7 +15,12 @@ public class Constants {
     public static Map<Integer, String> feeConfig = new HashMap<Integer, String>();
     public static Map<String, String> resultCode = new HashMap<String, String>();
 
+    public static Map<String, Double> jcardFee = new HashMap<String, Double>();
+
     static {
+        jcardFee.put("5119", 3.0);
+        jcardFee.put("5121", 5.0);
+        jcardFee.put("5116", 9.0);
 
         initKzChannelConfig();
         sfidMap.put(56, 5);
