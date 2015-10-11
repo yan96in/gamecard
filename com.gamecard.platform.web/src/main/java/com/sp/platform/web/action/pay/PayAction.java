@@ -118,12 +118,12 @@ public class PayAction extends ChargeBaseAction {
             LogEnum.DEFAULT.info("charge, phoneNumber:" + phoneNumber + " , paytypeId:" + paytypeId + " , limitflg:" + limitflg);
 
             if (limitflg) {
-                chargeResult = pcCardLogService.charge(id, priceId, phoneNumber, identifyingCode, sid, paytypeId, type);
-                if (chargeResult == 0) {
+                pcCardLog = pcCardLogService.charge(id, priceId, phoneNumber, identifyingCode, sid, paytypeId, type);
+                if (pcCardLog.getStatus() == 0) {
                     message = "充值不成功，请确认您的手机是否有足额话费，并认真填写验证码，如有疑问，请联系客服";
-                } else if (chargeResult == 1) {
+                } else if (pcCardLog.getStatus() == 1) {
                     message = "充值不成功，请确认填写信息是否正确，如有疑问，请联系客服";
-                } else if (chargeResult == 3) {
+                } else if (pcCardLog.getStatus() == 3) {
                     message = "充值不成功，请确认您的手机是否有足额话费，并认真填写验证码，如有疑问，请联系客服";
                 }
             } else {

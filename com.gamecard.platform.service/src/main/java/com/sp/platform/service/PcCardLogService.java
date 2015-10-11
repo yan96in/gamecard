@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface PcCardLogService extends AbstractService<PcCardLog> {
     public PcCardLog getPcCard(int cardId, int priceId, String phone, String code, String sid, int paytypeId, int channelType) throws Exception;
-    public int charge(int cardId, int priceId, String phone, String code, String sid, int paytypeId, int channelType) throws Exception;
+    public PcCardLog charge(int cardId, int priceId, String phone, String code, String sid, int paytypeId, int channelType) throws Exception;
 
     List<PcBillVo> getBillInfo(PageView pageView);
 
