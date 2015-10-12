@@ -72,7 +72,7 @@ public class JcardPaySerivce implements PayService {
             String timeStamp = new DateTime().toString("yyyyMMddHHmmss");
             String bill_id = IdUtils.idGenerator("jc");
 
-            Double amt = Constants.jcardFee.get(pcCardLog.getCardId() + pcCardLog.getPriceId());
+            Double amt = Constants.jcardFee.get(pcCardLog.getCardId() + "" + pcCardLog.getPriceId());
             String temp = "agent_id=" + agentId +
                     "&bill_id=" + bill_id +
                     "&bill_time=" + timeStamp +
