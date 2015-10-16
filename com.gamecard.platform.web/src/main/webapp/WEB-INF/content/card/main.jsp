@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@ page language="java" pageEncoding="utf-8" %>
 <%@ include file="/common/taglibs.jsp" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -47,7 +47,6 @@
                 </div>
                 <div class="list">
                     <ul>
-
                         <li class="">
                             <h4><span><a href="${stx}/card/index.action?id=1">
                                 骏卡</a></span> </h4>
@@ -55,6 +54,16 @@
                                 <a href="${stx}/card/index.action?id=1" title="点击进入官网">
                                     <img alt="进入官网" src="${stx}/card-resources/main/20130912121634_4823.png">
                                 </a>
+                            </div>
+                            <div class="oper">
+                                <p class="p2">
+                                    <a class="left" href="${stx}/card/index.action?id=1">
+                                        <span>卡密</span>
+                                    </a>
+                                    <a class="right" href="${stx}/pay/index.action?id=51">
+                                        <span>直充</span>
+                                    </a>
+                                </p>
                             </div>
                         </li>
 
