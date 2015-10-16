@@ -3,9 +3,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="Description" content="哆啦网小额支付平台是为互联网数字产品充值而开发的小额支付平台，平台聚合三大电信运营商的通信帐户支付通道（涵盖手机、固话、宽带等支付工具，使用短信、声讯、宽带等支付方式）及市场流行卡类支付通道，为用户购买数字产品提供方便、快捷、统一的小额支付服务">
-    <meta name="Keywords" content="哆啦网,哆啦网官网,手机买点卡,固话买点卡,宽带买点卡，短信买点卡，声讯买点卡，话费买点卡，手机买盛大卡，手机买骏卡，手机买Q币">
-    <title>哆啦网官网-小额支付平台首页</title>
+    <meta name="Description" content="中鸿九五小额支付平台是为互联网数字产品充值而开发的小额支付平台，平台聚合三大电信运营商的通信帐户支付通道（涵盖手机、固话、宽带等支付工具，使用短信、声讯、宽带等支付方式）及市场流行卡类支付通道，为用户购买数字产品提供方便、快捷、统一的小额支付服务">
+    <meta name="Keywords" content="中鸿九五,中鸿九五官网,手机买点卡,固话买点卡,宽带买点卡，短信买点卡，声讯买点卡，话费买点卡，手机买盛大卡，手机买骏卡，手机买Q币">
+    <title>中鸿九五官网-小额支付平台首页</title>
     <link rel="stylesheet" type="text/css" href="${stx}/card-resources/main/global.css">
     <link rel="stylesheet" type="text/css" href="${stx}/card-resources/main/index.css">
     <style type="text/css"></style>
@@ -14,9 +14,9 @@
 
 <div class="header clearfix">
     <div class="top g24">
-        <h1 class="logo fl"><a title="哆啦网" href="javascript:void();">哆啦网</a></h1>
+        <h1 class="logo fl"><a title="中鸿九五" href="javascript:void();">中鸿九五</a></h1>
         <ul class="quickMenu fr">
-            <li>欢迎您来到哆啦网！</li>
+            <li>欢迎您来到中鸿九五！</li>
             <li><a title="网站公告" href="javascript:void();">网站公告</a></li>
             <li><a title="支付验证通道" href="javascript:void();">支付验证通道</a></li>
             <li><span>客服热线：400-0974-884</span></li>
@@ -26,7 +26,7 @@
     <div class="nav">
         <div class="re g24">
             <ul class="navWrap fr">
-                <li class="curr"><a title="哆啦网首页" href="javascript:void();" class="nav-item">哆啦网首页</a></li>
+                <li class="curr"><a title="中鸿九五首页" href="javascript:void();" class="nav-item">中鸿九五首页</a></li>
             </ul>
         </div>
     </div>
@@ -43,7 +43,7 @@
         <div class="section newonline">
             <div class="main">
                 <div class="title">
-                    <h2>哆啦网暂提供以下热门点卡（请点击获取详细信息）</h2>
+                    <h2>中鸿九五暂提供以下热门点卡（请点击获取详细信息）</h2>
                 </div>
                 <div class="list">
                     <ul>
@@ -145,10 +145,10 @@
 
     <div class="footer">
         <div class="footer-nav">
-            <a href="javascript:void();">公司简介</a>| <a href="javascript:void();">关于哆啦网</a>| <a target="_blank" href="javascript:void();">联系我们</a>| <a target="_blank" href="javascript:void();">诚聘英才</a>| <a target="_blank" href="javascript:void();">公司资质</a>
+            <a href="javascript:void();">公司简介</a>| <a href="javascript:void();">关于中鸿九五</a>| <a target="_blank" href="javascript:void();">联系我们</a>| <a target="_blank" href="javascript:void();">诚聘英才</a>| <a target="_blank" href="javascript:void();">公司资质</a>
         </div>
         <div class="copyright">
-            <p>Copyright © 2012-2015 哆啦网&nbsp; 版权所有&nbsp; <a target="_blank" href="http://www.miibeian.gov.cn/">京B2-20131089-1</a>&nbsp; </p>
+            <p>Copyright © 2012-2015 中鸿九五&nbsp; 版权所有&nbsp; <a target="_blank" href="http://www.miibeian.gov.cn/">京B2-20131089-1</a>&nbsp; </p>
         </div>
         <ul class="foot-bottom clearfix">
             <li><a target="_blank" href="http://net.china.com.cn/">

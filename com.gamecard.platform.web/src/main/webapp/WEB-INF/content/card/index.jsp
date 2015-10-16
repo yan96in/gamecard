@@ -5,7 +5,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8" content="">
-    <title>哆啦网-点卡销售</title>
+    <title>中鸿九五-点卡销售</title>
     <meta name="description" content="">
     <link rel="shortcut icon" href="${stx}/card-resources/img/favicon.ico">
     <link href="${stx}/card-resources/resources/base.css" rel="stylesheet" type="text/css">
@@ -58,7 +58,7 @@
         <div class="cols-main" style="margin-left: 150px;">
             <form id="form1" name="form1" action="select.action" method="post">
                 <fieldset>
-                    <legend>哆啦网订单提交-卡密</legend>
+                    <legend>中鸿九五订单提交-卡密</legend>
                     <p class="active"><span>公告</span><a target="_blank" href="javascript:void();">移动手机验证码通道12月23日重新开通，资费全面，查看详情!</a>
                     </p>
 
@@ -141,7 +141,7 @@
                         为了保护您的利益，请在得卡密后2小时内进行充值，否则此卡将自动失效。
                     </li>
                     <li>
-                        如有其他疑问，请咨询哆啦网客服热线：400-0974-884。
+                        如有其他疑问，请咨询中鸿九五客服热线：400-0974-884。
                     </li>
                 </ol>
             </div>
@@ -154,7 +154,7 @@
     </div>
 
     <div id="foot">
-        <div style="margin-top: 30px; font-size: 14px; text-align: center;">哆啦网</div>
+        <div style="margin-top: 30px; font-size: 14px; text-align: center;">中鸿九五</div>
     </div>
 </div>
 

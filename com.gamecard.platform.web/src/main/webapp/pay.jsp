@@ -2,7 +2,7 @@
 <%@ include file="/common/taglibs.jsp" %>
 <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=GBK">
 
-    <title>哆啦网</title>
+    <title>中鸿九五</title>
     <link rel="stylesheet" href="${stx}/css/layout.css" type="text/css">
     <link href="${stx}/css/style.css" rel="stylesheet" type="text/css">
 
@@ -62,13 +62,13 @@
                             <td class="btn2"><strong>声讯购卡说明： </strong></td>
                         </tr>
                         <tr>
-                            <td> 空中网携手哆啦网推出了针对移动声讯、移动短信、电信、新联通用户的又一方便安全的购卡渠道。 <br />
-                                <font color="red">选择空中网一卡通后，点击确定按钮，进入哆啦网页面。支付成功后，卡号和密码将会打印在页面上，请用户注意记录并尽快充值。</font></td>
+                            <td> 空中网携手中鸿九五推出了针对移动声讯、移动短信、电信、新联通用户的又一方便安全的购卡渠道。 <br />
+                                <font color="red">选择空中网一卡通后，点击确定按钮，进入中鸿九五页面。支付成功后，卡号和密码将会打印在页面上，请用户注意记录并尽快充值。</font></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="title2"> <strong>哆啦网购卡方式：</strong></div>
+                <div class="title2"> <strong>中鸿九五购卡方式：</strong></div>
                 <div id="rules">
 
                     <div>

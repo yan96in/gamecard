@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="utf-8" content="">
-    <title>哆啦网-确认支付</title>
+    <title>中鸿九五-确认支付</title>
     <meta name="description" content="">
     <link rel="shortcut icon" href="${stx}/card-resources/img/favicon.ico">
     <link rel="stylesheet" href="${stx}/card-resources/resources/base.css" media="all">
@@ -80,7 +80,7 @@
 </div>
 
 <div class="topnav">
-    <div class="topnav-con"><span class="welcome">你好，欢迎来到哆啦网！</span>
+    <div class="topnav-con"><span class="welcome">你好，欢迎来到中鸿九五！</span>
         <p>
             <a href="javascript:void();" target="_blank">官网</a>|<a
                 href="javascript:void();" target="_blank">支付验证通道</a>|<a
@@ -92,8 +92,8 @@
 <div class="header">
     <div class="header-con">
         <h1 class="logo">
-            <a href="${stx}/card/main.action" title="哆啦网-短信声讯(话费)小额支付" target="_blank">
-                哆啦网-短信声讯(话费)小额支付
+            <a href="${stx}/card/main.action" title="中鸿九五-短信声讯(话费)小额支付" target="_blank">
+                中鸿九五-短信声讯(话费)小额支付
             </a>
             <img src="${stx}/card-resources/resources/images/sub-logo.png">
         </h1>
@@ -129,7 +129,7 @@
                 <input id="hdBatchNo" name="hdBatchNo" type="hidden" value="2014082501299910111113793081116">
                 <input id="hdChannelID" name="hdChannelID" type="hidden" value="10102">
                 <fieldset>
-                    <legend>哆啦网支付订单</legend>
+                    <legend>中鸿九五支付订单</legend>
                     <div class="main-con sub-con">
                         <strong class="tips">您提交的支付号码为：
                             <span class="c-f">${phoneNumber}</span>
@@ -174,7 +174,7 @@
                         在操作过程中，你的支付可能会因话费扣费数量限制而支付失败，若支付失败，请选择其它支付方式；
                     </li>
                     <li>
-                        如有它疑问，请致电哆啦网支付客服热线：400-0974-884。
+                        如有它疑问，请致电中鸿九五支付客服热线：400-0974-884。
                     </li>
                 </ol>
             </div>
@@ -186,7 +186,7 @@
 <form id="form99" name="form99" target="_blank" method="post" action=""></form>
 
 <div class="footer">
-    <a href="javascript:void();" target="_blank">关于哆啦网</a>|<a
+    <a href="javascript:void();" target="_blank">关于中鸿九五</a>|<a
         href="javascript:void();" target="_blank">公司介绍</a>|<a
         href="javascript:void();" target="_blank">联系我们</a>|<a
         href="javascript:void();" target="_blank">帮助中心</a>

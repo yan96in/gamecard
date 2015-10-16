@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <title>
-        哆啦网-选择支付方式
+        中鸿九五-选择支付方式
     </title>
     <meta name="description">
     <link rel="stylesheet" href="${stx}/card-resources/resources/base.css" media="all">
@@ -70,7 +70,7 @@
 </div>
 
 <div class="topnav">
-    <div class="topnav-con"><span class="welcome">你好，欢迎来到哆啦网！</span>
+    <div class="topnav-con"><span class="welcome">你好，欢迎来到中鸿九五！</span>
         <p>
             <a href="javascript:void();" target="_blank">官网</a>|<a
                 href="javascript:void();" target="_blank">支付验证通道</a>|<a
@@ -82,8 +82,8 @@
 <div class="header">
     <div class="header-con">
         <h1 class="logo">
-            <a href="${stx}/card/main.action" title="哆啦网-短信声讯(话费)小额支付" target="_blank">
-                哆啦网-短信声讯(话费)小额支付
+            <a href="${stx}/card/main.action" title="中鸿九五-短信声讯(话费)小额支付" target="_blank">
+                中鸿九五-短信声讯(话费)小额支付
             </a>
             <img src="${stx}/card-resources/resources/images/sub-logo.png">
         </h1>
@@ -121,7 +121,7 @@
         <div class="tab-bd">
             <div id="divDetails" class="pannel">
                 <fieldset>
-                    <legend>哆啦网手机支付</legend>
+                    <legend>中鸿九五手机支付</legend>
 
                     <div class="main-con fl">
                         <p class="active"><span>提醒</span><font
@@ -198,7 +198,7 @@
                             <h3 style="color:#0066CC">平台公告</h3>
                             <ol>
                                 <li><a class="" target="blank" href="http://www.duolawang.com/card/main.action"
-                                       title="哆啦网正式上线！！">哆啦网官网正式上线！！</a></li>
+                                       title="中鸿九五正式上线！！">中鸿九五官网正式上线！！</a></li>
                             </ol>
                         </div>
 
@@ -213,7 +213,7 @@
 </div>
 
 <div class="footer">
-    <a href="javascript:void();" target="_blank">关于哆啦网</a>|<a
+    <a href="javascript:void();" target="_blank">关于中鸿九五</a>|<a
         href="javascript:void();" target="_blank">公司介绍</a>|<a
         href="javascript:void();" target="_blank">联系我们</a>|<a
         href="javascript:void();" target="_blank">帮助中心</a>
