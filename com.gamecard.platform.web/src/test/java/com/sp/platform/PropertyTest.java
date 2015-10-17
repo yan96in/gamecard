@@ -38,7 +38,16 @@ public class PropertyTest {
     int line = 1;
 
     @Test
-    public void haoduan(){
+    public void propertTest() {
+        System.out.println("-------------");
+        System.out.println("test1:" + propertyUtils.getProperty("pc.yd.province.day.limit.19.fj"));
+        System.out.println("test2:" + propertyUtils.getProperty("pc.yd.province.day.limit.19.山西"));
+        System.out.println("test3:" + propertyUtils.getProperty("pc.yd.province.day.limit.19.陕西"));
+        System.out.println("-------------");
+    }
+
+    @Test
+    public void haoduan() {
         syncSmsBillService.callout();
     }
 
@@ -75,7 +84,7 @@ public class PropertyTest {
                 line++;
 
                 String[] temp = tempString.split(",");
-                if(haoduan.get(temp[0]) == null){
+                if (haoduan.get(temp[0]) == null) {
                     System.out.println(temp[0]);
                     list.add(tempString);
                     if (line % 1000 == 0) {

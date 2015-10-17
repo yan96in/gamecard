@@ -147,7 +147,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                                 propertyUtils.getInteger("pc.yd.caller.month.limit." + paytypeId, 100),
                                 "移动游戏");
                         if (flag) {
-                            int provinceMaxFee = propertyUtils.getInteger("pc.yd.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+                            int provinceMaxFee = propertyUtils.getInteger("pc.yd.province.day.limit." + paytypeId + "." + province);
                             if (provinceMaxFee == 0) {
                                 provinceMaxFee = propertyUtils.getInteger("pc.yd.province.day.limit." + paytypeId);
                             }
@@ -168,16 +168,16 @@ public class PaychannelServiceImpl implements PaychannelService {
 
                     // 走翼龙移动
                     if (StringUtils.indexOf(propertyUtils.getProperty("yd.yl.provinces"), province) >= 0) {
-			if(PinyinUtil.cn2Spell(province).equals("hunan")){
-                        	fee = Integer.parseInt(paychannel.getSpnum());
-                    	}
+                        if ("湖南".equals(province)) {
+                            fee = Integer.parseInt(paychannel.getSpnum());
+                        }
                         flag = callerLimit(phone,
                                 propertyUtils.getInteger("pc.yl.caller.day.limit." + paytypeId, 30),
                                 propertyUtils.getInteger("pc.yl.caller.week.limit." + paytypeId, 40),
                                 propertyUtils.getInteger("pc.yl.caller.month.limit." + paytypeId, 100),
                                 "翼龙");
                         if (flag) {
-                            int provinceMaxFee = propertyUtils.getInteger("pc.yl.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+                            int provinceMaxFee = propertyUtils.getInteger("pc.yl.province.day.limit." + paytypeId + "." + province);
                             if (provinceMaxFee == 0) {
                                 provinceMaxFee = propertyUtils.getInteger("pc.yl.province.day.limit." + paytypeId);
                             }

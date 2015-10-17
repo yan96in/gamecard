@@ -66,8 +66,8 @@ public class PinyinUtil {
         } 
 
         public static void main(String[] args) throws UnsupportedEncodingException {
-                String x = "嘅囧誰說壞學生來勼髮視頻裆児"; 
-                System.out.println(cn2FirstSpell(x)); 
+                String x = "河南广东江西福建陕西山西";
+                System.out.println(cn2FirstSpell(x));
                 System.out.println(cn2Spell(x)); 
         } 
 }
