@@ -204,7 +204,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                                 propertyUtils.getInteger("pc.kz.caller.month.limit." + paytypeId, 100),
                                 "空中移动");
                         if (flag) {
-                            int provinceMaxFee = propertyUtils.getInteger("pc.kz.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+                            int provinceMaxFee = propertyUtils.getInteger("pc.kz.province.day.limit." + paytypeId + "." + province);
                             if (provinceMaxFee == 0) {
                                 provinceMaxFee = propertyUtils.getInteger("pc.kz.province.day.limit." + paytypeId);
                             }
@@ -232,7 +232,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                                 propertyUtils.getInteger("pc.wo.caller.month.limit." + paytypeId, 100),
                                 "WO+");
                         if (flag) {
-                            int provinceMaxFee = propertyUtils.getInteger("pc.wo.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+                            int provinceMaxFee = propertyUtils.getInteger("pc.wo.province.day.limit." + paytypeId + "." + province);
                             if (provinceMaxFee == 0) {
                                 provinceMaxFee = propertyUtils.getInteger("pc.wo.province.day.limit." + paytypeId);
                             }
@@ -263,7 +263,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                                 propertyUtils.getInteger("pc.yg.caller.month.limit." + paytypeId, 100),
                                 "翼光");
                         if (flag) {
-                            int provinceMaxFee = propertyUtils.getInteger("pc.yg.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+                            int provinceMaxFee = propertyUtils.getInteger("pc.yg.province.day.limit." + paytypeId + "." + province);
                             if (provinceMaxFee == 0) {
                                 provinceMaxFee = propertyUtils.getInteger("pc.yg.province.day.limit." + paytypeId);
                             }
@@ -306,7 +306,7 @@ public class PaychannelServiceImpl implements PaychannelService {
                                 propertyUtils.getInteger("pc.dx.caller.month.limit." + paytypeId, 100),
                                 "电信");
                         if (flag) {
-                            int provinceMaxFee = propertyUtils.getInteger("pc.dx.province.day.limit." + paytypeId + "." + PinyinUtil.cn2FirstSpell(province));
+                            int provinceMaxFee = propertyUtils.getInteger("pc.dx.province.day.limit." + paytypeId + "." + province);
                             if (provinceMaxFee == 0) {
                                 provinceMaxFee = propertyUtils.getInteger("pc.dx.province.day.limit." + paytypeId);
                             }
