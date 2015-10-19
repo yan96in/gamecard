@@ -136,6 +136,17 @@
                             </div>
                         </li>
                     </ul>
+                    <ul>
+                        <li class="">
+                            <h4><span><a href="${stx}/card/index.action?id=9">
+                                成王败寇</a></span> </h4>
+                            <div class="icon">
+                                <a href="${stx}/card/index.action?id=9" title="点击进入官网">
+                                    <img alt="进入官网" src="${stx}/card-resources/main/cwbq.png">
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
