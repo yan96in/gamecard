@@ -25,7 +25,8 @@
     builder.append("&sign=").append(signature);
     LogEnum.DEFAULT.info(builder.toString());
 
-    String url = "http://esales.163.com/script/interface/dc_input";
+//    String url = "http://esales.163.com/script/interface/dc_input";
+    String url = "https://esales.dev.webapp.163.com:8043/script/interface/dc_input";
 
     HttpClient httpClient = com.sp.platform.util.HttpUtils.getSecuredHttpClient();
     HttpGet get = new HttpGet(url + builder.toString());
