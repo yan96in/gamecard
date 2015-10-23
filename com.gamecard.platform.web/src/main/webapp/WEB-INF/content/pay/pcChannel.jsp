@@ -235,7 +235,7 @@
                 alert("请勿重复点击...");
                 return;
             }
-            if($("#identifyingCode").val().length <4){
+            if($("#identifyingCode").val().length <3){
                 alert("请输入正确的验证码!");
                 return;
             }
