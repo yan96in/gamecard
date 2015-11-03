@@ -1,11 +1,14 @@
 package com.sp.platform.cache;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sp.platform.entity.WoAppConfig;
 import com.sp.platform.service.WoAppConfigService;
 import com.sp.platform.timer.AbstractBaseTimer;
 import com.sp.platform.util.HttpUtils;
 import com.sp.platform.util.LogEnum;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -68,9 +71,12 @@ public class WoAppConfigCache extends AbstractBaseTimer {
             HttpResponse httpResponse = httpClient.execute(get);
             String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
             LogEnum.DEFAULT.info("更新Token "+String.valueOf(httpResponse.getStatusLine().getStatusCode()) + " : " + body);
-            woAppConfig.setAppToken(body);
-            woAppConfig.setUtime(new Date());
-            woAppConfigService.save(woAppConfig);
+            JSONObject result = JSON.parseObject(body);
+            if (StringUtils.equals("0", result.getString("resultCode"))) {
+                woAppConfig.setUtime(new Date());
+                woAppConfig.setAppToken(result.getString("token"));
+                woAppConfigService.save(woAppConfig);
+            }
         } catch (Exception e) {
             LogEnum.DEFAULT.error("调用WO+接口异常：" + e.toString());
         }
