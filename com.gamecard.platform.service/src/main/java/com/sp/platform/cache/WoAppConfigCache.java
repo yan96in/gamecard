@@ -51,6 +51,7 @@ public class WoAppConfigCache extends AbstractBaseTimer {
                 }
             }
         }
+        isFirst = false;
     }
 
     public void updateToken(WoAppConfig woAppConfig) {
