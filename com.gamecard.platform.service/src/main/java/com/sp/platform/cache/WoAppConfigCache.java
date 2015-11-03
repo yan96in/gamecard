@@ -68,6 +68,7 @@ public class WoAppConfigCache extends AbstractBaseTimer {
             String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
             LogEnum.DEFAULT.info("更新Token "+String.valueOf(httpResponse.getStatusLine().getStatusCode()) + " : " + body);
             woAppConfig.setAppToken(body);
+            woAppConfig.setUtime(new Date());
             woAppConfigService.save(woAppConfig);
         } catch (Exception e) {
             LogEnum.DEFAULT.error("调用WO+接口异常：" + e.toString());
