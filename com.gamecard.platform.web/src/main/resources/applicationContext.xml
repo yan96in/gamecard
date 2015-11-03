@@ -113,6 +113,7 @@
                 <ref bean="cardCache" />
                 <ref bean="channelCache" />
                 <ref bean="blackCache" />
+                <ref bean="woAppConfigCache" />
             </list>
         </property>
     </bean>

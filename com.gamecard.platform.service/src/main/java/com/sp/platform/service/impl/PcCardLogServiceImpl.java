@@ -2,6 +2,7 @@ package com.sp.platform.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sp.platform.cache.WoAppConfigCache;
 import com.sp.platform.common.Constants;
 import com.sp.platform.common.PageView;
 import com.sp.platform.dao.PcCardLogDao;
@@ -81,6 +82,8 @@ public class PcCardLogServiceImpl implements PcCardLogService {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private PayServiceFactory payServiceFactory;
+    @Autowired
+    private WoAppConfigCache woAppConfigCache;
 
     @Override
     public PcCardLog get(int id) {
@@ -375,7 +378,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
 
         String appKey = propertyUtils.getProperty("wo.appKey");
         String appSecret = propertyUtils.getProperty("wo.appSecret");
-        String appToken = propertyUtils.getProperty("wo.appToken");
+        String appToken = woAppConfigCache.getToken(appKey);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("paymentUser", phone); //13292640301  15564678648 15562092589  13141151451

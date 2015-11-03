@@ -3,6 +3,7 @@ package com.sp.platform.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sp.platform.cache.HaoduanCache;
+import com.sp.platform.cache.WoAppConfigCache;
 import com.sp.platform.common.Constants;
 import com.sp.platform.common.PageView;
 import com.sp.platform.dao.PaychannelDao;
@@ -21,7 +22,6 @@ import com.sp.platform.service.sp.YlYdService;
 import com.sp.platform.util.*;
 import com.sp.platform.vo.ChannelVo;
 import com.sp.platform.vo.LtPcResult;
-import com.sp.platform.vo.PcVo1;
 import com.yangl.common.IpAddressUtil;
 import com.yangl.common.hibernate.PaginationSupport;
 import org.apache.commons.collections.CollectionUtils;
@@ -87,6 +87,8 @@ public class PaychannelServiceImpl implements PaychannelService {
     private DxService dxService;
     @Autowired
     private UserStepLogService userStepLogService;
+    @Autowired
+    private WoAppConfigCache woAppConfigCache;
 
     @Override
     public Paychannel get(int id) {
@@ -623,7 +625,7 @@ public class PaychannelServiceImpl implements PaychannelService {
         ChannelVo chanels = new ChannelVo();
         String appKey = propertyUtils.getProperty("wo.appKey");
         String appSecret = propertyUtils.getProperty("wo.appSecret");
-        String appToken = propertyUtils.getProperty("wo.appToken");
+        String appToken = woAppConfigCache.getToken(appKey);
         try {
             Map<String, Object> map = new HashMap<String, Object>();
             String outTradeNo = IdUtils.idGenerator("gw");
