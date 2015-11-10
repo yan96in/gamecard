@@ -149,12 +149,19 @@ public class PaychannelServiceImpl implements PaychannelService {
                                 propertyUtils.getInteger("pc.yd.caller.month.limit." + paytypeId, 100),
                                 "移动游戏");
                         if (flag) {
+                            flag = checkYdUserLimit(phone);
+                        }
+                        if (flag) {
                             int provinceMaxFee = propertyUtils.getInteger("pc.yd.province.day.limit." + paytypeId + "." + province);
                             if (provinceMaxFee == 0) {
                                 provinceMaxFee = propertyUtils.getInteger("pc.yd.province.day.limit." + paytypeId);
                             }
                             flag = provinceLimit(phone, province, paytypeId, provinceMaxFee, "移动游戏");
                         }
+                        if (flag) {
+                            flag = checkYdTotalLimit();
+                        }
+
                         if (flag) {
                             result = spYdService.sendYdCode(phone, fee);  // 走移动游戏
                         }
@@ -356,6 +363,63 @@ public class PaychannelServiceImpl implements PaychannelService {
         }
         chanels.setPcflag(false);
         return chanels;
+    }
+
+    private boolean checkYdTotalLimit() {
+        DateTime dateTime = new DateTime();
+        String today = dateTime.toString("yyyy-MM-dd");
+        String sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=19 and ext='3' and status=2 and btime>='"
+                + today + "'";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        int max = propertyUtils.getInteger("yd.daily.fee.limit", 10000);
+        if (count != null && count >= max) {
+            LogEnum.DEFAULT.info("移动自有游戏 一天上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            return false;
+        }
+
+        sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=19 and ext='3' and status=2 and btime>='"
+                + dateTime.toString("yyyy-MM-dd HH:00:00") + "'";
+        count = jdbcTemplate.queryForObject(sql, Integer.class);
+        max = propertyUtils.getInteger("yd.hour.fee.limit", 2000);
+        if (count != null && count >= max) {
+            LogEnum.DEFAULT.info("移动自有游戏  一小时上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            return false;
+        }
+
+        sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=19 and ext='3' and btime>='"
+                + dateTime.toString("yyyy-MM-dd HH:00:00") + "'";
+        count = jdbcTemplate.queryForObject(sql, Integer.class);
+        max = propertyUtils.getInteger("yd.hour.fee.limit", 2000) * 2;
+        if (count != null && count >= max) {
+            LogEnum.DEFAULT.info("移动自有游戏  一小时请求上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkYdUserLimit(String phoneNumber) {
+        DateTime dateTime = new DateTime();
+        String today = dateTime.toString("yyyy-MM-dd");
+        String sql = "select count(*) from tbl_user_pc_card_log where ext='3' and status=2 and btime>='"
+                + today + "' and mobile='" + phoneNumber + "'";
+        int count = jdbcTemplate.queryForObject(sql, Integer.class);
+        int max = propertyUtils.getInteger("yd.caller.daily.card.count.limit", 2);
+        if (count >= max) {
+            LogEnum.DEFAULT.info("移动自有游戏  " + new StringBuilder(phoneNumber).
+                    append("---- 一天内只能成单两次 ").append(count).toString());
+            return false;
+        }
+
+        sql = "select count(*) from tbl_user_pc_card_log where ext='3' and btime>='"
+                + today + "' and mobile='" + phoneNumber + "'";
+        count = jdbcTemplate.queryForObject(sql, Integer.class);
+        max = propertyUtils.getInteger("yd.caller.daily.count.limit", 2);
+        if (count >= max) {
+            LogEnum.DEFAULT.info("移动自有游戏  " + new StringBuilder(phoneNumber).
+                    append("---- 一天内只能提交十次 ").append(count).toString());
+            return false;
+        }
+        return true;
     }
 
 
