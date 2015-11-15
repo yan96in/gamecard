@@ -7,6 +7,7 @@ import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.util.Encrypt;
 import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
+import com.sp.platform.vo.ChannelVo;
 import com.sp.platform.vo.LtPcResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -53,9 +54,12 @@ public class SpYdService {
 
     public LtPcResult sendYdCode(String phone, int fee) throws IOException {
         LtPcResult pcResult = new LtPcResult();
+        ChannelVo chanels = new ChannelVo();
         try {
             String feeCode = Constants.feeConfig.get(fee * 100);
             if (StringUtils.isBlank(feeCode)) {
+                chanels.setPcflag(false);
+                pcResult.setChanels(chanels);
                 pcResult.setFlag(false);
                 pcResult.setResultCode("error");
                 pcResult.setResultMessage("价格超出范围");
@@ -63,6 +67,8 @@ public class SpYdService {
             }
             String sessionKey = getSessionKey();
             if (StringUtils.isBlank(sessionKey)) {
+                chanels.setPcflag(false);
+                pcResult.setChanels(chanels);
                 pcResult.setFlag(false);
                 pcResult.setResultCode("error");
                 pcResult.setResultMessage("请求移动异常");
@@ -101,6 +107,9 @@ public class SpYdService {
             pcResult.setResultCode(resultCode);
             pcResult.setResultMessage(resultMsg);
             if (StringUtils.equals("200000", resultCode)) {
+                chanels.setPcflag(true);
+                chanels.setSid(result.getString("orderid"));
+                pcResult.setChanels(chanels);
                 pcResult.setFlag(true);
                 pcResult.setSid(result.getString("orderid"));
                 return pcResult;
@@ -113,6 +122,8 @@ public class SpYdService {
             LogEnum.DEFAULT.error("调用移动PC接口异常：" + e.toString());
         }
 
+        chanels.setPcflag(false);
+        pcResult.setChanels(chanels);
         pcResult.setFlag(false);
         return pcResult;
     }
