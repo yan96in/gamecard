@@ -35,6 +35,10 @@ public class CpSyncCache extends AbstractBaseTimer {
      * 渠道
      */
     private static Map<Integer, User> cp_cache = new ConcurrentHashMap<Integer, User>();
+    /**
+     * 渠道ID:渠道号码配置
+     */
+    private static Map<Integer, CpNum> cpid_cpnum_cache = new ConcurrentHashMap<Integer, CpNum>();
 
     @Autowired
     private UserService userService;
@@ -54,6 +58,7 @@ public class CpSyncCache extends AbstractBaseTimer {
         //存放渠道信息
         Map<Integer, User> temp3 = new HashMap<Integer, User>();
         Map<String, CpNum> temp4 = new HashMap<String, CpNum>();
+        Map<Integer, CpNum> temp5 = new HashMap<Integer, CpNum>();
 
         //主帐号
         List<User> list = userService.getByRole(10);
@@ -91,6 +96,7 @@ public class CpSyncCache extends AbstractBaseTimer {
         for (CpNum cpNum : numList) {
             cpNum.setCpname(getCpName(cpNum.getCpid()));
             temp4.put(cpNum.getCalled(), cpNum);
+            temp5.put(cpNum.getCpid(), cpNum);
             syncUrl = temp.get(cpNum.getCpid());
             if (syncUrl != null) {
                 temp2.put(cpNum.getCalled(), syncUrl);
@@ -100,6 +106,8 @@ public class CpSyncCache extends AbstractBaseTimer {
         called_syncurl_cache.putAll(temp2);
         called_cp_cache.clear();
         called_cp_cache.putAll(temp4);
+        cpid_cpnum_cache.clear();
+        cpid_cpnum_cache.putAll(temp5);
         LogEnum.TEMP.info("缓存中共存放{}条渠道信息, {}条号码同步信息, {}条号码与渠道对应信息",
                 cp_cache.size(), called_syncurl_cache.size(), called_cp_cache.size());
     }
@@ -121,10 +129,25 @@ public class CpSyncCache extends AbstractBaseTimer {
      * @return
      */
     public static CpNum getCp(String called) {
-        if(StringUtils.isBlank(called)){
+        if (StringUtils.isBlank(called)) {
             return null;
         }
         return called_cp_cache.get(called);
+    }
+
+    public static User getCp(Integer key) {
+        if (key == null) {
+            return null;
+        }
+        return cp_cache.get(key);
+    }
+
+    /**
+     * @param cpId
+     * @return
+     */
+    public static CpNum getCpNum(Integer cpId) {
+        return cpid_cpnum_cache.get(cpId);
     }
 
     /**

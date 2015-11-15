@@ -1,6 +1,7 @@
 package com.sp.platform.vo;
 
 import com.sp.platform.entity.Paychannel;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * Time: 下午10:52
  * To change this template use File | Settings | File Templates.
  */
+@ToString
 public class ChannelVo {
     private PhoneVo phoneVo;
     private List<Paychannel> channels1;

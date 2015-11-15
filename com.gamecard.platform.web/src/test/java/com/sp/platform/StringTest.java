@@ -13,6 +13,8 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.MessageFormat;
@@ -128,5 +130,15 @@ public class StringTest {
             sb.append(buffer.charAt(r.nextInt(range)));
         }
         System.out.println(sb.toString());
+    }
+
+    @Test
+    public void test() throws Exception {
+        List<String> list = IOUtils.readLines(new FileInputStream(new File("/Users/yanglei/black.txt")));
+        List<String> l = new ArrayList<String>();
+        for (String str : list) {
+            l.add("insert into black_code(code) values('" + str + "');");
+        }
+        FileUtils.writeLines(new File("/Users/yanglei/black2.txt"), l);
     }
 }

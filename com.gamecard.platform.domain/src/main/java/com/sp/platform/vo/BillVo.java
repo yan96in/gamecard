@@ -6,11 +6,13 @@ package com.sp.platform.vo;
  */
 public class BillVo {
     private String counts;
+    private String sendCounts;
     private String users;
     private String fees;
     private String salefee;
     private String limitfee;
     private String limitrate;
+    private String channelfee;
     private String times;
     private String group;
     private String arpu;
@@ -105,10 +107,27 @@ public class BillVo {
         this.arpu = arpu;
     }
 
+    public String getSendCounts() {
+        return sendCounts;
+    }
+
+    public void setSendCounts(String sendCounts) {
+        this.sendCounts = sendCounts;
+    }
+
+    public String getChannelfee() {
+        return channelfee;
+    }
+
+    public void setChannelfee(String channelfee) {
+        this.channelfee = channelfee;
+    }
+
     @Override
     public String toString() {
         return "BillVo{" +
                 "counts='" + counts + '\'' +
+                "sendCounts='" + sendCounts + '\'' +
                 ", users='" + users + '\'' +
                 ", fees='" + fees + '\'' +
                 ", times='" + times + '\'' +

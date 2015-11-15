@@ -7,7 +7,6 @@ import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.util.Encrypt;
 import com.sp.platform.util.LogEnum;
 import com.sp.platform.util.PropertyUtils;
-import com.sp.platform.vo.ChannelVo;
 import com.sp.platform.vo.LtPcResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -54,18 +53,19 @@ public class SpYdService {
 
     public LtPcResult sendYdCode(String phone, int fee) throws IOException {
         LtPcResult pcResult = new LtPcResult();
-        ChannelVo chanels = new ChannelVo();
         try {
-            String feeCode = Constants.feeConfig.get(fee);
-            if(StringUtils.isBlank(feeCode)){
-                chanels.setPcflag(false);
-                pcResult.setChanels(chanels);
+            String feeCode = Constants.feeConfig.get(fee * 100);
+            if (StringUtils.isBlank(feeCode)) {
+                pcResult.setFlag(false);
+                pcResult.setResultCode("error");
+                pcResult.setResultMessage("价格超出范围");
                 return pcResult;
             }
             String sessionKey = getSessionKey();
             if (StringUtils.isBlank(sessionKey)) {
-                chanels.setPcflag(false);
-                pcResult.setChanels(chanels);
+                pcResult.setFlag(false);
+                pcResult.setResultCode("error");
+                pcResult.setResultMessage("请求移动异常");
                 return pcResult;
             }
 
@@ -96,20 +96,24 @@ public class SpYdService {
             LogEnum.DEFAULT.info(phone + httpResponse.getStatusLine().getStatusCode() + " : " + body);
 
             JSONObject result = JSON.parseObject(body);
-            if (StringUtils.equals("200000", result.getString("resultCode"))) {
-                chanels.setPcflag(true);
-                chanels.setSid(result.getString("orderid"));
-                pcResult.setChanels(chanels);
+            String resultCode = result.getString("resultCode");
+            String resultMsg = result.getString("resultMsg");
+            pcResult.setResultCode(resultCode);
+            pcResult.setResultMessage(resultMsg);
+            if (StringUtils.equals("200000", resultCode)) {
+                pcResult.setFlag(true);
+                pcResult.setSid(result.getString("orderid"));
                 return pcResult;
             } else {
                 LogEnum.DEFAULT.info(phone + " 调用移动PC接口失败，失败描述：" + Constants.resultCode.get(result.getString("resultCode")));
             }
         } catch (Exception e) {
+            pcResult.setResultCode("error");
+            pcResult.setResultMessage("接口异常");
             LogEnum.DEFAULT.error("调用移动PC接口异常：" + e.toString());
         }
 
-        chanels.setPcflag(false);
-        pcResult.setChanels(chanels);
+        pcResult.setFlag(false);
         return pcResult;
     }
 
@@ -143,8 +147,42 @@ public class SpYdService {
         //处理请求，得到响应
         HttpResponse httpResponse = client.execute(httpGet);
         String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
-        LogEnum.DEFAULT.info(phone + "  移动基地提交验证码 " + url+ "， 返回" + httpResponse.getStatusLine().getStatusCode() + " : " + body);
+        LogEnum.DEFAULT.info(phone + "  移动基地提交验证码 " + url + "， 返回" + httpResponse.getStatusLine().getStatusCode() + " : " + body);
         JSONObject object = JSON.parseObject(body);
         return object.getString("resultCode");
+    }
+
+    public String commitPaymentCode(String phone, String sid, String code) throws IOException {
+        String sessionKey = getSessionKey();
+        if (StringUtils.isBlank(sessionKey)) {
+            return "error";
+        }
+
+        HttpClient client = new DefaultHttpClient();
+        long epoch = System.currentTimeMillis() / 1000;
+        String url = "http://g.10086.cn/pay/open/index?";
+        String body2 = "app=cwbk&method=confirmpurchase"
+                + "&verifycode=" + code
+                + "&orderid=" + sid
+                + "&time=" + epoch
+                + "&sessionkey=" + sessionKey
+                + "&key=c4574c3ffefc72da84901614e345a7dd";
+
+        url = url + "app=cwbk&method=confirmpurchase&format=json&time=" + epoch
+                + "&verifycode=" + code
+                + "&orderid=" + sid
+                + "&time=" + epoch
+                + "&sessionkey=" + sessionKey
+                + "&hash=" + Encrypt.md532(body2);
+        HttpGet httpGet = new HttpGet(url);
+        httpGet.addHeader("Content-Type", "application/json;charset=UTF-8");
+        httpGet.addHeader("accept", "application/json;charset=UTF-8");
+        LogEnum.DEFAULT.info(phone + "  移动基地提交验证码 " + url);
+
+        //处理请求，得到响应
+        HttpResponse httpResponse = client.execute(httpGet);
+        String body = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
+        LogEnum.DEFAULT.info(phone + "  移动基地提交验证码 " + url + "， 返回" + httpResponse.getStatusLine().getStatusCode() + " : " + body);
+        return body;
     }
 }

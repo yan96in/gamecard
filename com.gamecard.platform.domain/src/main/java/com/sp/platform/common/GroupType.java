@@ -36,7 +36,12 @@ public enum GroupType {
     /**
      * 小时
      */
-    GROUP_HOUR(8);
+    GROUP_HOUR(8),
+    /**
+     * 通道类型(WO+第三方，WO+离线计费)
+     */
+    GROUP_SP_CHANNEL(9),
+    ;
 
     private int type;
 

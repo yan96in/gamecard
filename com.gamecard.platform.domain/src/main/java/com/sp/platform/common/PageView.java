@@ -24,6 +24,7 @@ public class PageView {
     private int deductRate;
 
     private int parentId;
+    private int woCompanyId;
     private int role;
     private String name;
     private String passwd;
@@ -282,6 +283,14 @@ public class PageView {
 
     public void setSyncurl(String syncurl) {
         this.syncurl = syncurl;
+    }
+
+    public int getWoCompanyId() {
+        return woCompanyId;
+    }
+
+    public void setWoCompanyId(int woCompanyId) {
+        this.woCompanyId = woCompanyId;
     }
 
     @Override
