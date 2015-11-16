@@ -56,7 +56,7 @@ public class SpYdService {
         LtPcResult pcResult = new LtPcResult();
         ChannelVo chanels = new ChannelVo();
         try {
-            String feeCode = Constants.feeConfig.get(fee * 100);
+            String feeCode = Constants.feeConfig.get(fee);
             if (StringUtils.isBlank(feeCode)) {
                 chanels.setPcflag(false);
                 pcResult.setChanels(chanels);
