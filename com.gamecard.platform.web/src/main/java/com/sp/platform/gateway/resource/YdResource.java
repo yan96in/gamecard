@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sp.platform.cache.CpSyncCache;
 import com.sp.platform.cache.HaoduanCache;
+import com.sp.platform.common.Constants;
 import com.sp.platform.entity.CpNum;
 import com.sp.platform.entity.SmsWoBillLog;
 import com.sp.platform.entity.User;
@@ -15,7 +16,9 @@ import com.sp.platform.service.sp.SpYdService;
 import com.sp.platform.util.*;
 import com.sp.platform.vo.LtPcResult;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.GET;
@@ -42,6 +45,8 @@ public class YdResource extends BaseResource {
     private SmsWoBillLogService billLogService;
     @Autowired
     private CacheCheckUser cacheCheckUser;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @GET
     @Path("getpaymentcode")
@@ -121,6 +126,11 @@ public class YdResource extends BaseResource {
                 woBillLog.setStatus("4");
                 woBillLog.setCpamount(woBillLog.getTotalFee());
                 LogEnum.DEFAULT.info(linkid + " 移动计费成功: " + object.toString());
+
+
+                cacheCheckUser.addCallerFee(woBillLog.getMobile() + Constants.split_str + "pc3", woBillLog.getTotalFee().intValue());
+                cacheCheckUser.addCalledProvinceFee(woBillLog.getProvince() + Constants.split_str + "pc193", woBillLog.getTotalFee().intValue(), false);
+                cacheCheckUser.addCalledFee("pc193", woBillLog.getTotalFee().intValue(), false);
             } else {
                 woBillLog.setStatus("8");
                 woBillLog.setCpamount(new BigDecimal(0));
@@ -171,8 +181,156 @@ public class YdResource extends BaseResource {
         if (Integer.parseInt(price) > 2000) {
             throw new Exception("超出价格范围");
         }
+        String cpType = "djf";
+        /****************** 凌晨判断 ******************/
+        if (propertyUtils.getProperty("black.hour.ignore.cpId").indexOf(cid + ",") < 0) {
+            DateTime dateTime = new DateTime();
+            int hour = dateTime.getHourOfDay();
+            if (hour >= propertyUtils.getInteger("black.min.hour")
+                    && hour <= propertyUtils.getInteger("black.max.hour")) {
+                StringBuilder errorMessage = new StringBuilder();
+                errorMessage.append(cid + " 屏蔽 [")
+                        .append(propertyUtils.getProperty("black.min.hour"))
+                        .append("-")
+                        .append(propertyUtils.getProperty("black.max.hour"))
+                        .append("] 时间段的代计费合作业务");
+                LogEnum.DEFAULT.error(errorMessage.toString());
+                throw new Exception("超出时间限制");
+            }
+            cpType = "zxf";
+        }
 
+        boolean isValid = callerLimit(phoneNum,
+                propertyUtils.getInteger("user.max.day.fee." + cpType),
+                propertyUtils.getInteger("user.max.week.fee." + cpType),
+                propertyUtils.getInteger("user.max.month.fee." + cpType),
+                "移动游戏");
+
+        String province = HaoduanCache.getProvince(phoneNum);
+        if (isValid) {
+            int provinceMaxFee = propertyUtils.getInteger("pc.yd.province.day.limit.19." + province);
+            if (provinceMaxFee == 0) {
+                provinceMaxFee = propertyUtils.getInteger("pc.yd.province.day.limit.19");
+            }
+            isValid = provinceLimit(phoneNum, province, 19, provinceMaxFee, "移动游戏");
+        }
+
+        if (isValid) {
+            isValid = checkYdTotalLimit();
+        }
+
+        if (!isValid) {
+            throw new Exception("超出限制");
+        }
         return cpNum;
+    }
+
+
+    private boolean callerLimit(String phoneNumber, int maxDayFee, int maxWeekFee, int maxMonthFee, String channelType) {
+        //----------------------------- 用户日上限 -----------------------
+        int type = 3;
+
+        int tempFee = cacheCheckUser.getCallerDayFee(phoneNumber + Constants.split_str + "pc" + type);
+
+        if (maxDayFee > 0 && tempFee >= maxDayFee) {
+            LogEnum.DEFAULT.info(channelType + "  " + new StringBuilder(phoneNumber).
+                    append("---- 超用户日上限 ").append(maxDayFee)
+                    .append(",日费用：")
+                    .append(tempFee).toString());
+            return false;
+        }
+
+        //----------------------------- 用户月上限 -----------------------
+        tempFee = cacheCheckUser.getCallerMonthFee(phoneNumber + Constants.split_str + "pc" + type);
+        //如果没有设置上限， 或者费用未达到上限，继续
+        if (maxMonthFee > 0 && tempFee >= maxMonthFee) {
+            LogEnum.DEFAULT.info(channelType + "  " + new StringBuilder(phoneNumber).
+                    append("---- 超用户月上限 ").append(maxMonthFee)
+                    .append(",月费用：")
+                    .append(tempFee).toString());
+            return false;
+        }
+
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.plusDays(-7);
+        String sql = "select sum(fee)/100 from tbl_user_pc_card_log where status=2 and btime>='"
+                + dateTime.toString("yyyy-MM-dd") + "' and mobile='" + phoneNumber + "' and ext=" + type;
+
+        Integer fee = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (fee != null && maxWeekFee > 0 && fee >= maxWeekFee) {
+            LogEnum.DEFAULT.info(channelType + "  " + new StringBuilder(phoneNumber).
+                    append("---- 超用户周上限 ").append(maxWeekFee)
+                    .append(",周费用：")
+                    .append(fee).toString());
+            return false;
+        }
+
+        dateTime = new DateTime();
+        dateTime = dateTime.plusMinutes(-3);
+        sql = "select count(*) from tbl_user_pc_card_log where status=2 and btime>='"
+                + dateTime.toString("yyyy-MM-dd HH:mm:ss") + "' and mobile='" + phoneNumber + "'";
+
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (count >= 1) {
+            LogEnum.DEFAULT.info(channelType + "  " + new StringBuilder(phoneNumber).
+                    append("---- 三分钟内只能成单一次 ").append(count).toString());
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean provinceLimit(String phoneNumber, String province, int paytypeId, int maxDayFee, String channelType) {
+        //----------------------------- 省份日上限 -----------------------
+        int type = 3;
+
+        int tempFee = cacheCheckUser.getCalledProvinceDayFee(province + Constants.split_str + "pc" + paytypeId + type);
+
+        if (maxDayFee > 0 && tempFee >= maxDayFee) {
+            LogEnum.DEFAULT.info(channelType + "  " + new StringBuilder(phoneNumber).
+                    append("---- 超省份日上限 ").append(maxDayFee)
+                    .append(",日费用：")
+                    .append(tempFee).toString());
+            return false;
+        }
+
+        StringBuilder message = new StringBuilder(channelType + "  " + phoneNumber).
+                append("---- 省份").append(province).append("收入正常，")
+                .append("日费用：")
+                .append(tempFee).append("  最高上限:" + maxDayFee);
+        return true;
+    }
+
+    private boolean checkYdTotalLimit() {
+        DateTime dateTime = new DateTime();
+        String today = dateTime.toString("yyyy-MM-dd");
+        String sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=19 and ext='3' and status=2 and btime>='"
+                + today + "'";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        int max = propertyUtils.getInteger("yd.daily.fee.limit", 10000);
+        if (count != null && count >= max) {
+            LogEnum.DEFAULT.info("移动自有游戏 一天上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            return false;
+        }
+
+        sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=19 and ext='3' and status=2 and btime>='"
+                + dateTime.toString("yyyy-MM-dd HH:00:00") + "'";
+        count = jdbcTemplate.queryForObject(sql, Integer.class);
+        max = propertyUtils.getInteger("yd.hour.fee.limit", 2000);
+        if (count != null && count >= max) {
+            LogEnum.DEFAULT.info("移动自有游戏  一小时上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            return false;
+        }
+
+        sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=19 and ext='3' and btime>='"
+                + dateTime.toString("yyyy-MM-dd HH:00:00") + "'";
+        count = jdbcTemplate.queryForObject(sql, Integer.class);
+        max = propertyUtils.getInteger("yd.hour.fee.limit", 2000) * 2;
+        if (count != null && count >= max) {
+            LogEnum.DEFAULT.info("移动自有游戏  一小时请求上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            return false;
+        }
+        return true;
     }
 
     protected String getTestUserPrice(String phoneNum, String price) {
