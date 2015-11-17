@@ -168,6 +168,9 @@ public class YdResource extends BaseResource {
         if (StringUtils.indexOf(propertyUtils.getProperty("black.cp"), cid) >= 0) {
             throw new Exception("渠道黑名单" + cid);
         }
+        if (Integer.parseInt(price) > 2000) {
+            throw new Exception("超出价格范围");
+        }
 
         return cpNum;
     }
