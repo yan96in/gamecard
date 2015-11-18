@@ -67,7 +67,12 @@ public class CtccIvrService {
 
         sql = "select sum(fee) from ivr_bill_log where province='" + province + "' and ctime>left(now(),10)";
         fee = jdbcTemplate.queryForObject(sql, Integer.class);
-        if (fee != null && fee > propertyUtils.getInteger("ivr.province.max.day.fee", 5000)) {
+
+        int provinceMaxFee = propertyUtils.getInteger("ivr.province.max.day.fee." + province);
+        if (provinceMaxFee == 0) {
+            provinceMaxFee = propertyUtils.getInteger("ivr.province.max.day.fee");
+        }
+        if (fee != null && fee > provinceMaxFee) {
             LogEnum.DEFAULT.info("超省份日上限:" + caller + "-" + called + body + ", 日:" + fee);
             return "1";
         }
