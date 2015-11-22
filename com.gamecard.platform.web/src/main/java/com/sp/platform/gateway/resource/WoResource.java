@@ -12,6 +12,7 @@ import com.sp.platform.gateway.constant.Status;
 import com.sp.platform.gateway.exception.BusinessException;
 import com.sp.platform.gateway.response.wo.PaymentChargeResponse;
 import com.sp.platform.service.SmsWoBillLogService;
+import com.sp.platform.service.sp.SpWoService;
 import com.sp.platform.service.sp.SpYdService;
 import com.sp.platform.util.*;
 import com.sp.platform.vo.LtPcResult;
@@ -35,12 +36,12 @@ import java.util.Map;
  * Created by yanglei on 15/11/15.
  */
 @Controller
-@Path("/yd")
-public class YdResource extends BaseResource {
+@Path("/lt")
+public class WoResource extends BaseResource {
     @Autowired
     private PropertyUtils propertyUtils;
     @Autowired
-    private SpYdService spYdService;
+    private SpWoService spService;
     @Autowired
     private SmsWoBillLogService billLogService;
     @Autowired
@@ -58,6 +59,7 @@ public class YdResource extends BaseResource {
         boolean logFlag = true;
         Map<String, Object> map = new HashMap<String, Object>();
         LtPcResult result = null;
+        BigDecimal fee = null;
         try {
             CpNum cpNum = validateParameter(cid, phoneNum, price);
 
@@ -66,13 +68,15 @@ public class YdResource extends BaseResource {
 
             User user = CpSyncCache.getCp(Integer.parseInt(cid));
 
-            result = spYdService.sendYdCode(phoneNum, Integer.parseInt(price));  // 移动游戏
+            fee = new BigDecimal(price).divide(new BigDecimal(100), 2, BigDecimal.ROUND_DOWN);
+
+            result = spService.sendCode(phoneNum, fee);  // 联通WO+
 
             if (result != null && result.isFlag()) {
-                LogEnum.DEFAULT.info(cid + user.getShowname() + " 申请移动游戏下发验证码 成功: " + result.toString());
+                LogEnum.DEFAULT.info(cid + user.getShowname() + " 申请联通WO+下发验证码 成功: " + result.toString());
                 return Response.status(Response.Status.OK).type(MediaType.TEXT_PLAIN).entity("linkid=" + result.getSid()).build();
             } else {
-                LogEnum.DEFAULT.info(cid + user.getShowname() + " 申请移动游戏下发验证码 失败: " + result.toString());
+                LogEnum.DEFAULT.info(cid + user.getShowname() + " 申请联通WO+下发验证码 失败: " + result.toString());
                 return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("error").build();
             }
         } catch (BusinessException e) {
@@ -85,7 +89,7 @@ public class YdResource extends BaseResource {
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("error").build();
         } finally {
             if (logFlag) {
-                saveLog(cid, phoneNum, price, map, result, ext);
+                saveLog(cid, phoneNum, fee, map, result, ext);
             }
         }
     }
@@ -117,15 +121,15 @@ public class YdResource extends BaseResource {
 
             woBillLog.setDescription(paymentCode);
 
-            String body = spYdService.commitPaymentCode(woBillLog.getMobile(), linkid, paymentCode);
+            String body = spService.commitPaymentCode(woBillLog.getMobile(), paymentCode, linkid, woBillLog.getTotalFee());
             JSONObject object = JSON.parseObject(body);
             String resultCode = object.getString("resultCode");
             String resultMsg = object.getString("resultMsg");
 
-            if (StringUtils.equals(resultCode, "20000")) {
+            if (StringUtils.equals(resultCode, "0")) {
                 woBillLog.setStatus("4");
                 woBillLog.setCpamount(woBillLog.getTotalFee());
-                LogEnum.DEFAULT.info(linkid + " 移动计费成功: " + object.toString());
+                LogEnum.DEFAULT.info(linkid + " 联通WO+计费成功: " + object.toString());
 
 
                 cacheCheckUser.addCallerFee(woBillLog.getMobile() + Constants.split_str + "pc3", woBillLog.getTotalFee().intValue());
@@ -134,7 +138,7 @@ public class YdResource extends BaseResource {
             } else {
                 woBillLog.setStatus("8");
                 woBillLog.setCpamount(new BigDecimal(0));
-                LogEnum.DEFAULT.info(linkid + "移动计费失败: " + object.toString());
+                LogEnum.DEFAULT.info(linkid + "联通WO+计费失败: " + object.toString());
             }
 
             woBillLog.setChargeResultCode(resultCode);
@@ -145,7 +149,7 @@ public class YdResource extends BaseResource {
             return getReturnResponse(woBillLog);
         } catch (BusinessException e) {
             LogEnum.DEFAULT.error(e.toString());
-            return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("status=" + e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("status=616").build();
         } catch (Exception e) {
             LogEnum.DEFAULT.error(e.toString());
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("status=616").build();
@@ -204,7 +208,7 @@ public class YdResource extends BaseResource {
                 propertyUtils.getInteger("user.max.day.fee." + cpType),
                 propertyUtils.getInteger("user.max.week.fee." + cpType),
                 propertyUtils.getInteger("user.max.month.fee." + cpType),
-                "移动游戏");
+                "联通WO+");
 
         String province = HaoduanCache.getProvince(phoneNum);
         if (isValid) {
@@ -212,7 +216,7 @@ public class YdResource extends BaseResource {
             if (provinceMaxFee == 0) {
                 provinceMaxFee = propertyUtils.getInteger("pc.yd.province.day.limit.19");
             }
-            isValid = provinceLimit(phoneNum, province, 19, provinceMaxFee, "移动游戏");
+            isValid = provinceLimit(phoneNum, province, 19, provinceMaxFee, "联通WO+");
         }
 
         if (isValid) {
@@ -253,8 +257,8 @@ public class YdResource extends BaseResource {
 
         DateTime dateTime = new DateTime();
         dateTime = dateTime.plusDays(-7);
-        String sql = "select sum(fee)/100 from tbl_user_pc_card_log where status=2 and btime>='"
-                + dateTime.toString("yyyy-MM-dd") + "' and mobile='" + phoneNumber + "' and ext=" + type;
+        String sql = "select sum(totalFee)/100 from sms_wo_bill_log where status=4 and ctime>='"
+                + dateTime.toString("yyyy-MM-dd") + "' and mobile='" + phoneNumber + "'";
 
         Integer fee = jdbcTemplate.queryForObject(sql, Integer.class);
         if (fee != null && maxWeekFee > 0 && fee >= maxWeekFee) {
@@ -267,7 +271,7 @@ public class YdResource extends BaseResource {
 
         dateTime = new DateTime();
         dateTime = dateTime.plusMinutes(-3);
-        sql = "select count(*) from tbl_user_pc_card_log where status=2 and btime>='"
+        sql = "select count(*) from sms_wo_bill_log where status=4 and ctime>='"
                 + dateTime.toString("yyyy-MM-dd HH:mm:ss") + "' and mobile='" + phoneNumber + "'";
 
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
@@ -309,7 +313,7 @@ public class YdResource extends BaseResource {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
         int max = propertyUtils.getInteger("yd.daily.fee.limit", 10000);
         if (count != null && count >= max) {
-            LogEnum.DEFAULT.info("移动自有游戏 一天上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            LogEnum.DEFAULT.info("联通WO+自有游戏 一天上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
             return false;
         }
 
@@ -318,7 +322,7 @@ public class YdResource extends BaseResource {
         count = jdbcTemplate.queryForObject(sql, Integer.class);
         max = propertyUtils.getInteger("yd.hour.fee.limit", 2000);
         if (count != null && count >= max) {
-            LogEnum.DEFAULT.info("移动自有游戏  一小时上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            LogEnum.DEFAULT.info("联通WO+自有游戏  一小时上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
             return false;
         }
 
@@ -327,7 +331,7 @@ public class YdResource extends BaseResource {
         count = jdbcTemplate.queryForObject(sql, Integer.class);
         max = propertyUtils.getInteger("yd.hour.fee.limit", 2000) * 2;
         if (count != null && count >= max) {
-            LogEnum.DEFAULT.info("移动自有游戏  一小时请求上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            LogEnum.DEFAULT.info("联通WO+自有游戏  一小时请求上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
             return false;
         }
         return true;
@@ -335,29 +339,29 @@ public class YdResource extends BaseResource {
 
     protected String getTestUserPrice(String phoneNum, String price) {
         if (StringUtils.contains(propertyUtils.getProperty("test.user.list"), phoneNum)) {
-            return "0.01";
+            return "1";
         }
         return price;
     }
 
 
-    private void saveLog(String cid, String phoneNum, String price, Map<String, Object> map, LtPcResult result, String ext) {
+    private void saveLog(String cid, String phoneNum, BigDecimal price, Map<String, Object> map, LtPcResult result, String ext) {
         SmsWoBillLog smsWoBillLog = new SmsWoBillLog();
         try {
             smsWoBillLog.setCpid(Integer.parseInt(cid));
             smsWoBillLog.setRandomid("1");
             smsWoBillLog.setMobile(phoneNum);
-            smsWoBillLog.setTotalFee(new BigDecimal(price));
+            smsWoBillLog.setTotalFee(price);
             smsWoBillLog.setPrice(smsWoBillLog.getTotalFee());
             smsWoBillLog.setQuantity(1);
             smsWoBillLog.setOutTradeNo(IdUtils.idGenerator("yd"));
             smsWoBillLog.setProvince(HaoduanCache.getProvince(phoneNum));
-            smsWoBillLog.setAppKey("cwbk");
-            smsWoBillLog.setAppName("成王败寇");
-            smsWoBillLog.setSubject("元宝");
-            smsWoBillLog.setIapId("iapYb");
+            smsWoBillLog.setAppKey("dlw");
+            smsWoBillLog.setAppName("哆啦网");
+            smsWoBillLog.setSubject("金币");
+            smsWoBillLog.setIapId("jb");
             smsWoBillLog.setCallbackData(ext);
-            smsWoBillLog.setWoCompanyId(0);
+            smsWoBillLog.setWoCompanyId(2);
             if (result != null) {
                 smsWoBillLog.setResultCode(result.getResultCode());
                 smsWoBillLog.setResultDescription(result.getResultMessage());
@@ -388,7 +392,7 @@ public class YdResource extends BaseResource {
                             int cpWoDayCount = cacheCheckUser.getWoDayCount(cpId + "-WO");
                             if (ReduceAlgorithm.isReduce(cpId, reduce, cpWoDayCount)) {
                                 reduceFlg = true;
-                                chargeResultCode = "200076";
+                                chargeResultCode = "8";
                                 smsWoBillLog.setChargeResultCode(chargeResultCode);
                                 smsWoBillLog.setType(1);
                                 LogEnum.DEFAULT.info(new StringBuilder(smsWoBillLog.toString()).

@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.*;
@@ -140,5 +141,11 @@ public class StringTest {
             l.add("insert into black_code(code) values('" + str + "');");
         }
         FileUtils.writeLines(new File("/Users/yanglei/black2.txt"), l);
+    }
+
+    @Test
+    public void testDivide(){
+        BigDecimal fee = new BigDecimal(1);
+        System.out.println(fee.divide(new BigDecimal(100), 2, BigDecimal.ROUND_DOWN));
     }
 }
