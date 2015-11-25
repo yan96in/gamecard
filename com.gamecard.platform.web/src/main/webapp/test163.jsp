@@ -6,22 +6,30 @@
 <%@ page import="org.apache.http.client.HttpClient" %>
 <%@ page import="org.apache.http.client.methods.HttpGet" %>
 <%@ page import="org.joda.time.DateTime" %>
+<%@ page import="com.sp.platform.web.sign.RSA" %>
 <%
-    StringBuilder builder = new StringBuilder();
-    builder.append("?site_id=").append("95212");
-    builder.append("&user_id=").append("61981700");
     String orderId = IdUtils.idGenerator("wy");
-    builder.append("&order_id=").append(orderId);
     DateTime date = new DateTime();
     String d = date.toString("yyyyMMddHHmmss");
+    String site_id = "95212";
+    String user_id = "61981700";
+    String order_id = orderId;
+    String order_time = d;
+    String urs = "jayven";
+    String reason = "1";
+    String pts = "100";
+    StringBuilder builder = new StringBuilder();
+    builder.append("?site_id=").append(site_id);
+    builder.append("&user_id=").append(user_id);
+    builder.append("&order_id=").append(orderId);
     builder.append("&order_time=").append(d);
-    builder.append("&urs=").append("jayven");
-    builder.append("&reason=").append("1");
-    builder.append("&pts=").append("100");
+    builder.append("&urs=").append(urs);
+    builder.append("&reason=").append(reason);
+    builder.append("&pts=").append(pts);
 
-    String key = "9521261981700" + orderId + d + "jayven1100";
+    String key = site_id + user_id + order_id + order_time + urs + reason + pts;
     LogEnum.DEFAULT.info(key);
-    String signature = Encrypt.encryptS1B(key);
+    String signature = RSA.sign(key, "MIICXAIBAAKBgQCv+lnJCDze8jyKWOsQD6YrodR5RDuatbJyAeKecSBu9P8OFQW9eUFw/xDTEahtDvbWtuOxMbJBF3tycNus20Jo6PkBzm1fZFzBLEza41eVOtPV4bB8kTB3oN/rjMM1f9gtLJuSGUdIH/73YM7gwG+dft5V6+Cr+3lkSrJ39F314QIDAQABAoGAalUry31eypg0XKQ95QaPse2nJV9FZMZFfP4GoRZaMrF3LFsnjMWn9U8qK1+QFdXk8PixvG/69bnqrcvj8R7LkPeU6N9z4dvCllAF0B/OjHQbzMPkpp30ePvdfLnbMF8irTHabAlM5TtG0p9Tr6M42CwmHUXdNXcuMeGdfkY2UQECQQDji66HnWvKcjW0ejj2cNqWGZ3l99mTC9MGl7B2P/9lcoKi3sf6nLiysJy+x4saxLBaXE1CY+5Qg1nYkEN9H4f1AkEAxfva2dBA3nbkTSEjY4yO+hxfSlJ6ovIfRgt1lZUKE6d5YJ/x6v6pcIm9KoVtfu2r19/JslCayDWYJvDeEvx+vQJBAIfl862xGiCFx4dre7vLuPDuibxAI6TL6hPE4rItFLadBmKJlXwav8CQ9HyIpo6tK/o7qDTfhAR3/l/2ASiofUUCQB7REgKfWMmH5gdfZhvDsCmcKvTtm6srVtTXSckrtrLSeaEhpE04sHUU633n4OBF7F6gtctsonsRZIqDKX35EV0CQAkQ2WNqlk22b1teU47qTxxb8/wyvrHKuxUxoI01u2fS2WCPdwklHjYp5RgQ0GIKlfwPnyZVqIuhQSu/YpQu6a0=", "utf-8");
     builder.append("&sign=").append(signature);
     LogEnum.DEFAULT.info(builder.toString());
 
