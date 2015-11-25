@@ -181,7 +181,6 @@
                         </div>
                         <div class="btn-con">
                             <input id="btnOK" class="btn" type="submit" value="提交支付">
-                            <a href="index.action?id=${card.id}&account=${account}">重新选择面值</a>
                         </div>
                         <div class="point-list" id="divChannelLimitInfo" style="width: 580px; margin-top: 20px;"><h3>
                             当前支付通道信息</h3>

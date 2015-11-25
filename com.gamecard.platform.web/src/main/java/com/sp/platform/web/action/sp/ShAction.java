@@ -81,6 +81,11 @@ public class ShAction extends ChargeBaseAction {
         return super.select();
     }
 
+    @Action("select")
+    public String select(){
+        return super.select();
+    }
+
     @Action("channel")
     public String channel() {
         return super.channel();
