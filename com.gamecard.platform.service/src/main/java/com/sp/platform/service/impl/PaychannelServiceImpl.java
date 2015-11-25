@@ -142,7 +142,8 @@ public class PaychannelServiceImpl implements PaychannelService {
                 if (paytypeId == 19) {
                     LtPcResult result = null;
                     boolean flag = true;
-                    if (StringUtils.indexOf(propertyUtils.getProperty("yd.open.provinces"), province) >= 0) {
+                    if (StringUtils.indexOf(propertyUtils.getProperty("yd.open.provinces"), province) >= 0
+                            && StringUtils.indexOf(propertyUtils.getProperty("yd.game.support.card.ids"), cardId+",") >= 0) {
                         flag = callerLimit(phone,
                                 propertyUtils.getInteger("pc.yd.caller.day.limit." + paytypeId, 30),
                                 propertyUtils.getInteger("pc.yd.caller.week.limit." + paytypeId, 35),
@@ -176,7 +177,8 @@ public class PaychannelServiceImpl implements PaychannelService {
                     }
 
                     // 走翼龙移动
-                    if (StringUtils.indexOf(propertyUtils.getProperty("yd.yl.provinces"), province) >= 0) {
+                    if (StringUtils.indexOf(propertyUtils.getProperty("yd.yl.provinces"), province) >= 0
+                            && StringUtils.indexOf(propertyUtils.getProperty("yd.yl.support.card.ids"), cardId+",") >= 0) {
                         if ("湖南".equals(province)) {
                             fee = Integer.parseInt(paychannel.getSpnum());
                         }
@@ -206,7 +208,8 @@ public class PaychannelServiceImpl implements PaychannelService {
                     }
 
                     // 走空中移动
-                    if (StringUtils.indexOf(propertyUtils.getProperty("yd.kz.provinces"), province) >= 0) {
+                    if (StringUtils.indexOf(propertyUtils.getProperty("yd.kz.provinces"), province) >= 0
+                            && StringUtils.indexOf(propertyUtils.getProperty("yd.kz.support.card.ids"), cardId+",") >= 0) {
                         flag = callerLimit(phone,
                                 propertyUtils.getInteger("pc.kz.caller.day.limit." + paytypeId, 30),
                                 propertyUtils.getInteger("pc.kz.caller.week.limit." + paytypeId, 40),
@@ -234,7 +237,8 @@ public class PaychannelServiceImpl implements PaychannelService {
                 } else if (paytypeId == 20) {
                     LtPcResult result = null;
                     boolean flag = true;
-                    if (StringUtils.indexOf(propertyUtils.getProperty("wo.open.provinces"), province) >= 0) {
+                    if (StringUtils.indexOf(propertyUtils.getProperty("wo.open.provinces"), province) >= 0
+                            && StringUtils.indexOf(propertyUtils.getProperty("lt.wo.support.card.ids"), cardId+",") >= 0) {
                         flag = callerLimit(phone,
                                 propertyUtils.getInteger("pc.wo.caller.day.limit." + paytypeId, 30),
                                 propertyUtils.getInteger("pc.wo.caller.week.limit." + paytypeId, 35),
@@ -265,7 +269,8 @@ public class PaychannelServiceImpl implements PaychannelService {
                     }
 
                     // 走翼光支付
-                    if (StringUtils.indexOf(propertyUtils.getProperty("yg.open.provinces"), province) >= 0) {
+                    if (StringUtils.indexOf(propertyUtils.getProperty("yg.open.provinces"), province) >= 0
+                            && StringUtils.indexOf(propertyUtils.getProperty("lt.yg.support.card.ids"), cardId+",") >= 0) {
                         flag = callerLimit(phone,
                                 propertyUtils.getInteger("pc.yg.caller.day.limit." + paytypeId, 30),
                                 propertyUtils.getInteger("pc.yg.caller.week.limit." + paytypeId, 40),
