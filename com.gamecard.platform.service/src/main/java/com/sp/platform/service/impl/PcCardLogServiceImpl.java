@@ -256,6 +256,8 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                     //TODO : 调用充值接口
                     if (cardId == 51) {
                         result = payServiceFactory.getPayService(cardId).pay(pcCardLog);
+                    } else if (cardId == 52) {
+                        result = payServiceFactory.getPayService(cardId).pay(pcCardLog);
                     }
                     if (StringUtils.isBlank(result)) {
                         pcCardLog.setStatus(3);
@@ -277,9 +279,21 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                         if (StringUtils.equals(m.get("ret_code"), "0")) {
                             pcCardLog.setCardpwd(m.get("jnet_bill_no"));
                             pcCardLog.setStatus(2);
+                            LogEnum.DEFAULT.info(phone + "充值成功" + sid + " " + cardId + " " + result);
                         } else {
                             pcCardLog.setResultcode(m.get("ret_code"));
                             pcCardLog.setResultmsg(m.get("ret_msg"));
+                            pcCardLog.setStatus(3);
+                            LogEnum.DEFAULT.info(phone + "充值失败，充值接口有误" + sid + " " + cardId + " " + result);
+                        }
+                        pcCardLogDao.save(pcCardLog);
+                        return pcCardLog;
+                    } else if (cardId == 52) {
+                        if (StringUtils.equals(result, "0")) {
+                            LogEnum.DEFAULT.info(phone + "充值成功" + sid + " " + cardId + " " + result);
+                            pcCardLog.setStatus(2);
+                        } else {
+                            LogEnum.DEFAULT.info(phone + "充值失败，充值接口有误" + sid + " " + cardId + " " + result);
                             pcCardLog.setStatus(3);
                         }
                         pcCardLogDao.save(pcCardLog);

@@ -77,6 +77,7 @@ public class ChargeBaseAction extends ActionSupport {
     protected int type;
 
     protected String account;
+    protected String userAccount;
 
     public String index() {
         if (id == null) {
@@ -387,7 +388,7 @@ public class ChargeBaseAction extends ActionSupport {
 
             CheckUserCache.addIp(paytypeId + "_" + IpAddressUtil.getRealIp());
 
-            channelVo = paychannelService.sendPcCode(id, priceId, paytypeId, phone.getProvince(), phoneNumber, account);
+            channelVo = paychannelService.sendPcCode(id, priceId, paytypeId, phone.getProvince(), phoneNumber, account, userAccount);
             channelVo.setPhoneVo(phone);
             result = new JsonVo(true, channelVo, "");
         }
@@ -735,4 +736,11 @@ public class ChargeBaseAction extends ActionSupport {
         this.account = account;
     }
 
+    public String getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(String userAccount) {
+        this.userAccount = userAccount;
+    }
 }

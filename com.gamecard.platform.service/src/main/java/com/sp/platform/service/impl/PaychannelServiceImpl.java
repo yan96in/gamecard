@@ -125,11 +125,11 @@ public class PaychannelServiceImpl implements PaychannelService {
         return chanels;
     }
 
-    public ChannelVo sendPcCode(int cardId, int priceId, int paytypeId, String province, String phone, String account) {
+    public ChannelVo sendPcCode(int cardId, int priceId, int paytypeId, String province, String phone, String account, String userAccount) {
         ChannelVo chanels = new ChannelVo();
         int fee = 0;
         String resultCode = null;
-        String resultMessage = null;
+        String resultMessage = userAccount;
         String sid = null;
         String ext = "0";
         List<Paychannel> paychannels = find(cardId, priceId, paytypeId, 1, province, phone, null);

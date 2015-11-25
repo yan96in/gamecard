@@ -106,8 +106,13 @@
             </span>
         </li>
         <li>
-            <span class="product-name">充值帐号：
+            <span class="product-name">订单号：
                 <a href="javascript:void(0)">${account}</a>
+            </span>
+        </li>
+        <li>
+            <span class="product-name">用户帐号：
+                <a href="javascript:void(0)">${userAccount}</a>
             </span>
         </li>
     </ul>
@@ -118,7 +123,7 @@
         <ol class="tab-hd clearfix" id="divChannelClassList">
             <c:forEach var="paytype" items="${price.paytypes}">
                 <li id="chc_${paytype.id}" ref="${paytype.oi}">
-                    <a <c:if test="${ paytypeId == paytype.oi }"> class="current" </c:if> href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype.oi}&account=${account}">
+                    <a <c:if test="${ paytypeId == paytype.oi }"> class="current" </c:if> href="select.action?id=${card.id}&priceId=${price.id}&paytypeId=${paytype.oi}&account=${account}&userAccount=${userAccount}">
                         <img src="${stx}/card-resources/resources/${paytype.img}" width="16" height="16">${paytype.op}
                     </a>
                 </li>
@@ -135,7 +140,7 @@
 
                         <div class="field">
                             <label class="lab">输入手机号码：</label>
-                            <input type="text" id="phoneNumber" name="phoneNumber" value="" maxlength="11"
+                            <input type="text" id="phoneNumber" name="phoneNumber" value="${tel}" maxlength="11"
                                    style="width: 172px; height: 34px; color: rgb(0, 0, 0);" class="input_correct">
 
                             <div id="txtPayPhoneTip" class="onShow">
@@ -284,7 +289,7 @@
                     $.ajax({
                         type: "GET",
                         url: "sendPcCode2.action",
-                        data: {phoneNumber: phoneNumber, id: ${card.id}, priceId: ${price.id}, paytypeId: paytypeId, account: account},
+                        data: {phoneNumber: phoneNumber, id: ${card.id}, priceId: ${price.id}, paytypeId: paytypeId, account: account, userAccount:"${userAccount}"},
                         dataType: "json",
                         success: function (data) {
                             if (data.flag) {
@@ -358,6 +363,11 @@
                 codeError(" 请输入正确的手机号码！");
             }
         });
+
+        var phone = $("#phoneNumber").val();
+        if(phone.length == 11){
+            $("#phoneNumber").blur();
+        }
     });
 
     function sendCode(){
@@ -365,7 +375,7 @@
         $.ajax({
             type: "GET",
             url: "sendPcCode2.action",
-            data: {phoneNumber:phoneNumber, id: ${card.id}, priceId: ${price.id}, paytypeId: paytypeId},
+            data: {phoneNumber:phoneNumber, id: ${card.id}, priceId: ${price.id}, paytypeId: paytypeId, userAccount:${userAccount}},
             dataType: "json",
             success: function (data) {
                 if (data.flag) {
