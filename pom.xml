@@ -28,7 +28,8 @@
 
                 <sp.platform.db.type>mysql</sp.platform.db.type>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
-                <jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3301/skyd?useUnicode=true&amp;autoReconnect=true&amp;characterEncoding=utf-8]]></jdbc.url>
+                <jdbc.url>
+                    <![CDATA[jdbc:mysql://127.0.0.1:3301/skyd?useUnicode=true&amp;autoReconnect=true&amp;characterEncoding=utf-8]]></jdbc.url>
                 <jdbc.username>ivruser</jdbc.username>
                 <jdbc.password>skyd@ivruser</jdbc.password>
                 <hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernate.dialect>
@@ -51,7 +52,8 @@
 
                 <sp.platform.db.type>mysql</sp.platform.db.type>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
-                <jdbc.url><![CDATA[jdbc:mysql://123.57.237.88:3301/skyd?useUnicode=true&amp;autoReconnect=true&amp;characterEncoding=utf-8]]></jdbc.url>
+                <jdbc.url>
+                    <![CDATA[jdbc:mysql://123.57.237.88:3301/skyd?useUnicode=true&amp;autoReconnect=true&amp;characterEncoding=utf-8]]></jdbc.url>
                 <jdbc.username>ivruser</jdbc.username>
                 <jdbc.password>skyd@ivruser</jdbc.password>
                 <hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernate.dialect>
@@ -74,7 +76,8 @@
 
                 <sp.platform.db.type>mysql</sp.platform.db.type>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
-                <jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3306/skyd?useUnicode=true&amp;autoReconnect=true&amp;characterEncoding=utf-8]]></jdbc.url>
+                <jdbc.url>
+                    <![CDATA[jdbc:mysql://127.0.0.1:3306/skyd?useUnicode=true&amp;autoReconnect=true&amp;characterEncoding=utf-8]]></jdbc.url>
                 <jdbc.username>root</jdbc.username>
                 <jdbc.password>123153</jdbc.password>
                 <hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernate.dialect>
@@ -97,7 +100,8 @@
 
                 <sp.platform.db.type>mysql</sp.platform.db.type>
                 <jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
-                <jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3306/skyd?useUnicode=true&amp;autoReconnect=true&amp;characterEncoding=utf-8]]></jdbc.url>
+                <jdbc.url>
+                    <![CDATA[jdbc:mysql://127.0.0.1:3306/skyd?useUnicode=true&amp;autoReconnect=true&amp;characterEncoding=utf-8]]></jdbc.url>
                 <jdbc.username>yanglei</jdbc.username>
                 <jdbc.password>123153</jdbc.password>
                 <hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernate.dialect>
@@ -119,6 +123,11 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>140</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -224,39 +233,39 @@
             <version>1.8.4</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-web</artifactId>-->
-            <!--<version>3.2.13.RELEASE</version>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-web</artifactId>-->
+        <!--<version>3.2.13.RELEASE</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-orm</artifactId>-->
-            <!--<version>3.2.13.RELEASE</version>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-orm</artifactId>-->
+        <!--<version>3.2.13.RELEASE</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-webmvc</artifactId>-->
-            <!--<version>3.2.13.RELEASE</version>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-webmvc</artifactId>-->
+        <!--<version>3.2.13.RELEASE</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-context-support</artifactId>-->
-            <!--<version>3.2.13.RELEASE</version>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-context-support</artifactId>-->
+        <!--<version>3.2.13.RELEASE</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.apache.struts</groupId>-->
-            <!--<artifactId>struts2-convention-plugin</artifactId>-->
-            <!--<version>2.3.20</version>-->
+        <!--<groupId>org.apache.struts</groupId>-->
+        <!--<artifactId>struts2-convention-plugin</artifactId>-->
+        <!--<version>2.3.20</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.apache.struts</groupId>-->
-            <!--<artifactId>struts2-json-plugin</artifactId>-->
-            <!--<version>2.3.20</version>-->
+        <!--<groupId>org.apache.struts</groupId>-->
+        <!--<artifactId>struts2-json-plugin</artifactId>-->
+        <!--<version>2.3.20</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.apache.struts</groupId>-->
-            <!--<artifactId>struts2-spring-plugin</artifactId>-->
-            <!--<version>2.3.20</version>-->
+        <!--<groupId>org.apache.struts</groupId>-->
+        <!--<artifactId>struts2-spring-plugin</artifactId>-->
+        <!--<version>2.3.20</version>-->
         <!--</dependency>-->
     </dependencies>
 
