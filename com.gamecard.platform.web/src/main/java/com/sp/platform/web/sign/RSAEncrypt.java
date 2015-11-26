@@ -27,13 +27,13 @@ import sun.misc.BASE64Decoder;
 
 public class RSAEncrypt {
 
-    private static final String DEFAULT_PUBLIC_KEY =
+    public static final String DEFAULT_PUBLIC_KEY =
             "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCurS+gyXEGyNxKcu1Ja0L6uN7/" +
                     "TBMNQw/DgicvftExXrus1zTPL5jSe/fOjAqssO52Pla0UlugIAgazYn/HLjEWvtg" +
                     "Sjsqi65R+4FbC95BROKR1qhsAo2xb25EZ/Ab94khxlYBTtAfSFcT9dIXP6rmmW2w" +
                     "SlnIOSSxLplfj7I4jQIDAQAB";
 
-    private static final String DEFAULT_PRIVATE_KEY =
+    public static final String DEFAULT_PRIVATE_KEY =
             "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAK/6WckIPN7yPIpY" +
                     "6xAPpiuh1HlEO5q1snIB4p5xIG70/w4VBb15QXD/ENMRqG0O9ta247ExskEXe3Jw" +
                     "26zbQmjo+QHObV9kXMEsTNrjV5U609XhsHyRMHeg3+uMwzV/2C0sm5IZR0gf/vdg" +
