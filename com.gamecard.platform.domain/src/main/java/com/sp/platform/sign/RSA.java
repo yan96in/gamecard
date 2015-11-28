@@ -1,5 +1,5 @@
 
-package com.sp.platform.web.sign;
+package com.sp.platform.sign;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayInputStream;

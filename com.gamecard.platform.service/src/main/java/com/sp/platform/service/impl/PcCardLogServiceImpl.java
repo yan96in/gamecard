@@ -254,11 +254,8 @@ public class PcCardLogServiceImpl implements PcCardLogService {
 
                     String result = null;
                     //TODO : 调用充值接口
-                    if (cardId == 51) {
-                        result = payServiceFactory.getPayService(cardId).pay(pcCardLog);
-                    } else if (cardId == 52) {
-                        result = payServiceFactory.getPayService(cardId).pay(pcCardLog);
-                    }
+                    result = payServiceFactory.getPayService(cardId).pay(pcCardLog);
+
                     if (StringUtils.isBlank(result)) {
                         pcCardLog.setStatus(3);
                         pcCardLogDao.save(pcCardLog);
@@ -288,7 +285,7 @@ public class PcCardLogServiceImpl implements PcCardLogService {
                         }
                         pcCardLogDao.save(pcCardLog);
                         return pcCardLog;
-                    } else if (cardId == 52) {
+                    } else if (cardId == 52 || cardId == 53) {
                         if (StringUtils.equals(result, "0")) {
                             LogEnum.DEFAULT.info(phone + "充值成功" + sid + " " + cardId + " " + result);
                             pcCardLog.setStatus(2);

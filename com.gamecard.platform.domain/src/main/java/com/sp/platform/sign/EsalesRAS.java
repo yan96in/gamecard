@@ -1,4 +1,4 @@
-package com.sp.platform.web.sign;
+package com.sp.platform.sign;
 
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
@@ -11,16 +11,16 @@ import java.security.spec.X509EncodedKeySpec;
  */
 public class EsalesRAS {
 
-    public static final String pubKey = "30819f300d06092a864886f70d010101050003818d0030818902818100aead2fa0c97106c8dc4a72ed496b42fab8deff4c130d430fc382272f7ed1315ebbacd734cf2f98d27bf7ce8c0aacb0ee763e56b4525ba020081acd89ff1cb8c45afb604a3b2a8bae51fb815b0bde4144e291d6a86c028db16f6e4467f01bf78921c656014ed01f485713f5d2173faae6996db04a59c83924b12e995f8fb2388d0203010001";
-
     public static void main(String[] args) {
+        String pubKey = "30819f300d06092a864886f70d010101050003818d0030818902818100aead2fa0c97106c8dc4a72ed496b42fab8deff4c130d430fc382272f7ed1315ebbacd734cf2f98d27bf7ce8c0aacb0ee763e56b4525ba020081acd89ff1cb8c45afb604a3b2a8bae51fb815b0bde4144e291d6a86c028db16f6e4467f01bf78921c656014ed01f485713f5d2173faae6996db04a59c83924b12e995f8fb2388d0203010001";
+
         String pKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCurS+gyXEGyNxKcu1Ja0L6uN7/TBMNQw/DgicvftExXrus1zTPL5jSe/fOjAqssO52Pla0UlugIAgazYn/HLjEWvtgSjsqi65R+4FbC95BROKR1qhsAo2xb25EZ/Ab94khxlYBTtAfSFcT9dIXP6rmmW2wSlnIOSSxLplfj7I4jQIDAQAB";
         System.out.println(bytesToHexStr(Base64.decode(pKey)));
 
         EsalesRAS ras = new EsalesRAS();
         String sign_org = "993991d16da5eef7576ec6052a336a0c5a886287af63800ced020f4b9faf680f07ac8fd441cfc050f78ee785b046a350bd05217dcc88da74390129a7df0cbdd0469ca97417cf172f94a54532288e7fff8a1ccebeefbc5e5d2fc477fda7de28b554b4d2fda907abcd87b624afa438933dfa52e7fe5b54e4a38bb6a40b94e2b9e6";
         String source = "ARG_ERRsign289632";
-        System.out.println(ras.verifySHA1withRSASigature(sign_org, source));
+        System.out.println(ras.verifySHA1withRSASigature(sign_org, source, pubKey));
     }
 
     /*
@@ -53,7 +53,7 @@ public class EsalesRAS {
     /*
      * 验证签名
      */
-    public boolean verifySHA1withRSASigature(String sign, String src) {
+    public boolean verifySHA1withRSASigature(String sign, String src, String pubKey) {
         try {
 
             Signature sigEng = Signature.getInstance("SHA1withRSA");

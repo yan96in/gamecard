@@ -1,6 +1,6 @@
 <%@ page import="com.sp.platform.util.IdUtils" %>
 <%@ page import="com.sp.platform.util.LogEnum" %>
-<%@ page import="com.sp.platform.web.sign.EsalesRAS" %>
+<%@ page import="com.sp.platform.sign.EsalesRAS" %>
 <%@ page import="org.apache.commons.io.IOUtils" %>
 <%@ page import="org.apache.http.HttpResponse" %>
 <%@ page import="org.apache.http.client.HttpClient" %>
@@ -17,7 +17,7 @@
     String user_id = "61981700";
     String order_id = orderId;
     String order_time = d;
-    String urs = "jayven";
+    String urs = "jayven@163.com";
     String reason = "1";
     String pts = "100";
     StringBuilder builder = new StringBuilder();

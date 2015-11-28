@@ -1,4 +1,4 @@
-package com.sp.platform.web.sign;
+package com.sp.platform.sign;
 
 import java.security.KeyFactory;
 import java.security.PrivateKey;

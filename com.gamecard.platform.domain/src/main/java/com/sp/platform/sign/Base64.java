@@ -1,4 +1,4 @@
-package com.sp.platform.web.sign;
+package com.sp.platform.sign;
 
 public final class Base64 {
 

@@ -12,12 +12,16 @@ public class PayServiceFactory {
     private JcardPaySerivce jcardPaySerivce;
     @Autowired
     private ShPaySerivce shPaySerivce;
+    @Autowired
+    private Wy163PaySerivce wy163PaySerivce;
 
     public PayService getPayService(int cardId) {
         if (cardId == 51) {
             return jcardPaySerivce;
         } else if (cardId == 52) {
             return shPaySerivce;
+        } else if (cardId == 53) {
+            return wy163PaySerivce;
         }
         return null;
     }
