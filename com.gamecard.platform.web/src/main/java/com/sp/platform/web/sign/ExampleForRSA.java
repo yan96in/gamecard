@@ -30,9 +30,10 @@ public class ExampleForRSA {
         System.out.println(result);
 
 
-        String pub = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCurS+gyXEGyNxKcu1Ja0L6uN7/TBMNQw/DgicvftExXrus1zTPL5jSe/fOjAqssO52Pla0UlugIAgazYn/HLjEWvtgSjsqi65R+4FbC95BROKR1qhsAo2xb25EZ/Ab94khxlYBTtAfSFcT9dIXP6rmmW2wSlnIOSSxLplfj7I4jQIDAQAB";
-        System.out.println(bytesToHexStr(Base64.decode(pub)));
-
+        String key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCurS+gyXEGyNxKcu1Ja0L6uN7/TBMNQw/DgicvftExXrus1zTPL5jSe/fOjAqssO52Pla0UlugIAgazYn/HLjEWvtgSjsqi65R+4FbC95BROKR1qhsAo2xb25EZ/Ab94khxlYBTtAfSFcT9dIXP6rmmW2wSlnIOSSxLplfj7I4jQIDAQAB";
+        System.out.println(bytesToHexStr(Base64.decode(key)));
+        key = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAK/6WckIPN7yPIpY6xAPpiuh1HlEO5q1snIB4p5xIG70/w4VBb15QXD/ENMRqG0O9ta247ExskEXe3Jw26zbQmjo+QHObV9kXMEsTNrjV5U609XhsHyRMHeg3+uMwzV/2C0sm5IZR0gf/vdgzuDAb51+3lXr4Kv7eWRKsnf0XfXhAgMBAAECgYBqVSvLfV7KmDRcpD3lBo+x7aclX0VkxkV8/gahFloysXcsWyeMxaf1TyorX5AV1eTw+LG8b/r1ueqty+PxHsuQ95To33Ph28KWUAXQH86MdBvMw+SmnfR4+918udswXyKtMdpsCUzlO0bSn1OvozjYLCYdRd01dy4x4Z1+RjZRAQJBAOOLroeda8pyNbR6OPZw2pYZneX32ZML0waXsHY//2VygqLex/qcuLKwnL7HixrEsFpcTUJj7lCDWdiQQ30fh/UCQQDF+9rZ0EDeduRNISNjjI76HF9KUnqi8h9GC3WVlQoTp3lgn/Hq/qlwib0qhW1+7avX38myUJrINZgm8N4S/H69AkEAh+XzrbEaIIXHh2t7u8u48O6JvEAjpMvqE8Tisi0Utp0GYomVfBq/wJD0fIimjq0r+juoNN+EBHf+X/YBKKh9RQJAHtESAp9YyYfmB19mG8OwKZwq9O2bqytW1NdJySu2stJ5oSGkTTiwdRTrfefg4EXsXqC1y2yiexFkioMpffkRXQJACRDZY2qWTbZvW15TjupPHFvz/DK+scq7FTGgjTW7Z9LZYI93CSUeNinlGBDQYgqV/A+fJlWoi6FBK79ilC7prQ==";
+        System.out.println(bytesToHexStr(Base64.decode(key)));
     }
 
     /*

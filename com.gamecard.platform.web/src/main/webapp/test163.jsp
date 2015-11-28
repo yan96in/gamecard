@@ -1,6 +1,6 @@
 <%@ page import="com.sp.platform.util.IdUtils" %>
 <%@ page import="com.sp.platform.util.LogEnum" %>
-<%@ page import="com.sp.platform.web.sign.ExampleForRSA" %>
+<%@ page import="com.sp.platform.web.sign.EsalesRAS" %>
 <%@ page import="org.apache.commons.io.IOUtils" %>
 <%@ page import="org.apache.http.HttpResponse" %>
 <%@ page import="org.apache.http.client.HttpClient" %>
@@ -32,9 +32,9 @@
     String key = site_id + user_id + order_id + order_time + urs + reason + pts;
     LogEnum.DEFAULT.info(key);
     //私钥加密过程
-    ExampleForRSA temp = new ExampleForRSA();
+    EsalesRAS ras = new EsalesRAS();
 
-    String signature = temp.generateSHA1withRSASigature(key);
+    String signature = ras.generateSHA1withRSASigature(key, privateKey);
 
     builder.append("&sign=").append(signature);
     LogEnum.DEFAULT.info(builder.toString());
