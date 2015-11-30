@@ -49,7 +49,8 @@ public class Wy163PaySerivce implements PayService {
             String order_time = d;
             String urs = pcCardLog.getCardno();
             String reason = "1";
-            String pts = Constants.jcardFee.get(pcCardLog.getCardId() + "" + pcCardLog.getPriceId()).intValue() + "";
+
+            String pts = propertyUtils.getProperty("163.fee." + pcCardLog.getCardId() + "" + pcCardLog.getPriceId());
             StringBuilder builder = new StringBuilder();
             builder.append("?site_id=").append(site_id);
             builder.append("&user_id=").append(user_id);
