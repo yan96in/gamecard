@@ -42,6 +42,7 @@ public class ShAction extends ChargeBaseAction {
     private String uip;
     private static Map<String, String> idMap = new HashMap<String, String>();
     private static Map<String, String> priceMap = new HashMap<String, String>();
+    private static Map<String, String> feeMap = new HashMap<String, String>();
 
     static {
         idMap.put("5222", "52");
@@ -50,14 +51,22 @@ public class ShAction extends ChargeBaseAction {
         priceMap.put("5224", "24");
         idMap.put("5225", "52");
         priceMap.put("5225", "25");
+        feeMap.put("10", "5222");
+        feeMap.put("20", "5224");
+        feeMap.put("30", "5225");
     }
 
     @Action("order")
     public String order() {
         LogEnum.DEFAULT.info(this.toString());
-        if (StringUtils.isBlank(orderid) || StringUtils.isBlank(tel)) {
+        if (StringUtils.isBlank(orderid) || StringUtils.isBlank(rmb)) {
             return "403";
         }
+        productid = feeMap.get(rmb);
+        if(StringUtils.isBlank(productid)){
+            return "403";
+        }
+
         String strId = idMap.get(productid);
         String strPriceId = priceMap.get(productid);
         if (StringUtils.isBlank(strId) || StringUtils.isBlank(strPriceId)) {

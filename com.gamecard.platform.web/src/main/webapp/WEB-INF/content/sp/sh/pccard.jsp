@@ -145,9 +145,6 @@
                                     恭喜你充值成功！
                                 </p>
                                 <p>
-                                    用户帐号：${pcCardLog.resultmsg}
-                                </p>
-                                <p>
                                     订单号：${pcCardLog.cardno}
                                 </p>
                             </c:if>

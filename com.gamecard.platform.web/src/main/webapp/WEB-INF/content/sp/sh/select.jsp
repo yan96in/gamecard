@@ -110,11 +110,6 @@
                 <a href="javascript:void(0)">${account}</a>
             </span>
         </li>
-        <li>
-            <span class="product-name">用户帐号：
-                <a href="javascript:void(0)">${userAccount}</a>
-            </span>
-        </li>
     </ul>
     <form id="form1" name="form1" action="channel.action" method="post">
         <input type="hidden" name="msg" id="msg"/>
