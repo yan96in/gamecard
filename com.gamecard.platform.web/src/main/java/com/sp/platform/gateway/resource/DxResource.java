@@ -189,7 +189,7 @@ public class DxResource extends BaseResource {
             throw new Exception("渠道黑名单" + cid);
         }
 
-        if (StringUtils.indexOf(propertyUtils.getProperty("dx.price.list"), price + ",") >= 0) {
+        if (StringUtils.indexOf(propertyUtils.getProperty("dx.price.list"), price + ",") < 0) {
             throw new Exception("超出价格范围:" + price);
         }
 
