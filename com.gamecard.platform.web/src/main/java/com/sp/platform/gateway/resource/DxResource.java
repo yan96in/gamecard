@@ -193,7 +193,6 @@ public class DxResource extends BaseResource {
             throw new Exception("超出价格范围:" + price);
         }
 
-
         if (Integer.parseInt(price) > 2000) {
             throw new Exception("超出价格范围:" + price);
         }
