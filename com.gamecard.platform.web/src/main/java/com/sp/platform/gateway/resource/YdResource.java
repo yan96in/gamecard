@@ -228,7 +228,7 @@ public class YdResource extends BaseResource {
 
     private boolean callerLimit(String phoneNumber, int maxDayFee, int maxWeekFee, int maxMonthFee, String channelType) {
         //----------------------------- 用户日上限 -----------------------
-        int type = 3;
+        int type = getPcSpType(channelType);
 
         int tempFee = cacheCheckUser.getCallerDayFee(phoneNumber + Constants.split_str + "pc" + type);
 
@@ -282,7 +282,7 @@ public class YdResource extends BaseResource {
 
     private boolean provinceLimit(String phoneNumber, String province, int paytypeId, int maxDayFee, String channelType) {
         //----------------------------- 省份日上限 -----------------------
-        int type = 3;
+        int type = getPcSpType(channelType);
 
         int tempFee = cacheCheckUser.getCalledProvinceDayFee(province + Constants.split_str + "pc" + paytypeId + type);
 

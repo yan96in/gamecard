@@ -8,6 +8,7 @@ import com.sp.platform.gateway.exception.HTTPException;
 import com.sp.platform.gateway.exception.ValidationException;
 import com.sp.platform.gateway.validator.Groups.CheckParam;
 import com.sp.platform.util.LogEnum;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,5 +62,23 @@ public abstract class BaseResource {
             }
             throw new ValidationException(Status.BAD_REQUEST, messageList, new ValidationException());
         }
+    }
+
+    protected int getPcSpType(String channelType) {
+        int type = 0;
+        if (StringUtils.equals("WO+", channelType)) {
+            type = 1;
+        } else if (StringUtils.equals("翼光", channelType)) {
+            type = 2;
+        } else if (StringUtils.equals("移动游戏", channelType)) {
+            type = 3;
+        } else if (StringUtils.equals("翼龙", channelType)) {
+            type = 4;
+        } else if (StringUtils.equals("空中移动", channelType)) {
+            type = 5;
+        } else if (StringUtils.equals("电信", channelType)) {
+            type = 6;
+        }
+        return type;
     }
 }

@@ -1,19 +1,17 @@
 package com.sp.platform.gateway.resource;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.sp.platform.cache.CpSyncCache;
 import com.sp.platform.cache.HaoduanCache;
 import com.sp.platform.common.Constants;
 import com.sp.platform.entity.CpNum;
+import com.sp.platform.entity.PcCardLog;
 import com.sp.platform.entity.SmsWoBillLog;
 import com.sp.platform.entity.User;
 import com.sp.platform.gateway.constant.Status;
 import com.sp.platform.gateway.exception.BusinessException;
 import com.sp.platform.gateway.response.wo.PaymentChargeResponse;
 import com.sp.platform.service.SmsWoBillLogService;
-import com.sp.platform.service.sp.SpWoService;
-import com.sp.platform.service.sp.SpYdService;
+import com.sp.platform.service.sp.DxService;
 import com.sp.platform.util.*;
 import com.sp.platform.vo.LtPcResult;
 import org.apache.commons.lang.StringUtils;
@@ -36,12 +34,12 @@ import java.util.Map;
  * Created by yanglei on 15/11/15.
  */
 @Controller
-@Path("/lt")
-public class WoResource extends BaseResource {
+@Path("/dx")
+public class DxResource extends BaseResource {
     @Autowired
     private PropertyUtils propertyUtils;
     @Autowired
-    private SpWoService spService;
+    private DxService spService;
     @Autowired
     private SmsWoBillLogService billLogService;
     @Autowired
@@ -70,7 +68,7 @@ public class WoResource extends BaseResource {
 
             fee = new BigDecimal(price).divide(new BigDecimal(100), 2, BigDecimal.ROUND_DOWN);
 
-            result = spService.sendCode(phoneNum, fee);  // 联通WO+
+            result = spService.sendYdCode(phoneNum, fee.intValue(), "");  // 联通WO+
 
             if (result != null && result.isFlag()) {
                 LogEnum.DEFAULT.info(cid + user.getShowname() + " 申请联通WO+下发验证码 成功: " + result.toString());
@@ -120,28 +118,37 @@ public class WoResource extends BaseResource {
             }
 
             woBillLog.setDescription(paymentCode);
+            PcCardLog pcCardLog = new PcCardLog();
+            pcCardLog.setFee(woBillLog.getTotalFee().intValue());
+            pcCardLog.setCardId(1);
+            if (600 == pcCardLog.getFee()) {
+                pcCardLog.setPriceId(19);
+            } else if (1000 == pcCardLog.getFee()) {
+                pcCardLog.setPriceId(21);
+            } else if (2000 == pcCardLog.getFee()) {
+                pcCardLog.setPriceId(16);
+            }
 
-            String body = spService.commitPaymentCode(woBillLog.getMobile(), paymentCode, linkid, woBillLog.getTotalFee());
-            JSONObject object = JSON.parseObject(body);
-            String resultCode = object.getString("resultCode");
-            String resultMsg = object.getString("resultMsg");
+            String body = spService.commitPaymentCode(woBillLog.getMobile(), paymentCode, linkid, 21, pcCardLog);
 
-            if (StringUtils.equals(resultCode, "0")) {
+            boolean isOK = (propertyUtils.getProperty("pc.dx.success.result", "00").equals(body));
+
+            if (isOK) {
                 woBillLog.setStatus("4");
                 woBillLog.setCpamount(woBillLog.getTotalFee());
-                LogEnum.DEFAULT.info(linkid + " 联通WO+计费成功: " + object.toString());
+                LogEnum.DEFAULT.info(linkid + " 电信计费成功: " + body);
 
-                cacheCheckUser.addCallerFee(woBillLog.getMobile() + Constants.split_str + "pc1", woBillLog.getTotalFee().intValue());
-                cacheCheckUser.addCalledProvinceFee(woBillLog.getProvince() + Constants.split_str + "pc201", woBillLog.getTotalFee().intValue(), false);
-                cacheCheckUser.addCalledFee("pc201", woBillLog.getTotalFee().intValue(), false);
+                cacheCheckUser.addCallerFee(woBillLog.getMobile() + Constants.split_str + "pc6", woBillLog.getTotalFee().intValue());
+                cacheCheckUser.addCalledProvinceFee(woBillLog.getProvince() + Constants.split_str + "pc216", woBillLog.getTotalFee().intValue(), false);
+                cacheCheckUser.addCalledFee("pc216", woBillLog.getTotalFee().intValue(), false);
             } else {
                 woBillLog.setStatus("8");
                 woBillLog.setCpamount(new BigDecimal(0));
-                LogEnum.DEFAULT.info(linkid + "联通WO+计费失败: " + object.toString());
+                LogEnum.DEFAULT.info(linkid + "电信计费失败: " + body);
             }
 
-            woBillLog.setChargeResultCode(resultCode);
-            woBillLog.setResultDescription(resultMsg);
+            woBillLog.setChargeResultCode(body);
+            woBillLog.setResultDescription(String.valueOf(isOK));
             woBillLog.setUtime(new Date());
             syncToCP(woBillLog);
 
@@ -178,11 +185,17 @@ public class WoResource extends BaseResource {
             throw new Exception("渠道" + cid + "不存在");
         }
 
-        if (StringUtils.indexOf(propertyUtils.getProperty("black.cp"), cid) >= 0) {
+        if (StringUtils.indexOf(propertyUtils.getProperty("black.cp"), cid + ",") >= 0) {
             throw new Exception("渠道黑名单" + cid);
         }
+
+        if (StringUtils.indexOf(propertyUtils.getProperty("dx.price.list"), price + ",") >= 0) {
+            throw new Exception("超出价格范围:" + price);
+        }
+
+
         if (Integer.parseInt(price) > 2000) {
-            throw new Exception("超出价格范围");
+            throw new Exception("超出价格范围:" + price);
         }
         String cpType = "djf";
         /****************** 凌晨判断 ******************/
@@ -207,15 +220,15 @@ public class WoResource extends BaseResource {
                 propertyUtils.getInteger("user.max.day.fee." + cpType),
                 propertyUtils.getInteger("user.max.week.fee." + cpType),
                 propertyUtils.getInteger("user.max.month.fee." + cpType),
-                "WO+");
+                "电信");
 
         String province = HaoduanCache.getProvince(phoneNum);
         if (isValid) {
-            int provinceMaxFee = propertyUtils.getInteger("pc.wo.province.day.limit.20." + province);
+            int provinceMaxFee = propertyUtils.getInteger("pc.dx.province.day.limit.21." + province);
             if (provinceMaxFee == 0) {
-                provinceMaxFee = propertyUtils.getInteger("pc.wo.province.day.limit.20");
+                provinceMaxFee = propertyUtils.getInteger("pc.dx.province.day.limit.21");
             }
-            isValid = provinceLimit(phoneNum, province, 20, provinceMaxFee, "WO+");
+            isValid = provinceLimit(phoneNum, province, 21, provinceMaxFee, "电信");
         }
 
         if (isValid) {
@@ -307,30 +320,30 @@ public class WoResource extends BaseResource {
     private boolean checkYdTotalLimit() {
         DateTime dateTime = new DateTime();
         String today = dateTime.toString("yyyy-MM-dd");
-        String sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=20 and ext='1' and status=2 and btime>='"
+        String sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=21 and ext='6' and status=2 and btime>='"
                 + today + "'";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
         int max = propertyUtils.getInteger("yd.daily.fee.limit", 10000);
         if (count != null && count >= max) {
-            LogEnum.DEFAULT.info("联通WO+自有游戏 一天上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            LogEnum.DEFAULT.info("电信翼支付 一天上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
             return false;
         }
 
-        sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=20 and ext='1' and status=2 and btime>='"
+        sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=21 and ext='6' and status=2 and btime>='"
                 + dateTime.toString("yyyy-MM-dd HH:00:00") + "'";
         count = jdbcTemplate.queryForObject(sql, Integer.class);
         max = propertyUtils.getInteger("yd.hour.fee.limit", 2000);
         if (count != null && count >= max) {
-            LogEnum.DEFAULT.info("联通WO+自有游戏  一小时上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            LogEnum.DEFAULT.info("电信翼支付  一小时上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
             return false;
         }
 
-        sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=20 and ext='1' and btime>='"
+        sql = "select sum(fee)/100 from tbl_user_pc_card_log where channelid=21 and ext='6' and btime>='"
                 + dateTime.toString("yyyy-MM-dd HH:00:00") + "'";
         count = jdbcTemplate.queryForObject(sql, Integer.class);
         max = propertyUtils.getInteger("yd.hour.fee.limit", 2000) * 2;
         if (count != null && count >= max) {
-            LogEnum.DEFAULT.info("联通WO+自有游戏  一小时请求上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
+            LogEnum.DEFAULT.info("电信翼支付  一小时请求上限为" + new StringBuilder().append(max).append(" ").append(count).toString());
             return false;
         }
         return true;
