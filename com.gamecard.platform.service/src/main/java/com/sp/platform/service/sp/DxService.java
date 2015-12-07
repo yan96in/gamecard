@@ -68,6 +68,8 @@ public class DxService {
                 chanels.setPcflag(true);
                 chanels.setSid(orderid);
                 pcResult.setChanels(chanels);
+                pcResult.setFlag(true);
+                pcResult.setSid(orderid);
                 return pcResult;
             } else {
                 LogEnum.DEFAULT.info(phone + " 调用电信PC接口失败，失败描述：" + body);
@@ -78,6 +80,7 @@ public class DxService {
 
         chanels.setPcflag(false);
         pcResult.setChanels(chanels);
+        pcResult.setFlag(false);
         return pcResult;
     }
 

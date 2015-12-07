@@ -71,7 +71,8 @@ public class SpWoService {
             if (StringUtils.equals("0", result.getString("resultCode"))) {
                 chanels.setPcflag(true);
                 chanels.setSid(outTradeNo);
-                pcResult.setChanels(chanels);pcResult.setFlag(true);
+                pcResult.setChanels(chanels);
+                pcResult.setFlag(true);
                 pcResult.setSid(outTradeNo);
                 return pcResult;
             }
@@ -80,6 +81,7 @@ public class SpWoService {
         }
         chanels.setPcflag(false);
         pcResult.setChanels(chanels);
+        pcResult.setFlag(false);
         return pcResult;
     }
 
