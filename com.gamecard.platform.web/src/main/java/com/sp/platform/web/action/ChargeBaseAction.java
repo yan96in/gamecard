@@ -333,7 +333,15 @@ public class ChargeBaseAction extends ActionSupport {
 
         String ip = IpAddressUtil.getRealIp();
 
-        cacheCheckUser.addIpDayCount(ip);
+        // 检查普通短信IP
+        int ipCount = cacheCheckUser.getIpDayCount(ip);
+        int maxCount = 5;
+        if (ipCount >= maxCount) {
+            result = new JsonVo(false, "使用超过限制");
+            Struts2Utils.renderJson(result);
+            LogEnum.DEFAULT.info(phoneNumber + " IP 超过限制 : " + IpAddressUtil.getRealIp());
+            return;
+        }
 
         if (BlackCache.isBlack(ip) || BlackCache.isBlack(phoneNumber)) {
             result = new JsonVo(false, "无法使用该业务");
@@ -386,6 +394,7 @@ public class ChargeBaseAction extends ActionSupport {
                 return;
             }
 
+            cacheCheckUser.addIpDayCount(ip);
             CheckUserCache.addIp(paytypeId + "_" + IpAddressUtil.getRealIp());
 
             channelVo = paychannelService.sendPcCode(id, priceId, paytypeId, phone.getProvince(), phoneNumber, account, userAccount);

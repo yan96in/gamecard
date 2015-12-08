@@ -92,6 +92,13 @@ public class CacheCheckUser {
         rfm.getAndAdd(key);
     }
 
+    public int getIpDayCount(String key) {
+        String filePath = getLimitPath(CacheFilePath.IP_DAY_COUNT);
+        FileMemoryCache rfm = FileMemoryCache.getInstance(
+                CacheFilePath.IP_DAY_COUNT.getName(), filePath, sdfDay);
+        return rfm.getNodeCount(key);
+    }
+
     /**
      * 获取手机号码每天拨打次数
      */
