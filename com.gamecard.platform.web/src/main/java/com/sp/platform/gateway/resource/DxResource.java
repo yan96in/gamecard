@@ -127,6 +127,8 @@ public class DxResource extends BaseResource {
                 pcCardLog.setPriceId(21);
             } else if (2000 == pcCardLog.getFee()) {
                 pcCardLog.setPriceId(16);
+            } else {
+                pcCardLog.setPriceId(woBillLog.getTotalFee().intValue());
             }
 
             String body = spService.commitPaymentCode(woBillLog.getMobile(), paymentCode, linkid, 21, pcCardLog);
