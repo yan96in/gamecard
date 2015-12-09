@@ -164,13 +164,13 @@ public class DxService {
         feeConfig.put("722", "100009,天下通10元卡");
         feeConfig.put("821", "100012,天宏5元卡");
         feeConfig.put("822", "100011,天宏10元卡");
-        feeConfig.put("1100", "100020,成王败寇1元点卡");
-        feeConfig.put("1200", "100021,成王败寇2元点卡");
-        feeConfig.put("1300", "100022,成王败寇3元点卡");
-        feeConfig.put("1400", "100023,成王败寇4元点卡");
-        feeConfig.put("1500", "100024,成王败寇5元点卡");
-        feeConfig.put("1700", "100025,成王败寇7元点卡");
-        feeConfig.put("1800", "100026,成王败寇8元点卡");
-        feeConfig.put("1900", "100027,成王败寇9元点卡");
+        feeConfig.put("11", "100020,成王败寇1元点卡");
+        feeConfig.put("12", "100021,成王败寇2元点卡");
+        feeConfig.put("13", "100022,成王败寇3元点卡");
+        feeConfig.put("14", "100023,成王败寇4元点卡");
+        feeConfig.put("15", "100024,成王败寇5元点卡");
+        feeConfig.put("17", "100025,成王败寇7元点卡");
+        feeConfig.put("18", "100026,成王败寇8元点卡");
+        feeConfig.put("19", "100027,成王败寇9元点卡");
     }
 }
